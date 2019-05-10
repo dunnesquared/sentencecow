@@ -102,5 +102,4 @@ if __name__ == "__main__":
     for sentence in sent_list:
         print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
 
-
-        
+    
