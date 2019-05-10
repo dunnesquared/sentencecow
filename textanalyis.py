@@ -102,6 +102,34 @@ if __name__ == "__main__":
     for sentence in sent_list:
         print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
 
+    print("DOING FILE TEST....")
+    print("++++++++++++++++++++")
+
+    file_handler = open("input.txt")
+    file_data = file_handler.read()
+    #print(file_data)
+
+    sent_list = get_sentences(file_data)
+
+    print(f"Sentence list length {len(sent_list)}")
+    if len(sent_list) > 0:
+        for x in sent_list:
+            print(x)
+
+    print("\n++++++++++++++++++++++++++++++++++")
+    print("Sentences more than seven words!!")
+    print("++++++++++++++++++++++++++++++++++\n")
+
+    for sentence in sent_list:
+        #print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
+        word_list = get_words(sentence)
+        if len(word_list) > 7:
+            print(f"# words = {len(word_list)} => {sentence}")
+
+
+
+
+
 
     #TO DO
     #Copy story into input.txt
