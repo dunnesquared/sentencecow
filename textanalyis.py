@@ -89,9 +89,9 @@ if __name__ == "__main__":
     print("\nTesting get_sentences")
 
     text = '''
-    My name is Alex. I have dog called Gruff. He smells like baby-powder.
+    My name is Alex. I have a dog called Gruff. He smells like baby-powder.
     I also have a cat called Blinky. She's special! Would you like
-    to play with him? Let me know.'''
+    to play with her? Let me know.'''
 
     sent_list = get_sentences(text)
     print(f"Sentence list length {len(sent_list)}")
@@ -102,4 +102,13 @@ if __name__ == "__main__":
     for sentence in sent_list:
         print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
 
-    
+
+    #TO DO
+    #Copy story into input.txt
+    #Algo
+        #Open file
+        #Read file into string
+        #Pass string into get sentences
+        #Pass sentence list to get words
+        #Iterate through word_list for each sentence; print sentences that
+        #are more than 7 words long.
