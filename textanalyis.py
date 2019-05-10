@@ -5,8 +5,6 @@ Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 import textwrap
 
-
-
 def get_sentences(text):
     '''Parse text into a list of sentences. Each list item contains the original
      sentence as well as its start and end position in the text. Parameter text
@@ -70,10 +68,20 @@ def get_sentences(text):
 
 
 
-def wordcount_leq(phrase, limit):
-    '''Determine whether number of words in given string is lesss than or equal to
-    indicated limit. Parameter phrase is a string, limit a positive integer'''
-    pass
+def get_words(sentence):
+    '''Retrieve words in a sentence, excluding ending punctuation mark
+    (e.g. '.', '?', etc.). Parameter is a string object; function returns a
+    list.'''
+
+    #Default delimiter is blank space
+    word_list = sentence.split()
+
+    #Assume last word has the period, question mark etc; excise the
+    #punctuation mark from last word
+    last_word = word_list[-1]
+    word_list[-1] = last_word[:-1]
+
+    return word_list
 
 
 
@@ -90,3 +98,9 @@ if __name__ == "__main__":
     if len(sent_list) > 0:
         for x in sent_list:
             print(x)
+
+    for sentence in sent_list:
+        print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
+
+
+        
