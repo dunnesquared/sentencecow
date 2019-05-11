@@ -6,9 +6,9 @@ Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 import textwrap
 
 def get_sentences(text):
-    '''Parse text into a list of sentences. Each list item contains the original
-     sentence as well as its start and end position in the text. Parameter text
-     is string object.'''
+    '''Parse text into a map of sentences. Each item in the returned map
+     contains the original sentence as well as its start and end position in
+     the text. Parameter text is string object.'''
 
     #Clean text up a bit: remove trailing/leading spaces, indents
     #You'll need to do this for each sentence too
@@ -23,6 +23,7 @@ def get_sentences(text):
 
     sentence = ""
     sent_list = []
+
 
     while start <= end_of_text:
         #Search text for first occurence of the following punctuation marks
@@ -56,8 +57,19 @@ def get_sentences(text):
         sentence = sentence.strip()
         sentence = textwrap.dedent(sentence)
 
+        #Each item in the list isn't just a sentence; it also returns info
+        #of where it starts and ends. You'll want to create a new entry every
+        #time to avoid reference issues
+        entry = {}
+        entry['content'] = sentence
+        entry['start_pos'] = start
+        entry['end_pos'] = i
+
+
         #Add it to your list
-        sent_list.append(sentence)
+        #sent_list.append(sentence)
+        sent_list.append(entry)
+
 
         #Your next sentence starts two characters away from the end of the
         #previous sentence (in many langauges there is a space before the
@@ -65,6 +77,8 @@ def get_sentences(text):
         start = i + 2
 
     return sent_list
+
+
 
 
 
@@ -86,6 +100,23 @@ def get_words(sentence):
 
 
 if __name__ == "__main__":
+
+    print("\nTesting get_sentences")
+    print("========================")
+
+    text = '''
+    My name is Alex. I have a dog called Gruff. He smells like baby-powder.
+    I also have a cat called Blinky. She's special! Would you like
+    to play with her? Let me know.'''
+
+    sent_list = get_sentences(text)
+    print(f"Sentence list length {len(sent_list)}")
+    if len(sent_list) > 0:
+        for x in sent_list:
+            print(x['content'])
+
+
+    """
     print("\nTesting get_sentences")
 
     text = '''
@@ -126,7 +157,7 @@ if __name__ == "__main__":
         if len(word_list) > 7:
             print(f"# words = {len(word_list)} => {sentence}")
 
-
+        """
 
 
 
