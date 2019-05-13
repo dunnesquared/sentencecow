@@ -1,6 +1,15 @@
 
 '''
 Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
+
+To Do:
+
+* Refactor get_sentences and get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Create a Sentence class; return a Sentence object in get_sentences??
+
+Done:
+* Refactor get_sentences to return map of data
+
 '''
 
 import textwrap
@@ -59,7 +68,7 @@ def get_sentences(text):
 
         #Each item in the list isn't just a sentence; it also returns info
         #of where it starts and ends. You'll want to create a new entry every
-        #time to avoid reference issues
+        #time to avoid reference issueslear
         entry = {}
         entry['content'] = sentence
         entry['start_pos'] = start
@@ -115,6 +124,33 @@ if __name__ == "__main__":
         for x in sent_list:
             print(x['content'])
 
+    for sentence in sent_list:
+        print(f"Length = {len(get_words(sentence['content']))}; Words: {get_words(sentence['content'])}")
+
+    print("DOING FILE TEST....")
+    print("++++++++++++++++++++")
+
+    file_handler = open("input.txt")
+    file_data = file_handler.read()
+    #print(file_data)
+
+    sent_list = get_sentences(file_data)
+
+    print(f"Sentence list length {len(sent_list)}")
+    if len(sent_list) > 0:
+        for x in sent_list:
+            print(x['content'])
+
+
+    print("\n++++++++++++++++++++++++++++++++++")
+    print("Sentences more than seven words!!")
+    print("++++++++++++++++++++++++++++++++++\n")
+
+    for sentence in sent_list:
+        #print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
+        word_list = get_words(sentence['content'])
+        if len(word_list) > 7:
+            print(f"# words = {len(word_list)} => {sentence['content']}")
 
     """
     print("\nTesting get_sentences")
