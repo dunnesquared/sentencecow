@@ -128,6 +128,28 @@ def get_words(sentence):
     return word_list
 
 
+def find_start_end(sentence, text, start_search=0):
+    '''Find the start and end positions of a sentence within a given text.
+    Parameters text and sentence are both strings; start-pos is a non-negative
+    integer. Function returns a tuple with start and end positions
+    '''
+
+    start_pos = 0
+    end_pos = 0
+
+
+    if sentence in text:
+        start_pos = text.find(sentence, start_search, len(text) + 1)
+        end_pos = start_pos + len(sentence) - 1
+    else:
+        return -1
+
+    return (start_pos, end_pos)
+
+    #See whether sentence is text; if not return -1
+    #If yes, then get start_pos of sentence staring from
+    #start_pos parameter ; end pos should be start_pos + len(sentence)
+    #return (start, end)
 
 
 if __name__ == "__main__":
@@ -172,3 +194,9 @@ if __name__ == "__main__":
         word_list = get_words(sentence)
         if len(word_list) > 7:
             print(f"# words = {len(word_list)} => {sentence}")
+
+    positions = find_start_end(sent_list[0], file_data, 0)
+    print(f"Start and end pos for 1st sentence: {positions}")
+
+    positions = find_start_end(sent_list[1], file_data, positions[0])
+    print(f"Start and end pos for 2nd sentence: {positions}")
