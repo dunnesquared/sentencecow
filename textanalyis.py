@@ -4,41 +4,52 @@ Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 To Do:
 
-* Refactor get_sentences and get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Refactor get_sentences so to only return a list of sentences
+* Write a function that will find the
+* Refactor get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Test get_sentences and get words
 * Create a Sentence class; return a Sentence object in get_sentences??
 
 Done:
 * Refactor get_sentences to return map of data
+* Refactor get_sentences so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
 
 '''
 
 import textwrap
+import re
+
 
 def get_sentences(text):
     '''Parse text into a map of sentences. Each item in the returned map
      contains the original sentence as well as its start and end position in
-     the text. Parameter text is string object.'''
+     the text. Parameter 'text' is string object.'''
 
     #Clean text up a bit: remove trailing/leading spaces, indents
     #You'll need to do this for each sentence too
     text = text.strip()
     text = textwrap.dedent(text)
 
-    start = 0
-    end_of_text = len(text)
+    #Escape characters such as \n or \t mess up the parsing below; take 'em out
+    text = re.sub('[\n\t\r]', ' ', text)
+
+    #Add a space at the end so last sentence won't be ignored
+    text = text + " "
 
     #Initialize variable that will keep track of the end of each sentence
     i = 0
 
+    #Set it up...
+    start = 0
+    end_of_text = len(text)
     sentence = ""
     sent_list = []
 
-
     while start <= end_of_text:
         #Search text for first occurence of the following punctuation marks
-        pos_period = text.find('.', start, end_of_text+1)
-        pos_qmark = text.find('?', start, end_of_text+1)
-        pos_exclam = text.find('!', start, end_of_text+1)
+        pos_period = text.find('. ', start, end_of_text+1)
+        pos_qmark = text.find('? ', start, end_of_text+1)
+        pos_exclam = text.find('! ', start, end_of_text+1)
 
         #No end-of-sentence punctuation marks left in text => no more sentences!
         if pos_period == -1 and pos_qmark == -1 and pos_exclam == -1:
@@ -83,7 +94,8 @@ def get_sentences(text):
         #Your next sentence starts two characters away from the end of the
         #previous sentence (in many langauges there is a space before the
         #first letter of a sentence)
-        start = i + 2
+        #start = i + 2
+        start = i + 1
 
     return sent_list
 
@@ -115,8 +127,9 @@ if __name__ == "__main__":
 
     text = '''
     My name is Alex. I have a dog called Gruff. He smells like baby-powder.
-    I also have a cat called Blinky. She's special! Would you like
-    to play with her? Let me know.'''
+    I also have a cat called Blinky?! She's special! Would you like
+    to play with her? Let me know...'''
+
 
     sent_list = get_sentences(text)
     print(f"Sentence list length {len(sent_list)}")
