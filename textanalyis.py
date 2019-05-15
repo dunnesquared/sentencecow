@@ -6,8 +6,6 @@ To Do:
 * Write driver to detect whether sentences are 7 words or less
 * Unit test get_sentences and get_words using nosetests
 * Create a Sentence class; return a Sentence object in get_sentences??
-* Refactor get_sentences and get_word to encapsulate duplicate code in a method
-(i.e. finding the first end-of-sentence punctuation point)
 
 Done:
 * Refactor get_sentences to return map of data
@@ -16,6 +14,8 @@ Done:
 * Refactor get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
 * Debug find_start_end
 * Write a function that will find the beginning and end of sentence in a text
+* Refactor get_sentences and get_word to encapsulate duplicate code in a method
+(i.e. finding the first end-of-sentence punctuation point)
 '''
 
 import textwrap
@@ -108,6 +108,7 @@ def get_words(sentence):
     return word_list
 
 
+
 def find_start_end(sentence, text, start_search=0):
     '''Find the start and end positions of a sentence within a given text.
     Parameters text and sentence are both strings; start-pos is a non-negative
@@ -137,8 +138,8 @@ def __get_first_punctuation_mark(period, qmark, exclam):
     if period == -1 and qmark == -1 and exclam == -1:
         return -1
 
-    #To get the next sentence we need to figure out which of the following
-    #end-sentence-punctuation happens first. The one with the smallest index
+    #We need to figure out which of the following end-sentence-punctuation
+    #happens first in a text. The one with the smallest index
     #is one we're looking for
     pos_list = [period, exclam, qmark]
 
@@ -150,7 +151,6 @@ def __get_first_punctuation_mark(period, qmark, exclam):
 
     #Get position of the punctuation mark at the end of the current sentence
     return min(pos_list)
-
 
 
 
