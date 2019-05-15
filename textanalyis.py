@@ -4,7 +4,6 @@ Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 To Do:
 * Write driver to detect whether sentences are 7 words or less
-
 * Unit test get_sentences and get_words using nosetests
 * Create a Sentence class; return a Sentence object in get_sentences??
 * Refactor get_sentences and get_word to encapsulate duplicate code in a method
@@ -53,6 +52,7 @@ def get_sentences(text):
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
 
+        '''
         #No end-of-sentence punctuation marks left in text => no more sentences!
         if pos_period == -1 and pos_qmark == -1 and pos_exclam == -1:
             return sent_list #empty list
@@ -70,6 +70,14 @@ def get_sentences(text):
 
         #Get position of the punctuation mark at the end of the current sentence
         i = min(pos_list)
+        '''
+
+        #Get position of the punctuation mark at the end of the current sentence
+        i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
+
+        if i == -1:
+            return sent_list
+
 
         #Extract sentence and clean it up a bit
         sentence = text[start:(i+1)]
@@ -149,10 +157,34 @@ def find_start_end(sentence, text, start_search=0):
 
     return (start_pos, end_pos)
 
-    #See whether sentence is text; if not return -1
-    #If yes, then get start_pos of sentence staring from
-    #start_pos parameter ; end pos should be start_pos + len(sentence)
-    #return (start, end)
+
+
+def __get_first_punctuation_mark(period, qmark, exclam):
+    '''Private helper function that returns the lowest index out.
+    Returns lowest number (any if all the same value). If there is no punctuat-
+    ion mark, return -1'''
+
+    #No end-of-sentence punctuation marks in word
+    if period == -1 and qmark == -1 and exclam == -1:
+        return -1
+
+    #To get the next sentence we need to figure out which of the following
+    #end-sentence-punctuation happens first. The one with the smallest index
+    #is one we're looking for
+    pos_list = [period, exclam, qmark]
+
+    #Negative values will always be the smaller index; get rid of them!!
+    if period == -1 or qmark == -1 or exclam == -1:
+        val = -1
+        while val in pos_list:
+            pos_list.remove(val)
+
+    #Get position of the punctuation mark at the end of the current sentence
+    return min(pos_list)
+
+
+
+
 
 
 if __name__ == "__main__":
