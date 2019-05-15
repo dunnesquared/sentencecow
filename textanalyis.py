@@ -52,32 +52,12 @@ def get_sentences(text):
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
 
-        '''
-        #No end-of-sentence punctuation marks left in text => no more sentences!
-        if pos_period == -1 and pos_qmark == -1 and pos_exclam == -1:
-            return sent_list #empty list
-
-        #To get the next sentence we need to figure out which of the following
-        #end-sentence-punctuation happens first. The one with the smallest index
-        #is one we're looking for
-        pos_list = [pos_period, pos_exclam, pos_qmark]
-
-        #Negative values will always be the smaller index; get rid of them!!
-        if pos_period == -1 or pos_qmark == -1 or pos_exclam == -1:
-            val = -1
-            while val in pos_list:
-                pos_list.remove(val)
-
-        #Get position of the punctuation mark at the end of the current sentence
-        i = min(pos_list)
-        '''
-
         #Get position of the punctuation mark at the end of the current sentence
         i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
 
+        #No end-of-sentence punctuation marks in sentence
         if i == -1:
             return sent_list
-
 
         #Extract sentence and clean it up a bit
         sentence = text[start:(i+1)]
@@ -115,23 +95,12 @@ def get_words(sentence):
     pos_qmark = last_word.find('?', 0, len(last_word)+1)
     pos_exclam = last_word.find('!', 0, len(last_word)+1)
 
-    #No end-of-sentence punctuation marks in word
-    if pos_period == -1 and pos_qmark == -1 and pos_exclam == -1:
-        return word_list
-
-    #To get the next sentence we need to figure out which of the following
-    #end-sentence-punctuation happens first. The one with the smallest index
-    #is one we're looking for
-    pos_list = [pos_period, pos_exclam, pos_qmark]
-
-    #Negative values will always be the smaller index; get rid of them!!
-    if pos_period == -1 or pos_qmark == -1 or pos_exclam == -1:
-        val = -1
-        while val in pos_list:
-            pos_list.remove(val)
-
     #Get position of the punctuation mark at the end of the current sentence
-    i = min(pos_list)
+    i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
+
+    #No end-of-sentence punctuation mark in word
+    if i == -1:
+        return word_list
 
     #Replace last word in word list sans punctuation
     word_list[-1] = last_word[:i]
@@ -160,11 +129,11 @@ def find_start_end(sentence, text, start_search=0):
 
 
 def __get_first_punctuation_mark(period, qmark, exclam):
-    '''Private helper function that returns the lowest index out.
+    '''Private helper function that returns the lowest index out of three.
     Returns lowest number (any if all the same value). If there is no punctuat-
     ion mark, return -1'''
 
-    #No end-of-sentence punctuation marks in word
+    #No end-of-sentence punctuation mark
     if period == -1 and qmark == -1 and exclam == -1:
         return -1
 
@@ -181,8 +150,6 @@ def __get_first_punctuation_mark(period, qmark, exclam):
 
     #Get position of the punctuation mark at the end of the current sentence
     return min(pos_list)
-
-
 
 
 
