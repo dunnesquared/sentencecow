@@ -3,8 +3,9 @@
 Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 To Do:
-* Write a function that will find the beginning and end of sentence in a text
-* Test get_sentences and get words
+* Write driver to detect whether sentences are 7 words or less
+
+* Unit test get_sentences and get_words using nosetests
 * Create a Sentence class; return a Sentence object in get_sentences??
 * Refactor get_sentences and get_word to encapsulate duplicate code in a method
 (i.e. finding the first end-of-sentence punctuation point)
@@ -14,6 +15,8 @@ Done:
 * Refactor get_sentences so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
 * Refactor get_sentences so to only return a list of sentences
 * Refactor get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Debug find_start_end
+* Write a function that will find the beginning and end of sentence in a text
 '''
 
 import textwrap
@@ -198,5 +201,17 @@ if __name__ == "__main__":
     positions = find_start_end(sent_list[0], file_data, 0)
     print(f"Start and end pos for 1st sentence: {positions}")
 
+    test_sentence = file_data[positions[0]:positions[1] +1]
+    print(test_sentence)
+
     positions = find_start_end(sent_list[1], file_data, positions[0])
     print(f"Start and end pos for 2nd sentence: {positions}")
+
+    #Compare sentences
+    test_sentence = file_data[positions[0]:positions[1]+1]
+    print(test_sentence)
+
+    if test_sentence == sent_list[1]:
+        print("Sentences match!")
+    else:
+        print("Sentences don't match")
