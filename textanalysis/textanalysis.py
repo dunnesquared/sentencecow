@@ -24,7 +24,31 @@ import re
 
 
 def get_sentences(text):
-    '''Parse text into a list of sentences. Parameter 'text' is string object.'''
+    '''Parse text into a list of sentences. Parameter 'text' is string object.
+
+    Pre-condition:
+    --------------
+    String object passed as argument
+    --------------
+    Post-condition:
+    --------------
+    Returns a list of strings, each item ending with an
+    English end-of-punctuation mark. Hopefully, each item will be a grammatically-
+    sound English sentence, but there's no checking for this as such.
+    If argument is empty or otherwise contains no sentences,
+    an empty list is returned.
+
+    Pre-condtion:
+    --------------
+    Non-String object passed as argument
+    --------------
+    Post-condition:
+    --------------
+    Function throws TypeError exception
+    '''
+
+    if not isinstance(text, str):
+        raise TypeError("TypeError in textanalysis.get_sentences: non-string object passed as argument.")
 
     #Clean text up a bit: remove trailing/leading spaces, indents
     #You'll need to do this for each sentence too
@@ -33,6 +57,10 @@ def get_sentences(text):
 
     #Escape characters such as \n or \t mess up the parsing below; take 'em out
     text = re.sub('[\n\t\r]', ' ', text)
+
+    #No need to continue if dealing with an empty stirng
+    if len(text) == 0:
+        return []
 
     #Add a space at the end so last sentence won't be ignored by parsing
     #algorithm below
