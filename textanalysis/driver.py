@@ -75,3 +75,8 @@ for sentence in long_sent_list:
 print("\n\nMODIFIED TEXT:")
 print("==============")
 print(f"{new_text}")
+
+try:
+    ta.get_sentences(None)
+except TypeError as e:
+    print(e) 
