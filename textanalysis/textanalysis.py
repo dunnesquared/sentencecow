@@ -181,6 +181,43 @@ def __get_first_punctuation_mark(period, qmark, exclam):
     #Get position of the punctuation mark at the end of the current sentence
     return min(pos_list)
 
+"""
+Untested method - development cancelled 
+
+def __is_expletive(text, pos):
+    '''Determine whether end-of-sentence punctuation mark is the end of a
+    cartoon bubble, e.g. "that god dosh-darn #$%!? rabbit!!"  We can do this
+    by check the two previous characters. If they're not part of an ellipsis
+    but have a !@#$%^&*? character,  then it's highly-likely its an expletive.
+
+    Parameter text is the string object being examined; pos is the non-Negative
+    integer position of the end-of-sentence punctuation mark. Return True if
+    expletive found; False otherwise.
+    '''
+    #English sentences don't start with end-of-sentence punctuation marks;
+    #index should be positive
+    if i < 2:
+        return False
+
+    c_pos = text[pos]
+
+    #Cartoon-bubble expletives don't end in a period
+    if c_pos == '.':
+        return False
+
+    #Look at previous characters before pos
+    c_1 = text[pos - 1]
+    c_2 = text[pos - 2]
+
+    #If previous two characters are periods, ignore => ellipsis
+    if c_1 == '.' or c_2 == '.':
+        return False
+
+    #See whether the next two characters for part of an expletive
+    if c_1 in "!@#$%^&*?" and c_2 in "!@#$%^&*?":
+        return True
+
+"""
 
 
 if __name__ == "__main__":
