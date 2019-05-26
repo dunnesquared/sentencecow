@@ -22,6 +22,20 @@ Done:
 import textwrap
 import re
 
+honorifics = [
+                'Mr.',
+                'Mrs.',
+                'Ms.',
+                'Mz.',
+                'Mx.',
+                'Dr.',
+                'M.',
+                'Mme.',
+                'Fr.',
+                'Pr.',
+                'Br.',
+                'Sr.'
+            ]
 
 def get_sentences(text):
     '''Parse text into a list of sentences. Parameter 'text' is string object.
@@ -80,6 +94,17 @@ def get_sentences(text):
         pos_period = text.find('. ', start, end_of_text+1)
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
+
+        #Honorifics (e.g. Mr.) give false poisives. Ignore 'em!!
+        new_start = start
+        while True:
+            if __is_honorific(text, new_start, pos_period) == True:
+                new_start = pos_period + 1
+                pos_period = text.find('. ', new_start, end_of_text+1)
+            else:
+                break
+
+
 
         #Get position of the punctuation mark at the end of the current sentence
         i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
@@ -181,8 +206,29 @@ def __get_first_punctuation_mark(period, qmark, exclam):
     #Get position of the punctuation mark at the end of the current sentence
     return min(pos_list)
 
+
+def __is_honorific(text, start, index):
+    '''Checks whether detected period belongs to an honorific (e.g. Mr.)
+    instead of the end of an sentence. Paramter text is string that's being
+    scanned betewen indices start and index, inclusive. Returns True if
+    honorific; False otherwise.'''
+
+    #Focus on the part of text that may contain an honorific
+    part = text[start:index+1]
+
+    #See whether any of the honorifics are in that part.
+    global honorifics
+    for x in honorifics:
+        if x in part:
+            return True #Honorific found!!
+
+    #Period is not part of the honorific. Period is at end of sentence
+    return False
+
+
+
 """
-Untested method - development cancelled 
+Untested method - development cancelled
 
 def __is_expletive(text, pos):
     '''Determine whether end-of-sentence punctuation mark is the end of a
@@ -220,14 +266,16 @@ def __is_expletive(text, pos):
 """
 
 
+
+
 if __name__ == "__main__":
 
 
     print("\nTesting get_sentences")
 
     text = '''
-    My name is Alex. I have a dog called Gruff. He smells like baby-powder.
-    I also have a cat called Blinky?! She's special! Would you like
+    My name is Mr. Giovanni. I have a dog called Gruff. He smells like baby-powder.
+    I also have a cat called Dr. Blinky?! She's special! Would you like
     to play with her? Let me know!!!!'''
 
     sent_list = get_sentences(text)
