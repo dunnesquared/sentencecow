@@ -4,6 +4,8 @@ Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 To Do:
 
+* Being able to open a text file regardless from where you start running
+your script: https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-a-python-script
 * Unit test get_sentences and get_words using nosetests
 * Create a Sentence class; return a Sentence object in get_sentences??
 
@@ -21,6 +23,8 @@ Done:
 
 import textwrap
 import re
+
+import os #for driver test code below
 
 honorifics = [
                 'Mr.',
@@ -226,7 +230,6 @@ def __is_honorific(text, start, index):
     return False
 
 
-
 """
 Untested method - development cancelled
 
@@ -265,6 +268,23 @@ def __is_expletive(text, pos):
 
 """
 
+#helper function
+def abspath():
+    '''Return absolute path of the directory where script is being run'''
+
+    #Get the current directory in Terminal when you try to launch the script
+    cwd = os.getcwd()
+
+    #Get the name of the directoy where this script exists
+    script_dir = os.path.dirname(__file__)
+
+    #Intelligently cocantenate the two
+    joinedpath =  os.path.join(cwd, script_dir)
+
+    #Get rid of any possible symbolic links found along and return the absolute
+    #path
+    return  os.path.realpath(joinedpath)
+
 
 
 
@@ -290,8 +310,10 @@ if __name__ == "__main__":
     print("DOING FILE TEST....")
     print("++++++++++++++++++++")
 
-    file_handler = open("input.txt")
-    file_data = file_handler.read()
+    #Read input file
+    location = abspath()
+    fin = open(os.path.join(location, "input.txt"))
+    file_data = fin.read()
     #print(file_data)
 
     sent_list = get_sentences(file_data)
