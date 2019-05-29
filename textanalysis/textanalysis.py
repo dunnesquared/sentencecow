@@ -99,7 +99,7 @@ def get_sentences(text):
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
 
-        #Honorifics (e.g. Mr.) give false poisives. Ignore 'em!!
+        #Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
         new_start = start
         while True:
             if __is_honorific(text, new_start, pos_period) == True:
@@ -108,10 +108,15 @@ def get_sentences(text):
             else:
                 break
 
-
-
+        '''OLD
         #Get position of the punctuation mark at the end of the current sentence
         i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
+        '''
+
+        '''NEW'''
+        pos_list = [pos_period, pos_qmark, pos_exclam]
+        #Get position of the punctuation mark at the end of the current sentence
+        i = __get_first_punctuation_mark(pos_list)
 
         #No end-of-sentence punctuation marks in sentence
         if i == -1:
@@ -186,7 +191,7 @@ def find_start_end(sentence, text, start_search=0):
     return (start_pos, end_pos)
 
 
-
+"""
 def __get_first_punctuation_mark(period, qmark, exclam):
     '''Private helper function that returns the lowest index out of three.
     Returns lowest number (any if all the same value). If there is no punctuat-
@@ -209,6 +214,26 @@ def __get_first_punctuation_mark(period, qmark, exclam):
 
     #Get position of the punctuation mark at the end of the current sentence
     return min(pos_list)
+"""
+
+def __get_first_punctuation_mark(pos_list):
+    '''Private helper function that returns the lowest index in list of punct-
+    ation marks.
+    Returns lowest number (any if all the same value). If there is no punctuat-
+    ion mark, return -1'''
+
+    #Negative values will always be the smaller index; get rid of them!!
+    while -1 in pos_list:
+        pos_list.remove(-1)
+
+    #Return position of the punctuation mark at the end of the current sentence
+    #assuming there's a mark in the firs place!
+    if len(pos_list) == 0:
+        return -1
+    else:
+        return min(pos_list)
+
+
 
 
 def __is_honorific(text, start, index):
