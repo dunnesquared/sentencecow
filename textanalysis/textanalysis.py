@@ -207,30 +207,6 @@ def find_start_end(sentence, text, start_search=0):
     return (start_pos, end_pos)
 
 
-"""
-def __get_first_punctuation_mark(period, qmark, exclam):
-    '''Private helper function that returns the lowest index out of three.
-    Returns lowest number (any if all the same value). If there is no punctuat-
-    ion mark, return -1'''
-
-    #No end-of-sentence punctuation mark
-    if period == -1 and qmark == -1 and exclam == -1:
-        return -1
-
-    #We need to figure out which of the following end-sentence-punctuation
-    #happens first in a text. The one with the smallest index
-    #is one we're looking for
-    pos_list = [period, exclam, qmark]
-
-    #Negative values will always be the smaller index; get rid of them!!
-    if period == -1 or qmark == -1 or exclam == -1:
-        val = -1
-        while val in pos_list:
-            pos_list.remove(val)
-
-    #Get position of the punctuation mark at the end of the current sentence
-    return min(pos_list)
-"""
 
 def __get_first_punctuation_mark(pos_list):
     '''Private helper function that returns the lowest index in list of punct-
@@ -270,44 +246,6 @@ def __is_honorific(text, start, index):
     return False
 
 
-"""
-Untested method - development cancelled
-
-def __is_expletive(text, pos):
-    '''Determine whether end-of-sentence punctuation mark is the end of a
-    cartoon bubble, e.g. "that god dosh-darn #$%!? rabbit!!"  We can do this
-    by check the two previous characters. If they're not part of an ellipsis
-    but have a !@#$%^&*? character,  then it's highly-likely its an expletive.
-
-    Parameter text is the string object being examined; pos is the non-Negative
-    integer position of the end-of-sentence punctuation mark. Return True if
-    expletive found; False otherwise.
-    '''
-    #English sentences don't start with end-of-sentence punctuation marks;
-    #index should be positive
-    if i < 2:
-        return False
-
-    c_pos = text[pos]
-
-    #Cartoon-bubble expletives don't end in a period
-    if c_pos == '.':
-        return False
-
-    #Look at previous characters before pos
-    c_1 = text[pos - 1]
-    c_2 = text[pos - 2]
-
-    #If previous two characters are periods, ignore => ellipsis
-    if c_1 == '.' or c_2 == '.':
-        return False
-
-    #See whether the next two characters for part of an expletive
-    if c_1 in "!@#$%^&*?" and c_2 in "!@#$%^&*?":
-        return True
-
-"""
-
 #helper function
 def abspath():
     '''Return absolute path of the directory where script is being run'''
@@ -326,7 +264,7 @@ def abspath():
     return  os.path.realpath(joinedpath)
 
 
-
+#++++++++++++++++++++++++++++++++=MAIN+++++++++++++++++++++++++++++++++++++++++
 
 if __name__ == "__main__":
 
