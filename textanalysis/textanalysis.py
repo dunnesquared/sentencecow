@@ -98,6 +98,13 @@ def get_sentences(text):
         pos_period = text.find('. ', start, end_of_text+1)
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
+        #Look for these too..
+        pos_qper = text.find('." ', start, end_of_text+1)
+        pos_qque = text.find('?" ', start, end_of_text+1)
+        pos_qexc = text.find('!" ', start, end_of_text+1)
+        pos_qdsh = text.find('—" ', start, end_of_text+1)
+
+
 
         #Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
         new_start = start
@@ -114,7 +121,8 @@ def get_sentences(text):
         '''
 
         '''NEW'''
-        pos_list = [pos_period, pos_qmark, pos_exclam]
+        pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
+            pos_qexc, pos_qdsh]
         #Get position of the punctuation mark at the end of the current sentence
         i = __get_first_punctuation_mark(pos_list)
 
@@ -158,8 +166,16 @@ def get_words(sentence):
     pos_qmark = last_word.find('?', 0, len(last_word)+1)
     pos_exclam = last_word.find('!', 0, len(last_word)+1)
 
+    '''OLD
     #Get position of the punctuation mark at the end of the current sentence
     i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
+    '''
+
+    '''NEW'''
+    pos_list = [pos_period, pos_qmark, pos_exclam]
+    #Get position of the punctuation mark at the end of the current sentence
+    i = __get_first_punctuation_mark(pos_list)
+    '''NEW -END'''
 
     #No end-of-sentence punctuation mark in word
     if i == -1:
@@ -218,9 +234,8 @@ def __get_first_punctuation_mark(period, qmark, exclam):
 
 def __get_first_punctuation_mark(pos_list):
     '''Private helper function that returns the lowest index in list of punct-
-    ation marks.
-    Returns lowest number (any if all the same value). If there is no punctuat-
-    ion mark, return -1'''
+    ation marks. Returns lowest number (any if all the same value).
+    If there is no punctuation mark, return -1'''
 
     #Negative values will always be the smaller index; get rid of them!!
     while -1 in pos_list:
