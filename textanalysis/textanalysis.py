@@ -93,7 +93,7 @@ def get_sentences(text):
     sentence = ""
     sent_list = []
 
-    while start <= end_of_text:
+    while start < end_of_text: #<=??
         #Search text for first occurence of the following punctuation marks
         pos_period = text.find('. ', start, end_of_text+1)
         pos_qmark = text.find('? ', start, end_of_text+1)
@@ -104,8 +104,6 @@ def get_sentences(text):
         pos_qexc = text.find('!" ', start, end_of_text+1)
         pos_qdsh = text.find('—" ', start, end_of_text+1)
 
-
-
         #Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
         new_start = start
         while True:
@@ -115,23 +113,27 @@ def get_sentences(text):
             else:
                 break
 
-        '''OLD
         #Get position of the punctuation mark at the end of the current sentence
-        i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
-        '''
-
-        '''NEW'''
         pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
             pos_qexc, pos_qdsh]
-        #Get position of the punctuation mark at the end of the current sentence
+
         i = __get_first_punctuation_mark(pos_list)
 
         #No end-of-sentence punctuation marks in sentence
         if i == -1:
             return sent_list
 
+
+        #find() returns the index of the first character in the string your
+        #searching for
+        #As such increment the index if sentence ends with a quotation mark
+        pos_lastchar = i
+        if text[i+1] == "\"":
+            pos_lastchar = i + 1
+
+
         #Extract sentence and clean it up a bit
-        sentence = text[start:(i+1)]
+        sentence = text[start:(pos_lastchar + 1)]
 
         #Clean up each sentence so we're not giving any extra spaces on either
         #side
@@ -144,7 +146,7 @@ def get_sentences(text):
         #Your next sentence starts one character away from the end of the
         #previous sentence (in many langauges there is a space before the
         #first letter of a sentence)
-        start = i + 1
+        start = pos_lastchar + 1
 
     return sent_list
 
@@ -271,10 +273,13 @@ if __name__ == "__main__":
 
     print("\nTesting get_sentences")
 
-    text = '''
-    My name is Mr. Giovanni. I have a dog called Gruff. He smells like baby-powder.
-    I also have a cat called Dr. Blinky?! She's special! Would you like
-    to play with her? Let me know!!!!'''
+    #text = '''
+    #My name is Mr. Giovanni. I have a dog called Gruff. He smells like baby-powder.
+    #I also have a cat called Dr. Blinky?! She's special! Would you like
+    #to play with her? Let me know!!!! "He ate a donut."'''
+
+    text = "\"He ate a donut.\" "
+    print(text)
 
     sent_list = get_sentences(text)
     print(f"Sentence list length {len(sent_list)}")
