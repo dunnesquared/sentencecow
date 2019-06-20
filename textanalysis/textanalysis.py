@@ -180,23 +180,24 @@ def get_words(sentence):
 
     # Assume last word has the period, question mark etc; excise the
     # punctuation mark from last word
-    last_word = word_list[-1]
+    if len(word_list) > 0:
+        last_word = word_list[-1]
 
-    pos_period = last_word.find('.', 0, len(last_word)+1)
-    pos_qmark = last_word.find('?', 0, len(last_word)+1)
-    pos_exclam = last_word.find('!', 0, len(last_word)+1)
+        pos_period = last_word.find('.', 0, len(last_word)+1)
+        pos_qmark = last_word.find('?', 0, len(last_word)+1)
+        pos_exclam = last_word.find('!', 0, len(last_word)+1)
 
-    pos_list = [pos_period, pos_qmark, pos_exclam]
+        pos_list = [pos_period, pos_qmark, pos_exclam]
 
-    # Get position of the punctuation mark at the end of the current sentence
-    i = __get_first_punctuation_mark(pos_list)
+        # Get position of the punctuation mark at the end of the current sentence
+        i = __get_first_punctuation_mark(pos_list)
 
-    # No end-of-sentence punctuation mark in word
-    if i == -1:
-        return word_list
+        # No end-of-sentence punctuation mark in word
+        if i == -1:
+            return word_list
 
-    # Replace last word in word list sans punctuation
-    word_list[-1] = last_word[:i]
+        # Replace last word in word list sans punctuation
+        word_list[-1] = last_word[:i]
 
     return word_list
 
