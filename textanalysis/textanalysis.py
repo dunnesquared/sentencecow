@@ -76,6 +76,11 @@ def get_sentences(text):
     text = text.strip()
     text = textwrap.dedent(text)
 
+    # Parsing only works for straight quotes
+    # Replace curly opening/closing quotes with straight quotes
+    text = text.replace('“', '"')
+    text = text.replace('”', '"')
+
     # Escape characters such as \n or \t mess up the parsing below; take 'em
     # out
     text = re.sub('[\n\t\r]', ' ', text)
@@ -118,18 +123,11 @@ def get_sentences(text):
                 break
 
         # Check to see whether first non-space character after end of a
-        # quotation or not. If it is, set its position to -1
+        # quotation or not is lowercase. If it is, don't treat the end of the
+        # quotation as the end of the sentence
         pos_qque = __ignore_quote(pos_qque, text)
         pos_qexc = __ignore_quote(pos_qexc, text)
         pos_qdsh = __ignore_quote(pos_qdsh, text)
-
-
-        #pos = pos_qque
-        #inbounds =  (pos + 3) <  end_of_text
-        #lowercase = text[pos + 3].islower()
-        #if inbounds and lowercase:
-        #    pos_qque = -1
-
 
         # Get position of the punctuation mark at the end of the current
         # sentence
