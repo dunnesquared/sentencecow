@@ -171,6 +171,10 @@ def get_words(sentence):
     (e.g. '.', '?', etc.). Parameter is a string object; function returns a
     list.'''
 
+    if not isinstance(sentence, str):
+        raise TypeError("TypeError in textanalysis.get_words:" +
+                        "non-string object passed as argument.")
+
     # Default delimiter is blank space
     word_list = sentence.split()
 
@@ -182,16 +186,10 @@ def get_words(sentence):
     pos_qmark = last_word.find('?', 0, len(last_word)+1)
     pos_exclam = last_word.find('!', 0, len(last_word)+1)
 
-    '''OLD
-    #Get position of the punctuation mark at the end of the current sentence
-    i = __get_first_punctuation_mark(pos_period, pos_qmark, pos_exclam)
-    '''
-
-    '''NEW'''
     pos_list = [pos_period, pos_qmark, pos_exclam]
+
     # Get position of the punctuation mark at the end of the current sentence
     i = __get_first_punctuation_mark(pos_list)
-    '''NEW -END'''
 
     # No end-of-sentence punctuation mark in word
     if i == -1:
