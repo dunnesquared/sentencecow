@@ -24,8 +24,11 @@ your script
 
 import textwrap
 import re
+from string import punctuation  # to get rid of punctuation in get words
 
 import os  # for driver test code below
+
+
 
 honorifics = [
                 'Mr.',
@@ -167,37 +170,23 @@ def get_sentences(text):
 
 
 def get_words(sentence):
-    '''Retrieve words in a sentence, excluding ending punctuation mark
+    '''Retrieve words in a sentence, excluding all punctuation marks
     (e.g. '.', '?', etc.). Parameter is a string object; function returns a
     list.'''
 
+    # One of the minor banes of Python being dynamically typed.
     if not isinstance(sentence, str):
         raise TypeError("TypeError in textanalysis.get_words:" +
                         "non-string object passed as argument.")
 
-    # Default delimiter is blank space
-    word_list = sentence.split()
+    # Remove all punctuation from the sentence (thanks to programiz)
+    no_punct_sentence = ""
+    for c in sentence:
+        if c not in punctuation:  # imported from string package
+            no_punct_sentence = no_punct_sentence + c
 
-    # Assume last word has the period, question mark etc; excise the
-    # punctuation mark from last word
-    if len(word_list) > 0:
-        last_word = word_list[-1]
-
-        pos_period = last_word.find('.', 0, len(last_word)+1)
-        pos_qmark = last_word.find('?', 0, len(last_word)+1)
-        pos_exclam = last_word.find('!', 0, len(last_word)+1)
-
-        pos_list = [pos_period, pos_qmark, pos_exclam]
-
-        # Get position of the punctuation mark at the end of the current sentence
-        i = __get_first_punctuation_mark(pos_list)
-
-        # No end-of-sentence punctuation mark in word
-        if i == -1:
-            return word_list
-
-        # Replace last word in word list sans punctuation
-        word_list[-1] = last_word[:i]
+    # Default delimiter in split is blank space
+    word_list = no_punct_sentence.split()
 
     return word_list
 
