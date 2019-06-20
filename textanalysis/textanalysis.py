@@ -3,28 +3,29 @@
 Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
 To Do:
-
-* Being able to open a text file regardless from where you start running
-your script: https://stackoverflow.com/questions/4060221/how-to-reliably-open-a-file-in-the-same-directory-as-a-python-script
 * Unit test get_sentences and get_words using nosetests
 * Create a Sentence class; return a Sentence object in get_sentences??
 
 Done:
 * Write driver to detect whether sentences are 7 words or less
 * Refactor get_sentences to return map of data
-* Refactor get_sentences so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Refactor get_sentences so that delimiters are ". ", etc, so as to
+handle !!! or ?! or ...
 * Refactor get_sentences so to only return a list of sentences
-* Refactor get_words so that delimiters are ". ", etc, so as to handle !!! or ?! or ...
+* Refactor get_words so that delimiters are ". ", etc, so as to
+handle !!! or ?! or ...
 * Debug find_start_end
 * Write a function that will find the beginning and end of sentence in a text
 * Refactor get_sentences and get_word to encapsulate duplicate code in a method
 (i.e. finding the first end-of-sentence punctuation point)
+* Being able to open a text file regardless from where you start running
+your script
 '''
 
 import textwrap
 import re
 
-import os #for driver test code below
+import os  # for driver test code below
 
 honorifics = [
                 'Mr.',
@@ -41,6 +42,7 @@ honorifics = [
                 'Sr.'
             ]
 
+
 def get_sentences(text):
     '''Parse text into a list of sentences. Parameter 'text' is string object.
 
@@ -51,8 +53,8 @@ def get_sentences(text):
     Post-condition:
     --------------
     Returns a list of strings, each item ending with an
-    English end-of-punctuation mark. Hopefully, each item will be a grammatically-
-    sound English sentence, but there's no checking for this as such.
+    English end-of-punctuation mark. Hopefully, each item will be a grammatica-
+    lly sound English sentence, but there's no checking for this as such.
     If argument is empty or otherwise contains no sentences,
     an empty list is returned.
 
@@ -66,90 +68,90 @@ def get_sentences(text):
     '''
 
     if not isinstance(text, str):
-        raise TypeError("TypeError in textanalysis.get_sentences: non-string object passed as argument.")
+        raise TypeError("TypeError in textanalysis.get_sentences:" +
+                        "non-string object passed as argument.")
 
-    #Clean text up a bit: remove trailing/leading spaces, indents
-    #You'll need to do this for each sentence too
+    # Clean text up a bit: remove trailing/leading spaces, indents
+    # You'll need to do this for each sentence too
     text = text.strip()
     text = textwrap.dedent(text)
 
-    #Escape characters such as \n or \t mess up the parsing below; take 'em out
+    # Escape characters such as \n or \t mess up the parsing below; take 'em
+    # out
     text = re.sub('[\n\t\r]', ' ', text)
 
-    #No need to continue if dealing with an empty stirng
+    # No need to continue if dealing with an empty stirng
     if len(text) == 0:
         return []
 
-    #Add a space at the end so last sentence won't be ignored by parsing
-    #algorithm below
+    # Add a space at the end so last sentence won't be ignored by parsing
+    # algorithm below
     text = text + " "
 
-    #Initialize variable that will keep track of the end of each sentence
+    # Initialize variable that will keep track of the end of each sentence
     i = 0
 
-    #Set it up...
+    # Set it up...
     start = 0
     end_of_text = len(text)
     sentence = ""
     sent_list = []
 
-    while start < end_of_text: #<=??
-        #Search text for first occurence of the following punctuation marks
+    while start < end_of_text:  # <=??
+        # Search text for first occurence of the following punctuation marks
         pos_period = text.find('. ', start, end_of_text+1)
         pos_qmark = text.find('? ', start, end_of_text+1)
         pos_exclam = text.find('! ', start, end_of_text+1)
-        #Look for these too..
+        # Look for these too..
         pos_qper = text.find('." ', start, end_of_text+1)
         pos_qque = text.find('?" ', start, end_of_text+1)
         pos_qexc = text.find('!" ', start, end_of_text+1)
         pos_qdsh = text.find('—" ', start, end_of_text+1)
 
-        #Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
+        # Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
         new_start = start
         while True:
-            if __is_honorific(text, new_start, pos_period) == True:
+            if __is_honorific(text, new_start, pos_period):
                 new_start = pos_period + 1
                 pos_period = text.find('. ', new_start, end_of_text+1)
             else:
                 break
 
-        #Get position of the punctuation mark at the end of the current sentence
+        # Get position of the punctuation mark at the end of the current
+        # sentence
         pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
-            pos_qexc, pos_qdsh]
+                    pos_qexc, pos_qdsh]
 
         i = __get_first_punctuation_mark(pos_list)
 
-        #No end-of-sentence punctuation marks in sentence
+        # No end-of-sentence punctuation marks in sentence
         if i == -1:
             return sent_list
 
-
-        #find() returns the index of the first character in the string your
-        #searching for
-        #As such increment the index if sentence ends with a quotation mark
+        # find() returns the index of the first character in the string your
+        # searching for
+        # As such increment the index if sentence ends with a quotation mark
         pos_lastchar = i
         if text[i+1] == "\"":
             pos_lastchar = i + 1
 
-
-        #Extract sentence and clean it up a bit
+        # Extract sentence and clean it up a bit
         sentence = text[start:(pos_lastchar + 1)]
 
-        #Clean up each sentence so we're not giving any extra spaces on either
-        #side
+        # Clean up each sentence so we're not giving any extra spaces on either
+        # side
         sentence = sentence.strip()
         sentence = textwrap.dedent(sentence)
 
-        #Add it to your list
+        # Add it to your list
         sent_list.append(sentence)
 
-        #Your next sentence starts one character away from the end of the
-        #previous sentence (in many langauges there is a space before the
-        #first letter of a sentence)
+        # Your next sentence starts one character away from the end of the
+        # previous sentence (in many langauges there is a space before the
+        # first letter of a sentence)
         start = pos_lastchar + 1
 
     return sent_list
-
 
 
 def get_words(sentence):
@@ -157,11 +159,11 @@ def get_words(sentence):
     (e.g. '.', '?', etc.). Parameter is a string object; function returns a
     list.'''
 
-    #Default delimiter is blank space
+    # Default delimiter is blank space
     word_list = sentence.split()
 
-    #Assume last word has the period, question mark etc; excise the
-    #punctuation mark from last word
+    # Assume last word has the period, question mark etc; excise the
+    # punctuation mark from last word
     last_word = word_list[-1]
 
     pos_period = last_word.find('.', 0, len(last_word)+1)
@@ -175,19 +177,18 @@ def get_words(sentence):
 
     '''NEW'''
     pos_list = [pos_period, pos_qmark, pos_exclam]
-    #Get position of the punctuation mark at the end of the current sentence
+    # Get position of the punctuation mark at the end of the current sentence
     i = __get_first_punctuation_mark(pos_list)
     '''NEW -END'''
 
-    #No end-of-sentence punctuation mark in word
+    # No end-of-sentence punctuation mark in word
     if i == -1:
         return word_list
 
-    #Replace last word in word list sans punctuation
+    # Replace last word in word list sans punctuation
     word_list[-1] = last_word[:i]
 
     return word_list
-
 
 
 def find_start_end(sentence, text, start_search=0):
@@ -199,7 +200,6 @@ def find_start_end(sentence, text, start_search=0):
     start_pos = 0
     end_pos = 0
 
-
     if sentence in text:
         start_pos = text.find(sentence, start_search, len(text) + 1)
         end_pos = start_pos + len(sentence) - 1
@@ -209,24 +209,21 @@ def find_start_end(sentence, text, start_search=0):
     return (start_pos, end_pos)
 
 
-
 def __get_first_punctuation_mark(pos_list):
     '''Private helper function that returns the lowest index in list of punct-
     ation marks. Returns lowest number (any if all the same value).
     If there is no punctuation mark, return -1'''
 
-    #Negative values will always be the smaller index; get rid of them!!
+    # Negative values will always be the smaller index; get rid of them!!
     while -1 in pos_list:
         pos_list.remove(-1)
 
-    #Return position of the punctuation mark at the end of the current sentence
-    #assuming there's a mark in the firs place!
+    # Return position of the punctuation mark at the end of the current
+    # sentence assuming there's a mark in the firs place!
     if len(pos_list) == 0:
         return -1
     else:
         return min(pos_list)
-
-
 
 
 def __is_honorific(text, start, index):
@@ -235,48 +232,47 @@ def __is_honorific(text, start, index):
     scanned betewen indices start and index, inclusive. Returns True if
     honorific; False otherwise.'''
 
-    #Focus on the part of text that may contain an honorific
+    # Focus on the part of text that may contain an honorific
     part = text[start:index+1]
 
-    #See whether any of the honorifics are in that part.
+    # See whether any of the honorifics are in that part.
     global honorifics
     for x in honorifics:
         if x in part:
-            return True #Honorific found!!
+            return True  # Honorific found!!
 
-    #Period is not part of the honorific. Period is at end of sentence
+    # Period is not part of the honorific. Period is at end of sentence
     return False
 
 
-#helper function
+# helper function
 def abspath():
     '''Return absolute path of the directory where script is being run'''
 
-    #Get the current directory in Terminal when you try to launch the script
+    # Get the current directory in Terminal when you try to launch the script
     cwd = os.getcwd()
 
-    #Get the name of the directoy where this script exists
+    # Get the name of the directoy where this script exists
     script_dir = os.path.dirname(__file__)
 
-    #Intelligently cocantenate the two
-    joinedpath =  os.path.join(cwd, script_dir)
+    # Intelligently cocantenate the two
+    joinedpath = os.path.join(cwd, script_dir)
 
-    #Get rid of any possible symbolic links found along and return the absolute
-    #path
-    return  os.path.realpath(joinedpath)
+    # Get rid of any possible symbolic links found along and return the
+    # absolute path
+    return os.path.realpath(joinedpath)
 
 
-#++++++++++++++++++++++++++++++++=MAIN+++++++++++++++++++++++++++++++++++++++++
-
+# ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
-
 
     print("\nTesting get_sentences")
 
-    #text = '''
-    #My name is Mr. Giovanni. I have a dog called Gruff. He smells like baby-powder.
-    #I also have a cat called Dr. Blinky?! She's special! Would you like
-    #to play with her? Let me know!!!! "He ate a donut."'''
+    # text = '''
+    # My name is Mr. Giovanni. I have a dog called Gruff. He smells like
+    # baby-powder.
+    # I also have a cat called Dr. Blinky?! She's special! Would you like
+    # to play with her? Let me know!!!! "He ate a donut."'''
 
     text = "\"He ate a donut.\" "
     print(text)
@@ -288,16 +284,17 @@ if __name__ == "__main__":
             print(x)
 
     for sentence in sent_list:
-        print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
+        print(f"Length = {len(get_words(sentence))};" +
+              f"Words: {get_words(sentence)}")
 
     print("DOING FILE TEST....")
     print("++++++++++++++++++++")
 
-    #Read input file
+    # Read input file
     location = abspath()
     fin = open(os.path.join(location, "input.txt"))
     file_data = fin.read()
-    #print(file_data)
+    # print(file_data)
 
     sent_list = get_sentences(file_data)
 
@@ -311,7 +308,6 @@ if __name__ == "__main__":
     print("++++++++++++++++++++++++++++++++++\n")
 
     for sentence in sent_list:
-        #print(f"Length = {len(get_words(sentence))}; Words: {get_words(sentence)}")
         word_list = get_words(sentence)
         if len(word_list) > 7:
             print(f"# words = {len(word_list)} => {sentence}")
@@ -319,13 +315,13 @@ if __name__ == "__main__":
     positions = find_start_end(sent_list[0], file_data, 0)
     print(f"Start and end pos for 1st sentence: {positions}")
 
-    test_sentence = file_data[positions[0]:positions[1] +1]
+    test_sentence = file_data[positions[0]:positions[1] + 1]
     print(test_sentence)
 
     positions = find_start_end(sent_list[1], file_data, positions[0])
     print(f"Start and end pos for 2nd sentence: {positions}")
 
-    #Compare sentences
+    # Compare sentences
     test_sentence = file_data[positions[0]:positions[1]+1]
     print(test_sentence)
 
