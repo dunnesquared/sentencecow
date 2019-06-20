@@ -1,5 +1,6 @@
 from nose.tools import *
 from textanalysis.textanalysis import *
+from textwrap import dedent
 
 def test_get_sentences():
     '''
@@ -49,7 +50,8 @@ def test_get_sentences():
             i) "He ate a donut?" she asked. => will fail if implement
             j) "He ate a donut!" she said. => will fail
             k) "He ate a--"
-            l) Multiple lines of dialogue
+            l) "He ate a donut?" Alex asked.
+            m) Multiple lines of dialogue
             “He wasn’t sure, said he had to ask his wife.
             Thank God I don’t have to ask permission of a wife. None of that
             ball and chain stuff for me, no sir. I can go where I want, when
@@ -123,27 +125,85 @@ def test_get_sentences():
     '''
     ix) Dialgoue attribution
         Cases:
-        a) "He ate a donut."
-        b) "He ate a donut," she said. => works now
-        c) She said, "He ate a donut."
-        d) "He ate a donut," she said, "but you didn't care."
-        e) "He ate a donut," she said, hoping to provoke a reaction. "But you didn't care."
-        f) "He ate a donut?"
-        h) "He ate a donut!"
-        i) "He ate a donut?" she asked. => will fail if implement
-        j) "He ate a donut!" she said. => will fail
+        a) "He ate a donut." - PASSED
+        b) "He ate a donut," she said. - PASSED
+        c) She said, "He ate a donut." - PASSED
+        d) "He ate a donut," she said, "but you didn't care." - PASSED
+        e) "He ate a donut," she said, hoping to provoke a reaction. "But you didn't care." - PASSED
+        f) "He ate a donut?" - PASSED
+        h) "He ate a donut!" - PASSED
+        i) "He ate a donut?" she asked. - PASSED
+        j) "He ate a donut!" she said. - PASSED
         k) "He ate a--"
-        l) Multiple lines of dialogue
+        l) "He ate a donut?" Alex asked.
+        m) Multiple lines of dialogue
         “He wasn’t sure, said he had to ask his wife.
         Thank God I don’t have to ask permission of a wife. None of that
         ball and chain stuff for me, no sir. I can go where I want, when
         I want. Yep, freedom. Nothing beats freedom.”
+        n) “Curly quotes are going to be problem!” she yelled.
     '''
 
-    #a
+    # a, f, h
     text = "\"He ate a donut.\""
     assert_equal(get_sentences(text), ["\"He ate a donut.\""])
+    text = "\"He ate a donut!\""
+    assert_equal(get_sentences(text), ["\"He ate a donut!\""])
+    text = "\"He ate a donut?\""
+    assert_equal(get_sentences(text), ["\"He ate a donut?\""])
 
+    # b
+    text = "\"He ate a donut,\" she said."
+    assert_equal(get_sentences(text), ["\"He ate a donut,\" she said."])
+
+    # c
+    text = "She said, \"He ate a donut.\""
+    assert_equal(get_sentences(text), ["She said, \"He ate a donut.\""])
+
+    # d
+    text = "\"He ate a donut,\" she said, \"but you didn't care.\""
+    assert_equal(get_sentences(text), ["\"He ate a donut,\" she said, \"but you didn't care.\""])
+
+    # e
+    text = "\"He ate a donut,\" she said, hoping to provoke a reaction. \"But you didn't care.\""
+    assert_equal(get_sentences(text), ["\"He ate a donut,\" she said, hoping to provoke a reaction.", "\"But you didn't care.\""])
+
+    # i, j, k
+    text = "\"He ate a donut?\" she asked."
+    assert_equal(get_sentences(text), ["\"He ate a donut?\" she asked."])
+
+    text = "\"He ate a donut!\" she said."
+    assert_equal(get_sentences(text), ["\"He ate a donut!\" she said."])
+
+    text = "\"He ate a don--\" she said."
+    assert_equal(get_sentences(text), ["\"He ate a don--\" she said."])
+
+    # l => FAILED TEST
+    #text = "\"He ate a donut?\" Alex asked."
+    #assert_equal(get_sentences(text), ["\"He ate a donut?\" Alex asked."])
+
+    # m
+    text = ("\"He wasn’t sure, said he had to ask his wife. " +
+            "Thank God I don’t have to ask permission of a wife. " +
+            "None of that ball and chain stuff for me, no sir. " +
+            "I can go where I want, when I want. Yep, freedom. " +
+            "Nothing beats freedom.\"")
+
+    expected = [
+                "\"He wasn’t sure, said he had to ask his wife.",
+                "Thank God I don’t have to ask permission of a wife.",
+                "None of that ball and chain stuff for me, no sir.",
+                "I can go where I want, when I want.",
+                "Yep, freedom.",
+                "Nothing beats freedom.\""
+                ]
+
+    assert_equal(get_sentences(dedent(text)), expected)
+
+    # n
+    text=  "“Curly quotes are going to be problem.” I ignored Mario."
+    expected = ["\"Curly quotes are going to be problem.\"", "I ignored Mario."]
+    assert_equal(get_sentences(text), expected)
 
 
 
