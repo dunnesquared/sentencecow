@@ -1,4 +1,3 @@
-
 '''
 Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
 
@@ -191,20 +190,43 @@ def get_words(sentence):
     return word_list
 
 
-def find_start_end(sentence, text, start_search=0):
-    '''Find the start and end positions of a sentence within a given text.
-    Parameters text and sentence are both strings; start-pos is a non-negative
-    integer. Function returns a tuple with start and end positions
+def find_start_end(substring, text, start_search=0):
+    '''Find the start and end positions of a substring within a given text.
+    Parameters text and substring are both strings; start-pos is a non-negative
+    integer. Function returns a tuple with start and end positions or -1 if
+    substring not found.
     '''
 
+    # Get rid of all leading and tailing whitespaces
+    try:
+        substring = substring.strip()
+        text = text.strip()
+    except AttributeError:
+        raise
+
+    # Don't bother to find empty substrings in possibly empty texts
+    if len(substring) == 0 or len(text) == 0:
+        raise ValueError("ValueError in textanalysis.find_start_end:" +
+                         "empty string(s) passed to parameters 'substring' or " +
+                         "'text'.")
+
+    # Make sure our start position is something sensible
+    if start_search < 0:
+        raise ValueError("ValueError in textanalysis.find_start_end:" +
+                         "argument for parameter 'start_search' less than" +
+                         "zero.")
+
+    # No point in continuing is substring not in text
+    if substring not in text:
+        return -1
+
+    # Initialize start and end positions of substring in text
     start_pos = 0
     end_pos = 0
 
-    if sentence in text:
-        start_pos = text.find(sentence, start_search, len(text) + 1)
-        end_pos = start_pos + len(sentence) - 1
-    else:
-        return -1
+    # Find out start and end positions of substring in text
+    start_pos = text.find(substring, start_search, len(text) + 1)
+    end_pos = start_pos + len(substring) - 1
 
     return (start_pos, end_pos)
 
