@@ -206,9 +206,90 @@ def test_get_sentences():
     assert_equal(get_sentences(text), expected)
 
 
+def test_get_words():
+    '''CASES:
+        1. Non-string passed
+        2. Empty string, len = 0
+        3. String with blank spaces in it
+        4. 1-word string
+        5. One full sentence
+        6. Two full sentences
+     '''
 
-'''
-Just to make sure nosetest is actually working...
-def test_testing():
-    assert_equal(True, False)
-'''
+    # 1. Non-string passed
+    assert_raises(TypeError, get_words, None)
+
+    # 2. Empty string, len = 0
+    assert_equal(get_words(""), [])
+
+    # 3. String with blank spaces in it
+    assert_equal(get_words("          "), [])
+
+    # 4. 1-word string
+    assert_equal(get_words("Eeyore"), ["Eeyore"])
+
+    # 5. One full-sentence
+    text = "Giovanni loves pizza!"
+    expected = ["Giovanni", "loves", "pizza"]
+    assert_equal(get_words(text), expected)
+
+
+    # 6. TWo full sentences
+    text = "Giovanni loves pizza! Do you?"
+    expected = ["Giovanni", "loves", "pizza", "Do", "you"]
+    assert_equal(get_words(text), expected)
+
+
+def test_find_start_end():
+    '''CASES:
+    1. Bad type for sentence parameter
+    2. Bad type for text parameter
+    3. Bad type for start_search parameter
+    4. Bad type for all parameters
+    5. Negative value for start_search
+    6. Searching for an empty sentence, "", in a non-empty text
+    7. Searching for a non-empty sentence in an empty text
+    8. Searching for empty sentence in an empty text
+    9. "  " for a non-empty sentence in a non-empty text; sentence not there
+    10. "  " for a non-empty sentence in a non-empty text; sentence there
+    11. Same as 8, but with multiple of occurrences of sentence in text
+    '''
+
+    # 1
+    sentence = None
+    text = "Some dummy text"
+    assert_raises(AttributeError, find_start_end, sentence, text, start_search=1)
+    # 2
+    sentence = "Some dummy text"
+    text = None
+    assert_raises(AttributeError, find_start_end, sentence, text, start_search=1)
+    # 3
+    text = "More dummy text"
+    assert_raises(TypeError, find_start_end, sentence, text, start_search="1")
+    # 4
+    sentence, text = None, None
+    assert_raises(AttributeError, find_start_end, sentence, text, start_search="1")
+    # 5
+    sentence = "Some dummy text"
+    text = "More dummy text"
+    assert_raises(ValueError, find_start_end, sentence, text, start_search=-1)
+    # 6
+    sentence = ""
+    assert_raises(ValueError, find_start_end, sentence, text, start_search=0)
+    # 7
+    sentence = "Some dummy text"
+    text = ""
+    assert_raises(ValueError, find_start_end, sentence, text, start_search=0)
+    # 8
+    sentence, text = "", ""
+    assert_raises(ValueError, find_start_end, sentence, text, start_search=0)
+    # 9
+    sentence = "Yesterday, she was here."
+    text = "Tomorrow she is not."
+    assert_equal(find_start_end(sentence, text, start_search=0), -1)
+    # 10
+    text = "Yesterday, she was here. Tomorrow she is not."
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    # 11
+    text = "Yesterday, she was here. Tomorrow she is not. Yesterday she was here."
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
