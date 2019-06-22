@@ -1,48 +1,34 @@
-'''
-Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
+# -*- coding: utf-8 -*-
+"""textanalysis
+
+This module provides the following functions
+
+1. get_sentences - extract sentences from a text, *as best as possible*
+2. get_words - extract words from a text, minus punctuation marks
+3. find_start_last - find the start and end indices of a substring in a text
+
+Functions designed and tested for English texts only. The solutions to these
+problems do not rely on any NLP/machine-learning algorithms. As such,
+they're a bit 'hacky.' Sentences with dialogue attribution show the most errors.
+
+This is a 'homemade' module made for learning/enjoyment purposes; do not use
+as a production-ready code.
+
+Attributes:
+    None
 
 To Do:
-* Unit test get_sentences and get_words using nosetests
-* Create a Sentence class; return a Sentence object in get_sentences??
+    * write code for __main__ below that demonstrate examples of each function
 
-Done:
-* Write driver to detect whether sentences are 7 words or less
-* Refactor get_sentences to return map of data
-* Refactor get_sentences so that delimiters are ". ", etc, so as to
-handle !!! or ?! or ...
-* Refactor get_sentences so to only return a list of sentences
-* Refactor get_words so that delimiters are ". ", etc, so as to
-handle !!! or ?! or ...
-* Debug find_start_end
-* Write a function that will find the beginning and end of sentence in a text
-* Refactor get_sentences and get_word to encapsulate duplicate code in a method
-(i.e. finding the first end-of-sentence punctuation point)
-* Being able to open a text file regardless from where you start running
-your script
-'''
+"""
+
+
 
 import textwrap
 import re
 from string import punctuation  # to get rid of punctuation in get words
 
 import os  # for driver test code below
-
-
-
-honorifics = [
-                'Mr.',
-                'Mrs.',
-                'Ms.',
-                'Mz.',
-                'Mx.',
-                'Dr.',
-                'M.',
-                'Mme.',
-                'Fr.',
-                'Pr.',
-                'Br.',
-                'Sr.'
-            ]
 
 
 def get_sentences(text):
@@ -254,11 +240,26 @@ def __is_honorific(text, start, index):
     scanned betewen indices start and index, inclusive. Returns True if
     honorific; False otherwise.'''
 
+    # Common honorifics found in English language
+    honorifics = [
+                    'Mr.',
+                    'Mrs.',
+                    'Ms.',
+                    'Mz.',
+                    'Mx.',
+                    'Dr.',
+                    'M.',
+                    'Mme.',
+                    'Fr.',
+                    'Pr.',
+                    'Br.',
+                    'Sr.'
+                ]
+
     # Focus on the part of text that may contain an honorific
     part = text[start:index+1]
 
     # See whether any of the honorifics are in that part.
-    global honorifics
     for x in honorifics:
         if x in part:
             return True  # Honorific found!!
