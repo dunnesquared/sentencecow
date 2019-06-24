@@ -18,7 +18,6 @@ Attributes:
     punctuation ....
 
 To Do:
-
     * improve comments for module
     * write code for __main__ below that demonstrate examples of each function
     * get_words:
@@ -172,7 +171,7 @@ def get_sentences(text):
 
 def get_words(sentence):
     '''Retrieve words in a sentence, excluding all punctuation marks
-    (e.g. '.', '?', etc.). Parameter is a string object; function returns a
+    (. , ! ? : ;). Parameter is a string object; function returns a
     list.'''
 
     # One of the minor banes of Python being dynamically typed.
@@ -180,11 +179,9 @@ def get_words(sentence):
         raise TypeError("TypeError in textanalysis.get_words:" +
                         "non-string object passed as argument.")
 
-    # Remove all punctuation from the sentence (thanks to programiz)
-    no_punct_sentence = ""
-    for c in sentence:
-        if c not in punctuation:  # imported from string package
-            no_punct_sentence = no_punct_sentence + c
+
+    # Remove certain punctuation marks from sentence
+    no_punct_sentence = sub('[\.\,\!\?\:\;\“\”]', '', sentence)
 
     # Default delimiter in split is blank space
     word_list = no_punct_sentence.split()
