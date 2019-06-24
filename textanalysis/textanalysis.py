@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""textanalysis
+"""textanalysis -  a module for extracting sentences from text and more :-p!
 
 This module provides the following functions
 
@@ -15,17 +15,33 @@ This is a 'homemade' module made for learning/enjoyment purposes; do not use
 as a production-ready code.
 
 Attributes:
-    None
+    punctuation ....
 
 To Do:
+
+    * improve comments for module
     * write code for __main__ below that demonstrate examples of each function
+    * get_words:
+        * fix bug that removes apostrophes, hyphens from words
+        * have switch so user decides whether to keep remove all punctuation
+    * all functions
+        * improve commenting
+
+Done:
+    * bad form re textwrap, and re -- what are you using from the pack/modules?
+
+
+Notes:
+    * To see PyDoc comments in interpreter:
+        >>> from textanalysis import textanalyis as ta # if in project dir
+        >>> from textanalysis import * #if in texanalysis package dir
 
 """
 
 
 
-import textwrap
-import re
+from textwrap import dedent
+from re import sub
 from string import punctuation  # to get rid of punctuation in get words
 
 import os  # for driver test code below
@@ -62,7 +78,7 @@ def get_sentences(text):
     # Clean text up a bit: remove trailing/leading spaces, indents
     # You'll need to do this for each sentence too
     text = text.strip()
-    text = textwrap.dedent(text)
+    text = dedent(text)
 
     # Parsing only works for straight quotes
     # Replace curly opening/closing quotes with straight quotes
@@ -71,7 +87,7 @@ def get_sentences(text):
 
     # Escape characters such as \n or \t mess up the parsing below; take 'em
     # out
-    text = re.sub('[\n\t\r]', ' ', text)
+    text = sub('[\n\t\r]', ' ', text)
 
     # No need to continue if dealing with an empty stirng
     if len(text) == 0:
@@ -141,7 +157,7 @@ def get_sentences(text):
         # Clean up each sentence so we're not giving any extra spaces on either
         # side
         sentence = sentence.strip()
-        sentence = textwrap.dedent(sentence)
+        sentence = dedent(sentence)
 
         # Add it to your list
         sent_list.append(sentence)
@@ -307,6 +323,27 @@ def abspath():
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
+
+    print("\ntextanalysis - module for extracting sentences from text " +
+          "and more!")
+
+    print("\nExamples:")
+    print("=========")
+
+    print("\nget_sentences:", end=" ")
+    print("scans input string for sentences; returns list of sentences.")
+    print("\n>>> text = 'There once was a man from Nantucket. He liked " +
+          "living in a bucket! What about you?" )
+
+    print(">>> sent_list = get_sentences(text)")
+    print(">>> sent_list")
+    print(">>> ['There once was a man from Nantucket.', 'He liked living " +
+    "in a bucket!', 'What about you?']")
+
+    print("\nget_words:", end=" ")
+    print("scans input string for words; returns list of words.")
+
+
 
     print("\nTesting get_sentences")
 
