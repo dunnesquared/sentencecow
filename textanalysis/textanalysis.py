@@ -206,11 +206,9 @@ def find_start_end(substring, text, start_search=0):
     '''
 
     # Get rid of all leading and tailing whitespaces
-    try:
-        substring = substring.strip()
-        text = text.strip()
-    except AttributeError:
-        raise
+    substring = substring.strip()
+    text = text.strip()
+
 
     # Don't bother to find empty substrings in possibly empty texts
     if len(substring) == 0 or len(text) == 0:
@@ -258,8 +256,8 @@ def __get_first_punctuation_mark(pos_list):
     # sentence assuming there's a mark in the firs place!
     if len(pos_list) == 0:
         return -1
-    else:
-        return min(pos_list)
+
+    return min(pos_list)
 
 
 def __is_honorific(text, start, index):
@@ -276,27 +274,15 @@ def __is_honorific(text, start, index):
     '''
 
     # Common honorifics found in English language
-    honorifics = [
-                    'Mr.',
-                    'Mrs.',
-                    'Ms.',
-                    'Mz.',
-                    'Mx.',
-                    'Dr.',
-                    'M.',
-                    'Mme.',
-                    'Fr.',
-                    'Pr.',
-                    'Br.',
-                    'Sr.'
-                ]
+    honorifics = ['Mr.', 'Mrs.', 'Ms.', 'Mz.', 'Mx.', 'Dr.', 'M.', 'Mme.',
+                  'Fr.', 'Pr.', 'Br.', 'Sr.']
 
     # Focus on the part of text that may contain an honorific
     part = text[start:index+1]
 
     # See whether any of the honorifics are in that part.
-    for x in honorifics:
-        if x in part:
+    for honorific in honorifics:
+        if honorific in part:
             return True  # Honorific found!!
 
     # Period is not part of the honorific. Period is at end of sentence
@@ -324,7 +310,7 @@ def __ignore_quote(pos, text):
         return pos
 
     # Don't want to look at something outside the bounds of text
-    if (pos + 3) <  len(text):
+    if (pos + 3) < len(text):
         # The 'stupid' criterion...
         if text[pos + 3].islower():
             return -1
