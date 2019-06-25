@@ -60,27 +60,6 @@ def get_sentences(text):
 
     Returns:
         sent_list (list): A sequence of sentences extracted from argument.
-
-
-    Pre-condition:
-    --------------
-    String object passed as argument
-    --------------
-    Post-condition:
-    --------------
-    Returns a list of strings, each item ending with an
-    English end-of-punctuation mark. Hopefully, each item will be a grammatica-
-    lly sound English sentence, but there's no checking for this as such.
-    If argument is empty or otherwise contains no sentences,
-    an empty list is returned.
-
-    Pre-condtion:
-    --------------
-    Non-String object passed as argument
-    --------------
-    Post-condition:
-    --------------
-    Function throws TypeError exception
     '''
 
     if not isinstance(text, str):
@@ -211,10 +190,22 @@ def get_words(sentence):
 
 
 def find_start_end(substring, text, start_search=0):
-    '''Find the start and end positions of a substring within a given text.
-    Parameters text and substring are both strings; start-pos is a non-negative
-    integer. Function returns a tuple with start and end positions or -1 if
-    substring not found.
+    '''Return start and end indices of a substring within a given text.
+
+    Args:
+        substring (str): Substring to search within another string
+        text (str): The string that will be searched for the substring indices
+        start_search (int): The index where the search in text should begin
+
+
+    Raises:
+        AttributeError: Bad argument type for substring or text
+        ValueError: Arguments substring and text are empty strings
+
+    Return:
+        -1 (int): If substring not in text being searched
+        (start_pos, end_pos) tuple(int, int): If substring is found,
+        the start and end indices of the substring in the searched string
     '''
 
     # Get rid of all leading and tailing whitespaces
