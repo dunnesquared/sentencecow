@@ -214,6 +214,7 @@ def test_get_words():
         4. 1-word string
         5. One full sentence
         6. Two full sentences
+        7. Keep hyphens; remove em-dashes
      '''
 
     # 1. Non-string passed
@@ -238,6 +239,17 @@ def test_get_words():
     text = "Giovanni loves pizza! Do you?"
     expected = ["Giovanni", "loves", "pizza", "Do", "you"]
     assert_equal(get_words(text), expected)
+
+    # 7. Keep hyphens; remove em-dashes
+    text  = "My dog-sitter likes hot-dogs—how unsettling."
+    expected = ["My", "dog-sitter", 'likes', 'hot-dogs', 'how', 'unsettling']
+    assert_equal(get_words(text), expected)
+
+    text  = "My dog-sitter likes— "
+    expected = ["My", "dog-sitter", 'likes']
+    assert_equal(get_words(text), expected)
+
+
 
 
 def test_find_start_end():

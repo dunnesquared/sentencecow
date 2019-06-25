@@ -14,20 +14,17 @@ they're a bit 'hacky.' Sentences with dialogue attribution show the most errors.
 This is a 'homemade' module made for learning/enjoyment purposes; do not use
 as a production-ready code.
 
-Attributes:
-    punctuation ....
 
 To Do:
     * improve comments for module
     * write code for __main__ below that demonstrate examples of each function
-    * get_words:
-        * fix bug that removes apostrophes, hyphens from words
-        * have switch so user decides whether to keep remove all punctuation
     * all functions
         * improve commenting
 
 Done:
     * bad form re textwrap, and re -- what are you using from the pack/modules?
+    * get_words:
+        * fix bug that removes apostrophes, hyphens from words
 
 
 Notes:
@@ -37,11 +34,8 @@ Notes:
 
 """
 
-
-
 from textwrap import dedent
 from re import sub
-from string import punctuation  # to get rid of punctuation in get words
 
 import os  # for driver test code below
 
@@ -170,23 +164,31 @@ def get_sentences(text):
 
 
 def get_words(sentence):
-    '''Retrieve words in a sentence, excluding all punctuation marks
-    (. , ! ? : ;). Parameter is a string object; function returns a
-    list.'''
+    '''Return words in a sentence, excluding certain punctuation marks.
 
-    # One of the minor banes of Python being dynamically typed.
-    if not isinstance(sentence, str):
-        raise TypeError("TypeError in textanalysis.get_words:" +
-                        "non-string object passed as argument.")
+    The punctuation marks excluded are . , ! ? : ; “ ” " . Hyphens and
+    apostrophes are kept, but em dashes are not.
 
+    Args:
+        sentence (str): Sentence from which words are to be extracted
+
+    Returns:
+        words (list): Sequence of words from the given sentence
+     '''
 
     # Remove certain punctuation marks from sentence
-    no_punct_sentence = sub('[\.\,\!\?\:\;\“\”]', '', sentence)
+    sentence = sub('[\.\,\!\?\:\;\“\”\"]', '', sentence)
+
+    # Since em dash can separate two clauses, you'll want to avoid
+    # the case where you get a word that is a suture of the last word in the
+    # first clause and the first word in the next one.
+    if '—' in sentence:
+        sentence = sentence.replace("—", " ")
 
     # Default delimiter in split is blank space
-    word_list = no_punct_sentence.split()
+    words = sentence.split()
 
-    return word_list
+    return words
 
 
 def find_start_end(substring, text, start_search=0):
