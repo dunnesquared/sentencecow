@@ -17,7 +17,8 @@ as a production-ready code.
 
 To Do:
     * improve comments for module
-    * write code for __main__ below that demonstrate examples of each function
+    * run pylint
+
     * all functions
         * improve commenting
 
@@ -25,6 +26,8 @@ Done:
     * bad form re textwrap, and re -- what are you using from the pack/modules?
     * get_words:
         * fix bug that removes apostrophes, hyphens from words
+    * write code for __main__ below that demonstrate examples of each function
+
 
 
 Notes:
@@ -37,11 +40,27 @@ Notes:
 from textwrap import dedent
 from re import sub
 
-import os  # for driver test code below
-
 
 def get_sentences(text):
-    '''Parse text into a list of sentences. Parameter 'text' is string object.
+    '''Return a list of sentences from a text written in English.
+
+    Note that this algorithms does sentence extraction as best as possible.
+    Certain sentences may not be parsed correctly. For example,
+
+                "He ate a donut?" Alex asked.
+
+    does not parse to one sentence, but to two: "He ate a donut?"
+    and "Alex said."
+
+    Args:
+        text (str): Text from which sentences are to be extracted.
+
+    Raises:
+        TypeError: Bad argument type
+
+    Returns:
+        sent_list (list): A sequence of sentences extracted from argument.
+
 
     Pre-condition:
     --------------
