@@ -19,16 +19,13 @@ To Do:
     * improve comments for module
     * run pylint
 
-    * all functions
-        * improve commenting
-
 Done:
     * bad form re textwrap, and re -- what are you using from the pack/modules?
     * get_words:
         * fix bug that removes apostrophes, hyphens from words
     * write code for __main__ below that demonstrate examples of each function
-
-
+        * all functions
+            * improve commenting
 
 Notes:
     * To see PyDoc comments in interpreter:
@@ -243,9 +240,15 @@ def find_start_end(substring, text, start_search=0):
 
 
 def __get_first_punctuation_mark(pos_list):
-    '''Private helper function that returns the lowest index in list of punct-
-    ation marks. Returns lowest number (any if all the same value).
-    If there is no punctuation mark, return -1'''
+    '''Return lowest number in list
+
+    Args:
+        pos_list (list): list of indices of punctuation marks in scanned text
+
+    Returns:
+        -1 (int): If the list is empty or its all -1s
+        (int): lowest index in list
+    '''
 
     # Negative values will always be the smaller index; get rid of them!!
     while -1 in pos_list:
@@ -260,10 +263,17 @@ def __get_first_punctuation_mark(pos_list):
 
 
 def __is_honorific(text, start, index):
-    '''Checks whether detected period belongs to an honorific (e.g. Mr.)
-    instead of the end of an sentence. Paramter text is string that's being
-    scanned betewen indices start and index, inclusive. Returns True if
-    honorific; False otherwise.'''
+    '''Returns True if honorific found; False otherwise.
+
+    Args:
+        text (str): String being scanned for honorific
+        start (int): Index where to start search in text
+        index (int): Index where to end search in text
+
+    Returns:
+        True (bool): Honorific found.
+        False (bool): No honorific found.
+    '''
 
     # Common honorifics found in English language
     honorifics = [
@@ -294,10 +304,21 @@ def __is_honorific(text, start, index):
 
 
 def __ignore_quote(pos, text):
-    '''The end of quotation may not be the end of the sentence. This Function
+    '''Check whether quote is truly end of a sentence.
+
+    The end of quotation may not be the end of the sentence. This function
     does a 'stupid' test to find out: if the next significant character is
     lower case, then you don't have a full-sentence. As such, ignore the end
-    of the quote (i.e. set its position to -1)'''
+    of the quote (i.e. set its position to -1)
+
+    Args:
+        pos (int): Relevant index near where quote detected
+        text (str): Text being parsed
+
+    Returns:
+        -1 (int): if quote is not the end of the sentence
+        pos (int): if quote is the end of the sentence
+    '''
 
     if pos == -1:
         return pos
@@ -310,24 +331,6 @@ def __ignore_quote(pos, text):
 
     # Quote 'may' be end of sentence
     return pos
-
-
-# helper function
-def abspath():
-    '''Return absolute path of the directory where script is being run'''
-
-    # Get the current directory in Terminal when you try to launch the script
-    cwd = os.getcwd()
-
-    # Get the name of the directoy where this script exists
-    script_dir = os.path.dirname(__file__)
-
-    # Intelligently cocantenate the two
-    joinedpath = os.path.join(cwd, script_dir)
-
-    # Get rid of any possible symbolic links found along and return the
-    # absolute path
-    return os.path.realpath(joinedpath)
 
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
