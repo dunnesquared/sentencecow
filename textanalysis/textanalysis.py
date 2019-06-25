@@ -329,81 +329,32 @@ if __name__ == "__main__":
     print("\nExamples:")
     print("=========")
 
-    print("\nget_sentences:", end=" ")
-    print("scans input string for sentences; returns list of sentences.")
+    print("\nget_sentences:")
+    print("--------------")
+    print("Scans input string for sentences; returns list of sentences.")
     print("\n>>> text = 'There once was a man from Nantucket. He liked " +
-          "living in a bucket! What about you?" )
-
+          "living in a bucket! What about you?'")
     print(">>> sent_list = get_sentences(text)")
     print(">>> sent_list")
-    print(">>> ['There once was a man from Nantucket.', 'He liked living " +
+    print("['There once was a man from Nantucket.', 'He liked living " +
     "in a bucket!', 'What about you?']")
+    print("")
 
-    print("\nget_words:", end=" ")
-    print("scans input string for words; returns list of words.")
+    print("\nget_words:")
+    print("----------")
+    print("Scans input string for words; returns list of words " +
+          "without certain punctuation marks")
+    print("\n>>> text = \"Dog-lovers, like me, hate cats—false!\"")
+    print(">>> words = get_words(text)")
+    print(">>> words")
+    print("[Dog-lovers, like, me, hate, cats, false]")
+    print("")
 
+    print("\nfind_start_end:")
+    print("---------------")
+    print("Returns start and end indices of a substring in a string.")
 
-
-    print("\nTesting get_sentences")
-
-    # text = '''
-    # My name is Mr. Giovanni. I have a dog called Gruff. He smells like
-    # baby-powder.
-    # I also have a cat called Dr. Blinky?! She's special! Would you like
-    # to play with her? Let me know!!!! "He ate a donut."'''
-
-    text = "\"He ate a donut?\" she asked."
-    print(text)
-
-    sent_list = get_sentences(text)
-    print(f"Sentence list length {len(sent_list)}")
-    if len(sent_list) > 0:
-        for x in sent_list:
-            print(x)
-
-    for sentence in sent_list:
-        print(f"Length = {len(get_words(sentence))};" +
-              f"Words: {get_words(sentence)}")
-
-    print("DOING FILE TEST....")
-    print("++++++++++++++++++++")
-
-    # Read input file
-    location = abspath()
-    fin = open(os.path.join(location, "input.txt"))
-    file_data = fin.read()
-    # print(file_data)
-
-    sent_list = get_sentences(file_data)
-
-    print(f"Sentence list length {len(sent_list)}")
-    if len(sent_list) > 0:
-        for x in sent_list:
-            print(x)
-
-    print("\n++++++++++++++++++++++++++++++++++")
-    print("Sentences more than seven words!!")
-    print("++++++++++++++++++++++++++++++++++\n")
-
-    for sentence in sent_list:
-        word_list = get_words(sentence)
-        if len(word_list) > 7:
-            print(f"# words = {len(word_list)} => {sentence}")
-
-    positions = find_start_end(sent_list[0], file_data, 0)
-    print(f"Start and end pos for 1st sentence: {positions}")
-
-    test_sentence = file_data[positions[0]:positions[1] + 1]
-    print(test_sentence)
-
-    positions = find_start_end(sent_list[1], file_data, positions[0])
-    print(f"Start and end pos for 2nd sentence: {positions}")
-
-    # Compare sentences
-    test_sentence = file_data[positions[0]:positions[1]+1]
-    print(test_sentence)
-
-    if test_sentence == sent_list[1]:
-        print("Sentences match!")
-    else:
-        print("Sentences don't match")
+    print("\n>>> text = \"Your pizza is delicious.\"")
+    print(">>> find_start_end(\"pizza\", text, start_search=0)")
+    print("(5, 9)")
+    print("")
