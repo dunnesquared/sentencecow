@@ -66,26 +66,12 @@ def get_sentences(text):
         raise TypeError("TypeError in textanalysis.get_sentences:" +
                         "non-string object passed as argument.")
 
-    # Clean text up a bit: remove trailing/leading spaces, indents on
-    # subsequent lines
-    # You'll need to do this for each sentence too
-    text = dedent(text).strip()
-
-    # Parsing only works for straight quotes
-    # Replace curly opening/closing quotes with straight quotes
-    text = sub('[\“\”]', '"', text)
-
-    # Escape characters such as \n or \t mess up the parsing below; take 'em
-    # out
-    text = sub('[\n\t\r]', ' ', text)
+    # Prepare text for parsing
+    text = __clean_text(text)
 
     # No need to continue if dealing with an empty stirng
     if len(text) == 0:
         return []
-
-    # Add a space at the end so last sentence won't be ignored by parsing
-    # algorithm below
-    text = text + " "
 
     # Initialize variable that will keep track of the end of each sentence
     i = 0
@@ -251,27 +237,24 @@ def __clean_text(text):
         text (str): edited text ready for parsing
     '''
 
-    # Clean text up a bit: remove trailing/leading spaces, indents
-    # You'll need to do this for each sentence too
-    text = text.strip()
-    text = dedent(text)
+    # Remove trailing/leading spaces, indents on subsequent lines
+    text = dedent(text).strip()
 
-    # Parsing only works for straight quotes
-    # Replace curly opening/closing quotes with straight quotes
-    text = text.replace('“', '"')
-    text = text.replace('”', '"')
+    # No need to continue if dealing with an empty string
+    if text:
+        # Parsing only works for straight quotes
+        text = sub('[\“\”]', '"', text)
 
-    # Escape characters such as \n or \t mess up the parsing below; take 'em
-    # out
-    text = sub('[\n\t\r]', ' ', text)
+        # Escape characters such as \n or \t mess up the parsing
+        text = sub('[\n\t\r]', ' ', text)
 
-    # No need to continue if dealing with an empty stirng
-    if len(text) == 0:
-        return []
+        # Add a space at the end so last sentence won't be ignored by parsing
+        # algorithm
+        text = text + " "
 
-    # Add a space at the end so last sentence won't be ignored by parsing
-    # algorithm below
-    text = text + " "
+    return text
+
+
 
 
 def __get_first_punctuation_mark(pos_list):
