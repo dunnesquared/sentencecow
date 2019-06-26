@@ -9,7 +9,8 @@ This module provides the following functions
 
 Functions designed and tested for English texts only. The solutions to these
 problems do not rely on any NLP/machine-learning algorithms. As such,
-they're a bit 'hacky.' Sentences with dialogue attribution show the most errors.
+they're a bit 'hacky.' Sentences with dialogue attribution show the most
+errors.
 
 This is a 'homemade' module made for learning/enjoyment purposes; do not use
 as a production-ready code.
@@ -17,8 +18,7 @@ as a production-ready code.
 
 To Do:
     * improve comments for module
-    * consider using helper functions in get_sentences to reduce complexity
-      of function
+    * add test for when you have a sentence, then a non-valid sentence
     * Add support for abbreviations
         * put abbreviations in text file: decouple data from code
 
@@ -29,6 +29,8 @@ Done:
     * write code for __main__ below that demonstrate examples of each function
         * all functions
             * improve commenting
+    * consider using helper functions in get_sentences to reduce complexity
+      of function
 
 Notes:
     * To see PyDoc comments in interpreter:
@@ -116,7 +118,7 @@ def get_words(sentence):
      '''
 
     # Remove certain punctuation marks from sentence
-    sentence = sub('[\.\,\!\?\:\;\“\”\"]', '', sentence)
+    sentence = sub(r'[\.\,\!\?\:\;\“\”\"]', '', sentence)
 
     # Since em dash can separate two clauses, you'll want to avoid
     # the case where you get a word that is a suture of the last word in the
@@ -153,12 +155,11 @@ def find_start_end(substring, text, start_search=0):
     substring = substring.strip()
     text = text.strip()
 
-
     # Don't bother to find empty substrings in possibly empty texts
-    if len(substring) == 0 or len(text) == 0:
+    if not substring or not text:
         raise ValueError("ValueError in textanalysis.find_start_end:" +
-                         "empty string(s) passed to parameters 'substring' or " +
-                         "'text'.")
+                         "empty string(s) passed to parameters 'substring' " +
+                         "or 'text'.")
 
     # Make sure our start position is something sensible
     if start_search < 0:
@@ -183,6 +184,7 @@ def find_start_end(substring, text, start_search=0):
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions
 
+
 def __clean_text(text):
     '''Returns text that is ready for sentence-parsing
 
@@ -199,10 +201,10 @@ def __clean_text(text):
     # No need to continue cleaning if dealing with an empty string
     if text:
         # Parsing only works for straight quotes
-        text = sub('[\“\”]', '"', text)
+        text = sub(r'[\“\”]', '"', text)
 
         # Escape characters such as \n or \t mess up the parsing
-        text = sub('[\n\t\r]', ' ', text)
+        text = sub(r'[\n\t\r]', ' ', text)
 
         # Add a space at the end so last sentence won't be forgotten
         text = text + " "
