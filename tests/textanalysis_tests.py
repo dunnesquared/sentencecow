@@ -61,6 +61,8 @@ def test_get_sentences():
             Laurel yelled, "Eeyore! Eeyore!"
             See http://theeditorsblog.net/2010/12/08/punctuation-in-dialogue/
             for more cases
+        x) No punct in last part of text
+            "Hello there, good sir. Would you like a chocolate"
 
     '''
     #i)
@@ -200,9 +202,16 @@ def test_get_sentences():
 
     assert_equal(get_sentences(dedent(text)), expected)
 
+
+
     # n
     text=  "“Curly quotes are going to be problem.” I ignored Mario."
     expected = ["\"Curly quotes are going to be problem.\"", "I ignored Mario."]
+    assert_equal(get_sentences(text), expected)
+
+    # X
+    text  = "Hello there, good sir. Would you like a chocolate"
+    expected = ["Hello there, good sir."]
     assert_equal(get_sentences(text), expected)
 
 
