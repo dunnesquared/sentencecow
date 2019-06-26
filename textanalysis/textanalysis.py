@@ -142,7 +142,6 @@ def find_start_end(substring, text, start_search=0):
 
 
     Raises:
-        AttributeError: Bad argument type for substring or text
         ValueError: Arguments substring and text are empty strings
 
     Return:
