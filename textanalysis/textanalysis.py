@@ -17,7 +17,10 @@ as a production-ready code.
 
 To Do:
     * improve comments for module
-    * run pylint
+    * consider using helper functions in get_sentences to reduce complexity
+      of function
+    * Add support for abbreviations
+        * put abbreviations in text file: decouple data from code
 
 Done:
     * bad form re textwrap, and re -- what are you using from the pack/modules?
@@ -63,15 +66,14 @@ def get_sentences(text):
         raise TypeError("TypeError in textanalysis.get_sentences:" +
                         "non-string object passed as argument.")
 
-    # Clean text up a bit: remove trailing/leading spaces, indents
+    # Clean text up a bit: remove trailing/leading spaces, indents on
+    # subsequent lines
     # You'll need to do this for each sentence too
-    text = text.strip()
-    text = dedent(text)
+    text = dedent(text).strip()
 
     # Parsing only works for straight quotes
     # Replace curly opening/closing quotes with straight quotes
-    text = text.replace('“', '"')
-    text = text.replace('”', '"')
+    text = sub('[\“\”]', '"', text)
 
     # Escape characters such as \n or \t mess up the parsing below; take 'em
     # out
@@ -235,6 +237,41 @@ def find_start_end(substring, text, start_search=0):
     end_pos = start_pos + len(substring) - 1
 
     return (start_pos, end_pos)
+
+# +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
+# Private module helper functions
+
+def __clean_text(text):
+    '''Returns text that is ready for sentence-parsing
+
+    Args:
+        text (str): unedited text to be parsed
+
+    Returns:
+        text (str): edited text ready for parsing
+    '''
+
+    # Clean text up a bit: remove trailing/leading spaces, indents
+    # You'll need to do this for each sentence too
+    text = text.strip()
+    text = dedent(text)
+
+    # Parsing only works for straight quotes
+    # Replace curly opening/closing quotes with straight quotes
+    text = text.replace('“', '"')
+    text = text.replace('”', '"')
+
+    # Escape characters such as \n or \t mess up the parsing below; take 'em
+    # out
+    text = sub('[\n\t\r]', ' ', text)
+
+    # No need to continue if dealing with an empty stirng
+    if len(text) == 0:
+        return []
+
+    # Add a space at the end so last sentence won't be ignored by parsing
+    # algorithm below
+    text = text + " "
 
 
 def __get_first_punctuation_mark(pos_list):
