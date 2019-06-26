@@ -55,66 +55,23 @@ def get_sentences(text):
     Args:
         text (str): Text from which sentences are to be extracted.
 
-    Raises:
-        TypeError: Bad argument type
-
     Returns:
         sent_list (list): A sequence of sentences extracted from argument.
     '''
 
-    if not isinstance(text, str):
-        raise TypeError("TypeError in textanalysis.get_sentences:" +
-                        "non-string object passed as argument.")
-
     # Prepare text for parsing
     text = __clean_text(text)
 
-    # No need to continue if dealing with an empty stirng
-    if len(text) == 0:
-        return []
-
-    # Initialize variable that will keep track of the end of each sentence
-    i = 0
-
     # Set it up...
-    start = 0
-    end_of_text = len(text)
-    sentence = ""
-    sent_list = []
+    # i (int): index of the end of a sentence
+    # start (int): index where parsing begins; moves as each sentence extracted
+    # sentence (str): extracted sentence from text
+    # sent_list (list): list of extracted sentences
+    i, start, sentence, sent_list = 0, 0, "", []
 
-    while start < end_of_text:  # <=??
-        # Search text for first occurence of the following punctuation marks
-        pos_period = text.find('. ', start, end_of_text+1)
-        pos_qmark = text.find('? ', start, end_of_text+1)
-        pos_exclam = text.find('! ', start, end_of_text+1)
-        # Look for these too..
-        pos_qper = text.find('." ', start, end_of_text+1)
-        pos_qque = text.find('?" ', start, end_of_text+1)
-        pos_qexc = text.find('!" ', start, end_of_text+1)
-        pos_qdsh = text.find('—" ', start, end_of_text+1)
+    while start < len(text):
 
-        # Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
-        new_start = start
-        while True:
-            if __is_honorific(text, new_start, pos_period):
-                new_start = pos_period + 1
-                pos_period = text.find('. ', new_start, end_of_text+1)
-            else:
-                break
-
-        # Check to see whether first non-space character after end of a
-        # quotation or not is lowercase. If it is, don't treat the end of the
-        # quotation as the end of the sentence
-        pos_qque = __ignore_quote(pos_qque, text)
-        pos_qexc = __ignore_quote(pos_qexc, text)
-        pos_qdsh = __ignore_quote(pos_qdsh, text)
-
-        # Get position of the punctuation mark at the end of the current
-        # sentence
-        pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
-                    pos_qexc, pos_qdsh]
-
-        i = __get_first_punctuation_mark(pos_list)
+        i = __get_first_punctuation_mark(text, start)
 
         # No end-of-sentence punctuation marks in sentence
         if i == -1:
@@ -132,8 +89,7 @@ def get_sentences(text):
 
         # Clean up each sentence so we're not giving any extra spaces on either
         # side
-        sentence = sentence.strip()
-        sentence = dedent(sentence)
+        sentence = dedent(sentence).strip()
 
         # Add it to your list
         sent_list.append(sentence)
@@ -240,7 +196,7 @@ def __clean_text(text):
     # Remove trailing/leading spaces, indents on subsequent lines
     text = dedent(text).strip()
 
-    # No need to continue if dealing with an empty string
+    # No need to continue cleaning if dealing with an empty string
     if text:
         # Parsing only works for straight quotes
         text = sub('[\“\”]', '"', text)
@@ -248,25 +204,56 @@ def __clean_text(text):
         # Escape characters such as \n or \t mess up the parsing
         text = sub('[\n\t\r]', ' ', text)
 
-        # Add a space at the end so last sentence won't be ignored by parsing
-        # algorithm
+        # Add a space at the end so last sentence won't be forgotten
         text = text + " "
 
     return text
 
 
-
-
-def __get_first_punctuation_mark(pos_list):
-    '''Return lowest number in list
+def __get_first_punctuation_mark(text, start):
+    '''Return index of the punctuation mark that marks the end of a sentence
 
     Args:
-        pos_list (list): list of indices of punctuation marks in scanned text
+        text (str): text being parsed
+        start (int): index where to start search in text
+
 
     Returns:
-        -1 (int): If the list is empty or its all -1s
-        (int): lowest index in list
+        index (int): index of first end-of sentence punctuation mark; -1
+                     if no punctuation mark found
     '''
+    end_of_text = len(text)
+
+    # Search text for first occurence of the following punctuation marks
+    pos_period = text.find('. ', start, end_of_text+1)
+    pos_qmark = text.find('? ', start, end_of_text+1)
+    pos_exclam = text.find('! ', start, end_of_text+1)
+    # Look for these too..
+    pos_qper = text.find('." ', start, end_of_text+1)
+    pos_qque = text.find('?" ', start, end_of_text+1)
+    pos_qexc = text.find('!" ', start, end_of_text+1)
+    pos_qdsh = text.find('—" ', start, end_of_text+1)
+
+    # Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
+    new_start = start
+    while True:
+        if __is_honorific(text, new_start, pos_period):
+            new_start = pos_period + 1
+            pos_period = text.find('. ', new_start, end_of_text+1)
+        else:
+            break
+
+    # Check to see whether first non-space character after end of a
+    # quotation or not is lowercase. If it is, don't treat the end of the
+    # quotation as the end of the sentence
+    pos_qque = __ignore_quote(pos_qque, text)
+    pos_qexc = __ignore_quote(pos_qexc, text)
+    pos_qdsh = __ignore_quote(pos_qdsh, text)
+
+    # Get position of the punctuation mark at the end of the current
+    # sentence
+    pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
+                pos_qexc, pos_qdsh]
 
     # Negative values will always be the smaller index; get rid of them!!
     while -1 in pos_list:
@@ -274,10 +261,12 @@ def __get_first_punctuation_mark(pos_list):
 
     # Return position of the punctuation mark at the end of the current
     # sentence assuming there's a mark in the firs place!
-    if len(pos_list) == 0:
-        return -1
+    if pos_list:
+        index = min(pos_list)
+    else:
+        index = -1
 
-    return min(pos_list)
+    return index
 
 
 def __is_honorific(text, start, index):
@@ -356,7 +345,7 @@ if __name__ == "__main__":
     print(">>> sent_list = get_sentences(text)")
     print(">>> sent_list")
     print("['There once was a man from Nantucket.', 'He liked living " +
-    "in a bucket!', 'What about you?']")
+          "in a bucket!', 'What about you?']")
     print("")
 
     print("\nget_words:")
