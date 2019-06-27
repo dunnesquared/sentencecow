@@ -18,7 +18,7 @@ as a production-ready code.
 
 To Do:
     * improve comments for module
-    * add test for when you have a sentence, then a non-valid sentence
+
     * Add support for abbreviations
         * put abbreviations in text file: decouple data from code
 
@@ -31,6 +31,7 @@ Done:
             * improve commenting
     * consider using helper functions in get_sentences to reduce complexity
       of function
+    * add test for when you have a sentence, then a non-valid sentence
 
 Notes:
     * To see PyDoc comments in interpreter:
@@ -41,6 +42,7 @@ Notes:
 
 from textwrap import dedent
 from re import sub
+from os import getcwd, path
 
 
 def get_sentences(text):
@@ -235,10 +237,10 @@ def __get_first_punctuation_mark(text, start):
     pos_qexc = text.find('!" ', start, end_of_text+1)
     pos_qdsh = text.find('—" ', start, end_of_text+1)
 
-    # Honorifics (e.g. Mr.) give false poisitives. Ignore 'em!!
+    # Abbreviations (e.g. Mr.) give false poisitives. Ignore 'em!!
     new_start = start
     while True:
-        if __is_honorific(text, new_start, pos_period):
+        if __is_abbreviation(text, new_start, pos_period):
             new_start = pos_period + 1
             pos_period = text.find('. ', new_start, end_of_text+1)
         else:
@@ -270,32 +272,31 @@ def __get_first_punctuation_mark(text, start):
     return index
 
 
-def __is_honorific(text, start, index):
-    '''Returns True if honorific found; False otherwise.
+def __is_abbreviation(text, start, index):
+    '''Returns True if abbreviation found; False otherwise.
 
     Args:
-        text (str): String being scanned for honorific
+        text (str): String being scanned for abbreviation
         start (int): Index where to start search in text
         index (int): Index where to end search in text
 
     Returns:
-        True (bool): Honorific found.
-        False (bool): No honorific found.
+        True (bool):  abbreviation found.
+        False (bool): No abbreviation found.
     '''
 
-    # Common honorifics found in English language
-    honorifics = ['Mr.', 'Mrs.', 'Ms.', 'Mz.', 'Mx.', 'Dr.', 'M.', 'Mme.',
-                  'Fr.', 'Pr.', 'Br.', 'Sr.']
+    # Common abbreviations found in English language
+    abbreviations = __load_abbreviations()
 
-    # Focus on the part of text that may contain an honorific
+    # Focus on the part of text that may contain an abbreviation
     part = text[start:index+1]
 
-    # See whether any of the honorifics are in that part.
-    for honorific in honorifics:
-        if honorific in part:
-            return True  # Honorific found!!
+    # See whether any of the abbreviations are in that part.
+    for abbreviation in abbreviations:
+        if abbreviation in part:
+            return True  # Abbreviation found!!
 
-    # Period is not part of the honorific. Period is at end of sentence
+    # Period is not part of the abbreviation. Period is at end of sentence
     return False
 
 
@@ -327,6 +328,68 @@ def __ignore_quote(pos, text):
 
     # Quote 'may' be end of sentence
     return pos
+
+
+def __load_abbreviations():
+    '''Return list of abbreviations as per contents of abbreviations.txt
+
+    Args:
+        None
+
+    Raises:
+        FileNotFoundError: abbreviations.txt not found
+
+    Returns:
+        abbreviations (list): list of common English abbreviations
+    '''
+
+    # File to be read
+    input_filename = "abbreviations.txt"
+
+    # Get directory where input exists, i.e. same dir as this module
+    absdir = __get_dir()
+
+    # Intelligently concatenate the directory and the input file name together
+    full_filename = path.join(absdir, input_filename)
+
+    # Read input file
+    # with as ensures file is closed, even if exception raised
+    with open(full_filename, "r") as fin:
+        data = fin.read()
+
+    # Parse data and put into list
+    abbreviations = data.split('\n')
+
+    # Get rid of extra '' entry caused by text editor inexplicably adding
+    # a line after the last abbreviation upon saving the file
+    abbreviations.pop()
+
+    return abbreviations
+
+
+def __get_dir():
+    ''''Return absolute path of the directory where script exists
+
+    Args:
+        None
+
+    Returns:
+        dir (str): the unique ('canonical') absolute path of the directory
+                   (i.e. no symbolic links in path)
+    '''
+
+    # Get the current directory in Terminal when you try to launch the script
+    cwd = getcwd()
+
+    # Get the name of the directoy where this script exists
+    script_dir = path.dirname(__file__)
+
+    # Intelligently cocantenate the two
+    joinedpath = path.join(cwd, script_dir)
+
+    # Get rid of any possible symbolic links found along and return the
+    # absolute path
+    return path.realpath(joinedpath)
 
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
