@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""textanalysis -  a module for extracting sentences from text and more :-p!
+"""A module for extracting sentences from text and more :-p!
 
 This module provides the following functions
 
@@ -13,18 +13,14 @@ they're a bit wonky. E.g. Sentences with dialogue attribution show the most
 errors; unaccounted for abbreviations will show up as false end-of-sentences.
 But it works for a lot of other cases too :-).
 
-This is a 'homemade' module made for learning/enjoyment purposes; do not use
-as production code.
+This is a 'homemade' module made for learning/enjoyment purposes: do not use
+in production code.
 
 
 To Do:
-    * improve comments for module
     * check documentation in interpreter
     * use pyreverse to generate uml doc
-    * determine big-Oh performance for each algorithm
-
-Done:
-    * improve import style
+    * determine big-Oh performance for each function
 """
 
 import os   # getcwd, path.join, path.dirname, path.realpath
@@ -129,7 +125,6 @@ def find_start_end(substring, text, start_search=0):
         text (str): The string that will be searched for the substring indices
         start_search (int): The index where the search in text should begin
 
-
     Raises:
         ValueError: Arguments substring and text are empty strings
 
@@ -168,6 +163,7 @@ def find_start_end(substring, text, start_search=0):
     end_pos = start_pos + len(substring) - 1
 
     return (start_pos, end_pos)
+
 
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions
@@ -355,7 +351,7 @@ def __load_abbreviations():
 
 
 def __get_dir():
-    ''''Return absolute path of the directory where script exists
+    '''Return absolute path of the directory where script exists
 
     Args:
         None
