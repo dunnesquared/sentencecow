@@ -9,40 +9,27 @@ This module provides the following functions
 
 Functions designed and tested for English texts only. The solutions to these
 problems do not rely on any NLP/machine-learning algorithms. As such,
-they're a bit 'hacky.' Sentences with dialogue attribution show the most
-errors.
+they're a bit wonky. E.g. Sentences with dialogue attribution show the most
+errors; unaccounted for abbreviations will show up as false end-of-sentences.
+But it works for a lot of other cases too :-).
 
 This is a 'homemade' module made for learning/enjoyment purposes; do not use
-as a production-ready code.
+as production code.
 
 
 To Do:
     * improve comments for module
-
-    * Add support for abbreviations
-        * put abbreviations in text file: decouple data from code
+    * check documentation in interpreter
+    * use pyreverse to generate uml doc
+    * determine big-Oh performance for each algorithm
 
 Done:
-    * bad form re textwrap, and re -- what are you using from the pack/modules?
-    * get_words:
-        * fix bug that removes apostrophes, hyphens from words
-    * write code for __main__ below that demonstrate examples of each function
-        * all functions
-            * improve commenting
-    * consider using helper functions in get_sentences to reduce complexity
-      of function
-    * add test for when you have a sentence, then a non-valid sentence
-
-Notes:
-    * To see PyDoc comments in interpreter:
-        >>> from textanalysis import textanalyis as ta # if in project dir
-        >>> from textanalysis import * #if in texanalysis package dir
-
+    * improve import style
 """
 
-from textwrap import dedent
-from re import sub
-from os import getcwd, path
+import os   # getcwd, path.join, path.dirname, path.realpath
+import re   # sub
+import textwrap  # dedent
 
 
 def get_sentences(text):
@@ -93,7 +80,7 @@ def get_sentences(text):
 
         # Clean up each sentence so we're not giving any extra spaces on either
         # side
-        sentence = dedent(sentence).strip()
+        sentence = textwrap.dedent(sentence).strip()
 
         # Add it to your list
         sent_list.append(sentence)
@@ -120,7 +107,7 @@ def get_words(sentence):
      '''
 
     # Remove certain punctuation marks from sentence
-    sentence = sub(r'[\.\,\!\?\:\;\“\”\"]', '', sentence)
+    sentence = re.sub(r'[\.\,\!\?\:\;\“\”\"]', '', sentence)
 
     # Since em dash can separate two clauses, you'll want to avoid
     # the case where you get a word that is a suture of the last word in the
@@ -197,15 +184,15 @@ def __clean_text(text):
     '''
 
     # Remove trailing/leading spaces, indents on subsequent lines
-    text = dedent(text).strip()
+    text = textwrap.dedent(text).strip()
 
     # No need to continue cleaning if dealing with an empty string
     if text:
         # Parsing only works for straight quotes
-        text = sub(r'[\“\”]', '"', text)
+        text = re.sub(r'[\“\”]', '"', text)
 
         # Escape characters such as \n or \t mess up the parsing
-        text = sub(r'[\n\t\r]', ' ', text)
+        text = re.sub(r'[\n\t\r]', ' ', text)
 
         # Add a space at the end so last sentence won't be forgotten
         text = text + " "
@@ -350,10 +337,10 @@ def __load_abbreviations():
     absdir = __get_dir()
 
     # Intelligently concatenate the directory and the input file name together
-    full_filename = path.join(absdir, input_filename)
+    full_filename = os.path.join(absdir, input_filename)
 
     # Read input file
-    # with as ensures file is closed, even if exception raised
+    # 'with as' ensures file is closed even if exception raised
     with open(full_filename, "r") as fin:
         data = fin.read()
 
@@ -378,18 +365,19 @@ def __get_dir():
                    (i.e. no symbolic links in path)
     '''
 
-    # Get the current directory in Terminal when you try to launch the script
-    cwd = getcwd()
+    # Get the current working directory in Terminal
+    # when you try to launch the script
+    cwd = os.getcwd()
 
     # Get the name of the directoy where this script exists
-    script_dir = path.dirname(__file__)
+    script_dir = os.path.dirname(__file__)
 
     # Intelligently cocantenate the two
-    joinedpath = path.join(cwd, script_dir)
+    joinedpath = os.path.join(cwd, script_dir)
 
     # Get rid of any possible symbolic links found along and return the
     # absolute path
-    return path.realpath(joinedpath)
+    return os.path.realpath(joinedpath)
 
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
