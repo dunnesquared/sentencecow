@@ -33,7 +33,7 @@ class LeGuinnCounter:
         Attributes:
             sentences (list): list of sentences from parsed text
         '''
-        self.sentences = self.parse(text)
+        self.parse(text)
 
 
     def parse(self, text):
@@ -48,8 +48,9 @@ class LeGuinnCounter:
 
         # Save text for future processing
         self.text = text
+        self.sentences = ta.get_sentences(text)
 
-        return ta.get_sentences(text)
+        return self.sentences
 
 
     def count_words(self, sentence):
@@ -149,7 +150,6 @@ class LeGuinnCounter:
         # No sentences to merge; do nothing
         if len(self.sentences) == 0:
             return
-
 
         # Index out of bounds
         if index < 0 or index >= len(self.sentences):
