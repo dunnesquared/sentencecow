@@ -145,9 +145,7 @@ class LeGuinnCounter:
                   at index; sentence at index + 1 removed.
         '''
 
-        print(len(self.sentences))
-
-        # No sentences to merge; do nothing
+        # No sentences to merge: do nothing.
         if len(self.sentences) == 0:
             return
 
@@ -163,7 +161,7 @@ class LeGuinnCounter:
             next = self.sentences[index + 1]
             self.sentences[index] = " ".join([curr, next])
 
-            # No need for that second sentnce anymore
+            # No need for that second sentence anymore
             self.sentences.pop(index + 1)
 
 
