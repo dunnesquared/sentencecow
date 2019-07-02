@@ -144,6 +144,13 @@ class LeGuinnCounter:
                   at index; sentence at index + 1 removed.
         '''
 
+        print(len(self.sentences))
+
+        # No sentences to merge; do nothing
+        if len(self.sentences) == 0:
+            return
+
+
         # Index out of bounds
         if index < 0 or index >= len(self.sentences):
             raise IndexError("Index cannot be less than zero or larger " +
