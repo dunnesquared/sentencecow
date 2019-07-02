@@ -150,16 +150,14 @@ class LeGuinnCounter:
                              "than list")
 
         # Can't merge the last sentence with anything—don't do anything.
-        if index == len(self.sentences) - 1:
-            return
+        if index != len(self.sentences) - 1:
+            # Merge sentences
+            curr = self.sentences[index]
+            next = self.sentences[index + 1]
+            self.sentences[index] = " ".join([curr, next])
 
-        # Merge sentences
-        curr = self.sentences[index]
-        next = self.sentences[index + 1]
-        self.sentences[index] = " ".join([curr, next])
-
-        # No need for that second sentnce anymore
-        self.sentences.pop(index + 1)
+            # No need for that second sentnce anymore
+            self.sentences.pop(index + 1)
 
 
 
