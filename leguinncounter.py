@@ -7,6 +7,7 @@ To Do:
     * Comment code properly
     * pylint/pycode style code
     * Clean up main
+    * add attributes to module doc
 
 Done:
     * implement for loop in sentences_more_than as while loop to get index
@@ -30,16 +31,13 @@ class LeGuinnCounter:
         '''Save original text and sentence-parsing of it
 
         Attributes:
-            text (str): text to be parsed
             sentences (list): list of sentences from parsed text
         '''
-
-        self.text = text
-        self.sentences = self.parse(self.text)
+        self.sentences = self.parse(text)
 
 
     def parse(self, text):
-        '''Return sentences in text
+        '''Return sentences in text; saves text for future processing
 
         Attributes:
             text (str): text to be parsed
@@ -47,6 +45,9 @@ class LeGuinnCounter:
         Returns:
             sentences (list): list of sentences from parsed text
         '''
+
+        # Save text for future processing
+        self.text = text
 
         return ta.get_sentences(text)
 
@@ -123,7 +124,6 @@ class LeGuinnCounter:
                 # Start from where the last sentence ended:
                 # What happens if you have same sentence more than once?!
                 start_pos = end + 1
-
 
         return long_sentences
 
