@@ -1,0 +1,38 @@
+To do:
+
+Tasks:
+* Write proper docstring comments for module
+* See docstring comments in interpreter - probably need to install using setup.py
+* Write examples of functions in __main__ of module
+* Clean up driver in textanalysis module
+* Write integration/system test
+* Create a class instead of driver file
+* Design look of page on paper
+* Write flask app
+* Create html template with jinja
+* Write css
+
+Next actions:
+
+'''
+Notes: What about ?! or !!!!! or ...  ? Replace them before parsing??
+
+To Do:
+* Unit test get_sentences and get_words using nosetests
+* Create a Sentence class; return a Sentence object in get_sentences??
+
+Done:
+* Write driver to detect whether sentences are 7 words or less
+* Refactor get_sentences to return map of data
+* Refactor get_sentences so that delimiters are ". ", etc, so as to
+handle !!! or ?! or ...
+* Refactor get_sentences so to only return a list of sentences
+* Refactor get_words so that delimiters are ". ", etc, so as to
+handle !!! or ?! or ...
+* Debug find_start_end
+* Write a function that will find the beginning and end of sentence in a text
+* Refactor get_sentences and get_word to encapsulate duplicate code in a method
+(i.e. finding the first end-of-sentence punctuation point)
+* Being able to open a text file regardless from where you start running
+your script
+'''

@@ -2,16 +2,16 @@
 check whether number of words in a sentence is below a certain threshold
 
 To Do:
-
-    * Write test code
     * Comment code properly
     * pylint/pycode style code
     * Clean up main
     * add attributes to module doc
+    * design flask app/jinja pages
 
 Done:
     * implement for loop in sentences_more_than as while loop to get index
     * Figure out indent bug with triple quotes
+    * Write test code
 
 Notes:
     * Merge sentences can't be done with long sentences (makes no sense);
