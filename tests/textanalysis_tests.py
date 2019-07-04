@@ -314,3 +314,19 @@ def test_find_start_end():
     # 11
     text = "Yesterday, she was here. Tomorrow she is not. Yesterday she was here."
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+
+
+def test_ussr():
+    # N.B. This test will fail once you add U.S.S.R to abbreviation list
+
+    text = "He lived in the U.S.S.R I think."
+    expected = ['He lived in the U.S.S.R I think.']
+    assert_equal(get_sentences(text), expected)
+
+    text = "He lived in the U.S.S.R. I think."
+    expected = ['He lived in the U.S.S.R.', 'I think.']
+    assert_equal(get_sentences(text), expected)
+
+    text = "He lived in the U.S. I think."
+    expected = ['He lived in the U.S. I think.']
+    assert_equal(get_sentences(text), expected)
