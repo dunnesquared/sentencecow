@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+  <h1>Results:</h1>
+  <p> {{input_text}} </p>
+
+  <h1>All sentences</h1>
+  {% for s in sentences %}
+    <p>{{s}}</p>
+  {% endfor %}
+
+  <h1>Long sentences</h1>
+  {% for ls in long_sentences %}
+    <p>{{ls['sentence']}}</p>
+  {% endfor %}
+
+  <br>
+<!--Allow user to go back and enter form info again -->
+<a href="http://localhost:5000/leguinncounter">Return to main page</a>
+
+{% endblock %}

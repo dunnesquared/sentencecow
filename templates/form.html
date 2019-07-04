@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Enter text here:</h1>
+
+
+<form action="/leguinncounter" method="POST">
+      <!--<input class="textbox" type="textarea" name="text"></input>-->
+      <textarea name="input_text" rows="15" cols="50" wrap="physical">Once upon a time...</textarea>
+      <div><input type="Submit", value="Count"></input></div>
+</form>
+
+
+
+
+<!--
+<div id="problem">
+  <h1 class="title">Project Euler Problem #{{prob_num}}</h1>
+  <p class="description">{{prob_descr}}</p>
+  <p> Enter the value below to find out the answer,
+    or find the largest prime factor of another value!
+  </p>
+  <form action="/leguinncounter" method="POST">
+    <input type="text" name="var">
+    <br/>
+    <br/>
+    <input type="Submit" value="Calculate Largest Prime Factor" class="button"></input>
+  </form>
+</div>
+-->
+
+{% endblock %}
