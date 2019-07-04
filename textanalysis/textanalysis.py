@@ -21,6 +21,12 @@ To Do:
     * check documentation in interpreter
     * use pyreverse to generate uml doc
     * determine big-Oh performance for each function
+
+Last Done:
+    * Fix bug with where a substring of an abbreviation gets flagged as the
+      full abbreviation (e.g. U.S. in U.S.S.R)
+
+
 """
 
 import os   # getcwd, path.join, path.dirname, path.realpath
@@ -275,8 +281,13 @@ def __is_abbreviation(text, start, index):
     part = text[start:index+1]
 
     # See whether any of the abbreviations are in that part.
+    # Need words of sentence since we want to check for a whole abbreviation
+    # not a substring of it
+    # E.g. "Back in the U.S.S.R." the abbreviation U.S. should not return
+    # True!
+    word_list = part.split()
     for abbreviation in abbreviations:
-        if abbreviation in part:
+        if abbreviation in word_list:
             return True  # Abbreviation found!!
 
     # Period is not part of the abbreviation. Period is at end of sentence
