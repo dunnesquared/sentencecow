@@ -3,21 +3,59 @@
 
 {% block content %}
 
-  <h1>Results:</h1>
+  <h1>Original Text</h1>
   <p> {{input_text}} </p>
 
+
   <h1>All sentences</h1>
+
   {% for s in sentences %}
-    <p>{{s}}</p>
+    <p>{{s}} (# words: {{lgcounter.count_words(s)}})</p>
   {% endfor %}
 
-  <h1>Long sentences</h1>
+  <h1>Long sentences (word_max = {{max}})</h1>
+
+
   {% for ls in long_sentences %}
-    <p>{{ls['sentence']}}</p>
+    <p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>
   {% endfor %}
 
-  <br>
-<!--Allow user to go back and enter form info again -->
+
+  <h1>Not quite right?</h1>
+  <p>Sometimes detected sentences are shorter than they actually are,
+    especially when quotes and abbreviations are involved. To combine to
+    two consecutive too-short sentences, click 'Merge next' on the sentence
+    you want to be joined with the one following it.
+  </p>
+
+  <form action="/leguinncounter" method="POST">
+
+    <!-- For each option, you need to send back the index of the sentence
+    as per its position in the sentence list; the max num of words allowed,
+    the original text that was submitted, and, most importantly, an up-to-date
+    list of sentences that reflects all previous merges
+    -->
+
+    <select name="merge_list">
+      {% for i in range(sentences|length) %}
+        <option name="index" value="{{ [ i, max, lgcounter.text, lgcounter.sentences|join('||')] | join('::') }}">
+          {{sentences[i]}} (# words: {{lgcounter.count_words(sentences[i])}})
+        </option>
+      {% endfor %}
+    </select>
+
+
+    <div>
+        <br>
+      <input name="merge_button" type="Submit" value="Merge"></input>
+    </div>
+
+  </form>
+
+
+<br>
+<br>
 <a href="http://localhost:5000/leguinncounter">Return to main page</a>
+
 
 {% endblock %}

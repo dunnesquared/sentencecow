@@ -1,107 +1,90 @@
+"""APP.PY
+
+To Do:
+
+    * use different separator ("||")
+    * clean up code
+    * document
+    * bug - when trying to merge blank text
+    * handle exceptions from model modules/classes
+    * need to send sentences when sending over whole lg object
+    * results.html: clean up code
+
+Done:
+    * show word count for every sentence
+    * add max to value returned by merge_list
+
+"""
+
 from flask import Flask
 from flask import render_template
 from flask import request
 
 from leguinncounter import LeGuinnCounter
 
+
 app = Flask(__name__)
-
-"""
-def not_none(input):
-    if input == None:
-        return False
-    else:
-        return True
-
-def is_empty(input):
-    '''Check whether user entered anything into form field'''
-    if input == None or len(input) == 0:
-        return True
-    else:
-        return False
-
-
-def is_integer(input):
-    '''Check whether user entered an integer. Don't rely on form to check!!'''
-    try:
-        int(input)
-
-        if isinstance(input, float):
-            return False
-
-        return True
-    except ValueError:
-        return False
-
-def is_between(num, lbound=1, ubound=999):
-    '''Ensure integer is between the bounds'''
-    if num >= lbound and num <= ubound:
-        return True
-    else:
-        return False
-"""
-
 
 @app.route("/leguinncounter", methods=['POST', 'GET'])
 def index():
+    '''Returns web pages that allow users to see whether their texts satisfy
+       the criterion that their sentences have fewer or the same user-set
+       number of words.
+      '''
 
     if request.method == 'GET':
-
-        # render text box to enter text
-        print(request.method)
+        # Render main page of web app
         return render_template("form.html")
-        #return render_template("form.html", prob_num=prob_num, prob_descr=prob_descr)
 
     elif request.method == 'POST':
-        print(request.method)
+        # User requests to merge a sentence with the one following it.
+        if 'merge_list' in request.form:
 
-        input_text = request.form['input_text']
-        print(input_text)
+            #Get everything we'll need to merge sentences and send data back
+            index, max, input_text, sent_list = request.form['merge_list'].split('::')
 
-        lg = LeGuinnCounter(input_text)
-        sentences = lg.sentences
+            # LeGuinnCounter expects integers, not strings for these values
+            index = int(index)
+            max = int(max)
 
-        long_sentences = lg.sentences_more_than(max=4)
+            # Initialize domain object
+            lg = LeGuinnCounter(input_text)
 
-        return render_template("results.html", input_text=input_text, sentences = sentences, long_sentences = long_sentences)
-
-        # get passed data: text, max number
-        # process text
-            # create lg object
-            # find out which sentences are more than Max
-            # render output return list of maps
-
-
-
-
+            # We can't use sentence list generated when we create a LeGuinn-
+            # Counter object: regardless, how many times we merge sentences
+            # that parsing will always be the same (and so undo the parsing).
+            # Thus, it's important we use the sentences from our last merge.
+            # and replace the sentences in our object with them. Not the best
+            # design; will fix in later iteration
+            sentences = sent_list.split('||')
+            lg.sentences = sentences
 
 
-        '''
+            # Merge sentence at current index with the one following it
+            lg.merge_next(index)
 
-        input = request.form['var']
+        # First parsing of text!
+        else:
 
-        if is_empty(input.strip()):
-            err = "No input entered."
-            return render_template("error.html", err=err)
+            #Get everything we'll need to get the sentences from a text
+            input_text = request.form['input_text']
+            max = int(request.form['max'])
 
-        #take out this block if input need not be an integer
-        if is_integer(input) == False:
-            err = "Input is not an integer."
-            return render_template("error.html", err=err)
+            # Initialize domain object
+            lg = LeGuinnCounter(input_text)
 
-        num = int(input)
-        status = prob.check_input(num)
+            # So we can send back sentence list to user
+            sentences = lg.sentences
 
-        if status[0] == False:
-            err = status[1]
-            return render_template("error.html", err=err)
 
-        prob.set_input(num)
-        answer = prob.compute_solution()
 
-        return render_template("answer.html", answer=answer)
+        # Get list of sentences that have more words than max
+        long_sentences = lg.sentences_more_than(max)
 
-        '''
+        return render_template("results.html", lgcounter=lg,
+                                input_text=input_text, sentences = sentences,
+                                long_sentences = long_sentences, max = max)
+
 
     else:
         #server will return a 405 error code if other methods specified
