@@ -7,6 +7,7 @@ To Do:
     * Clean up main
     * add attributes to module doc
     * design flask app/jinja pages
+    * test LeGuinnSentence, generate_LGSentenceList
 
 Done:
     * implement for loop in sentences_more_than as while loop to get index
@@ -21,6 +22,28 @@ Notes:
 
 from textanalysis import textanalysis as ta
 import textwrap as tw
+
+
+class LeGuinnSentence:
+    """Contains contents of sentence in text as well relevant meta-data for
+    this application.
+    """
+
+    def __init__(self, content="", start="0", end="0", isOver=False):
+        self.content = content
+        self.start = start
+        self.end = end
+        self.isOver = isOver
+
+    def __str__(self):
+        '''Print vitals'''
+
+        return f'''
+                    content: {self.content}
+                    start: {self.start}
+                    end : {self.end}
+                    isOver: {self.isOver}
+                '''
 
 
 class LeGuinnCounter:
@@ -165,6 +188,34 @@ class LeGuinnCounter:
             self.sentences.pop(index + 1)
 
 
+    def generate_LGSentenceList(self, text, sentlist, max):
+        '''Return list of LGSentences given a list of string sentences
+
+        Args:
+            text (str): text of strings
+            sentlist (list): list of sentences parsed from text
+            max (int): Max number of words per sentence
+
+        Returns:
+            lg_sentlist (LGSentences): list of LGSentences
+        '''
+
+        # Empty list of sentences sent as argument
+        if not sentlist:
+            return []
+
+        lg_sentlist = []
+        start_pos = 0
+
+        for s in sentlist:
+            start, end = ta.find_start_end(s, text, start_pos)
+            isOver = self.more_than(s, max)
+            lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
+            lg_sentlist.append(lg_sent)
+            start_pos = end + 1
+
+        return lg_sentlist
+
 
 # ---------------------MAIN------------
 
@@ -190,6 +241,12 @@ if __name__ == "__main__":
 
     lg_counter = LeGuinnCounter(tw.dedent(text))
     print(lg_counter.sentences)
+
+    print("#####")
+    lg_sentlist = lg_counter.generate_LGSentenceList(text, lg_counter.sentences, 4)
+    for s in lg_sentlist:
+        print(s)
+    print("#####")
 
     sentences = lg_counter.sentences
 
