@@ -307,7 +307,8 @@ def test_find_start_end():
     # 9
     sentence = "Yesterday, she was here."
     text = "Tomorrow she is not."
-    assert_equal(find_start_end(sentence, text, start_search=0), -1)
+    assert_raises(NotInTextError, find_start_end, sentence, text, start_search=0)
+
     # 10
     text = "Yesterday, she was here. Tomorrow she is not."
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))

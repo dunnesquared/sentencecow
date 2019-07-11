@@ -34,6 +34,18 @@ import re   # sub
 import textwrap  # dedent
 
 
+class NotInTextError(Exception):
+    '''Exception for instances when sentence is not in a text
+
+    Attributes:
+        message (str): Message showing string that was not found in text.
+    '''
+
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
+
 def get_sentences(text):
     '''Return a list of sentences from a text written in English.
 
@@ -158,7 +170,7 @@ def find_start_end(substring, text, start_search=0):
 
     # No point in continuing is substring not in text
     if substring not in text:
-        return -1
+        raise NotInTextError(f"Substring '{substring}' not found in text.'")
 
     # Initialize start and end positions of substring in text
     start_pos = 0
