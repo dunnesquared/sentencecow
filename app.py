@@ -9,6 +9,8 @@ To Do:
     * handle exceptions from model modules/classes
     * need to send sentences when sending over whole lg object
     * results.html: clean up code
+    * redesign LeGuinnCounter class to better handle merging (class-leve methods)
+    * the indent in first paragraph screwing up the highlighting
 
 Done:
     * show word count for every sentence
@@ -47,6 +49,10 @@ def index():
             index = int(index)
             max = int(max)
 
+            #TEMPORARY CODE - you need to handle this situation better
+            #Strip text of any leading whitespace
+            input_text = input_text.lstrip()
+
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
 
@@ -59,9 +65,19 @@ def index():
             sentences = sent_list.split('||')
             lg.sentences = sentences
 
-
             # Merge sentence at current index with the one following it
             lg.merge_next(index)
+
+            # So we can send back sentence list to user
+            sentences = lg.sentences
+
+            # Get list of LG_sentences so we can do highlighing more easily
+            lg_sentlist = lg.generate_LGSentenceList(input_text, sentences, max)
+
+            # Create a tuples list that you can send to the template; also
+            # want to decouple the domain stuff from the controller/ui stuff
+            highlight_data = [ (l.start, l.end, l.isOver) for l in lg_sentlist]
+
 
         # First parsing of text!
         else:
@@ -70,20 +86,30 @@ def index():
             input_text = request.form['input_text']
             max = int(request.form['max'])
 
+            #TEMPORARY CODE - you need to handle this situation better
+            #Strip text of any leading whitespace
+            input_text = input_text.lstrip()
+
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
 
             # So we can send back sentence list to user
             sentences = lg.sentences
 
+            # Get list of LG_sentences so we can do highlighing more easily
+            lg_sentlist =lg.generate_LGSentenceList(input_text, sentences, max)
 
+            # Create a tuples list that you can send to the template; also
+            # want to decouple the domain stuff from the controller/ui stuff
+            highlight_data = [ (l.start, l.end, l.isOver) for l in lg_sentlist]
 
         # Get list of sentences that have more words than max
         long_sentences = lg.sentences_more_than(max)
 
         return render_template("results.html", lgcounter=lg,
                                 input_text=input_text, sentences = sentences,
-                                long_sentences = long_sentences, max = max)
+                                long_sentences = long_sentences, max = max,
+                                highlight_data = highlight_data)
 
 
     else:

@@ -6,6 +6,22 @@
   <h1>Original Text</h1>
   <p> {{input_text}} </p>
 
+  <h1>Highlighted Text</h1>
+  <p>
+      {% for item in highlight_data %}
+        {% set start = item[0] %}
+        {% set end = item[1] %}
+
+        {% if item[2] == true %}
+          <span style="background-color:yellow;font-weight:900">{{ input_text[start:end+1] }}</span>
+        {% else %}
+          <span>{{ input_text[start:end+1] }}</span>
+        {% endif %}
+
+      {% endfor %}
+
+
+  </p>
 
   <h1>All sentences</h1>
 
