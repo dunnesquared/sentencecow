@@ -18,6 +18,8 @@ in production code.
 
 
 To Do:
+    * Need to be able to handle \n\t\r at end of sentences; removing them
+     in __clean_text screwing presentation in upper layers 
     * check documentation in interpreter
     * use pyreverse to generate uml doc
     * determine big-Oh performance for each function
@@ -156,6 +158,10 @@ def find_start_end(substring, text, start_search=0):
     substring = substring.strip()
     text = text.strip()
 
+    # Substrings came from cleaned text. You won't get matches unless you
+    # make sure your text is cleaned too.
+    text = __clean_text(text)
+
     # Don't bother to find empty substrings in possibly empty texts
     if not substring or not text:
         raise ValueError("ValueError in textanalysis.find_start_end:" +
@@ -168,7 +174,7 @@ def find_start_end(substring, text, start_search=0):
                          "argument for parameter 'start_search' less than" +
                          "zero.")
 
-    # No point in continuing is substring not in text
+    # No point in continuing if substring not in text
     if substring not in text:
         raise NotInTextError(f"Substring '{substring}' not found in text.'")
 
