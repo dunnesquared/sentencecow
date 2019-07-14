@@ -18,8 +18,11 @@ in production code.
 
 
 To Do:
+    * READ REGEX tutorial
     * Need to be able to handle \n\t\r at end of sentences; removing them
-     in __clean_text screwing presentation in upper layers 
+     in __clean_text screwing presentation in upper layers
+    * Handle curly quotes via regex instead cleaning the text of them
+    * Be able handle sentences ending with quote then new line:  ."\n
     * check documentation in interpreter
     * use pyreverse to generate uml doc
     * determine big-Oh performance for each function
@@ -162,6 +165,9 @@ def find_start_end(substring, text, start_search=0):
     # make sure your text is cleaned too.
     text = __clean_text(text)
 
+    # Clean the substring too of curly quotes
+    substring = re.sub(r'[\“\”]', '"', substring)
+
     # Don't bother to find empty substrings in possibly empty texts
     if not substring or not text:
         raise ValueError("ValueError in textanalysis.find_start_end:" +
@@ -177,6 +183,9 @@ def find_start_end(substring, text, start_search=0):
     # No point in continuing if substring not in text
     if substring not in text:
         raise NotInTextError(f"Substring '{substring}' not found in text.'")
+
+    # test out using regular expressions
+    # return re.search(substring, text).span()
 
     # Initialize start and end positions of substring in text
     start_pos = 0

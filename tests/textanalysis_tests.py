@@ -4,7 +4,8 @@ from textwrap import dedent
 
 '''
 To do:
-    * fix find_start_last test on line 320 (remove subtraction)
+    * add test for curly quotes in substring in find_start_end
+    * fix find_start_last test on line 320 when using re (remove subtraction)
 
 Done:
     * add test for curly quotes in find_start_last
@@ -330,9 +331,12 @@ def test_find_start_end():
     # 12
     sentence = '"Tomorrow she is not."'
     text = "“Tomorrow she is not.” So it goes."
-    print(text)
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
 
+    # 13
+    sentence = '“Tomorrow she is not.”'
+    text = "\"Tomorrow she is not.\" So it goes."
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
 
 
 def test_ussr():
