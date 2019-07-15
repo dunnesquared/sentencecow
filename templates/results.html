@@ -13,9 +13,9 @@
         {% set end = item[1] %}
 
         {% if item[2] == true %}
-          <span style="background-color:yellow;font-weight:900">{{ input_text[start:end+1] }}</span>
+          <span style="background-color:yellow;font-weight:900">{{ input_text[start:end] }}</span>
         {% else %}
-          <span>{{ input_text[start:end+1] }}</span>
+          <span>{{ input_text[start:end] }}</span>
         {% endif %}
 
       {% endfor %}
