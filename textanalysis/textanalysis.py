@@ -180,36 +180,41 @@ def find_start_end(substring, text, start_search=0):
                          "argument for parameter 'start_search' less than" +
                          "zero.")
 
-    # Get start and end positions of substring in text; None if not there
-    m = re.search(substring, text)
-
-    if m:
-        start, end = m.span()
-    else:
+    # No point in continuing if substring not in text
+    if substring not in text:
         raise NotInTextError(f"Substring '{substring}' not found in text.'")
 
-    return (start, end)
+    # Initialize start and end positions of substring in text
+    start_pos = 0
+    end_pos = 0
 
-    # # DEPRECATED CODE
-    # Old code to find start end indicces
-    # Remove on version after initial release
-    # # No point in continuing if substring not in text
-    # if substring not in text:
+    # Find out start and end positions of substring in text
+    start_pos = text.find(substring, start_search, len(text) + 1)
+    end_pos = start_pos + len(substring)
+
+    return (start_pos, end_pos)
+
+    # DEPRECATED CODE
+    # Too complicated to escape all metacharacters in regex module
+    # Get start and end positions of substring in text; None if not there
+
+    # Required so pattern-matching doesn't ignore the question mark at
+    # # end of string
+    # substring = re.sub('[\?]', r'\?', substring)
+    #
+    # m = re.search(substring, text)
+    #
+    # if m:
+    #     print(f"DEBUG: regex object search result = {m.group()}")
+    #     start, end = m.span()
+    # else:
     #     raise NotInTextError(f"Substring '{substring}' not found in text.'")
+    #
+    # return (start, end)
 
-    # # Initialize start and end positions of substring in text
-    # start_pos = 0
-    # end_pos = 0
-    #
-    # # Find out start and end positions of substring in text
-    # start_pos = text.find(substring, start_search, len(text) + 1)
-    # end_pos = start_pos + len(substring) - 1
-    #
-    # return (start_pos, end_pos)
 
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions
-
 
 def __clean_text(text):
     '''Returns text that is ready for sentence-parsing
