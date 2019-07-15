@@ -180,23 +180,32 @@ def find_start_end(substring, text, start_search=0):
                          "argument for parameter 'start_search' less than" +
                          "zero.")
 
-    # No point in continuing if substring not in text
-    if substring not in text:
+    # Get start and end positions of substring in text; None if not there
+    m = re.search(substring, text)
+
+    if m:
+        start, end = m.span()
+    else:
         raise NotInTextError(f"Substring '{substring}' not found in text.'")
 
-    # test out using regular expressions
-    # return re.search(substring, text).span()
+    return (start, end)
 
-    # Initialize start and end positions of substring in text
-    start_pos = 0
-    end_pos = 0
+    # # DEPRECATED CODE
+    # Old code to find start end indicces
+    # Remove on version after initial release
+    # # No point in continuing if substring not in text
+    # if substring not in text:
+    #     raise NotInTextError(f"Substring '{substring}' not found in text.'")
 
-    # Find out start and end positions of substring in text
-    start_pos = text.find(substring, start_search, len(text) + 1)
-    end_pos = start_pos + len(substring) - 1
-
-    return (start_pos, end_pos)
-
+    # # Initialize start and end positions of substring in text
+    # start_pos = 0
+    # end_pos = 0
+    #
+    # # Find out start and end positions of substring in text
+    # start_pos = text.find(substring, start_search, len(text) + 1)
+    # end_pos = start_pos + len(substring) - 1
+    #
+    # return (start_pos, end_pos)
 
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions

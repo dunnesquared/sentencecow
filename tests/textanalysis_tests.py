@@ -4,10 +4,10 @@ from textwrap import dedent
 
 '''
 To do:
-    * add test for curly quotes in substring in find_start_end
     * fix find_start_last test on line 320 when using re (remove subtraction)
 
 Done:
+    * add test for curly quotes in substring in find_start_end
     * add test for curly quotes in find_start_last
 '''
 
@@ -323,20 +323,20 @@ def test_find_start_end():
 
     # 10
     text = "Yesterday, she was here. Tomorrow she is not."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
     # 11
     text = "Yesterday, she was here. Tomorrow she is not. Yesterday she was here."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
     # 12
     sentence = '"Tomorrow she is not."'
     text = "“Tomorrow she is not.” So it goes."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
     # 13
     sentence = '“Tomorrow she is not.”'
     text = "\"Tomorrow she is not.\" So it goes."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
 
 def test_ussr():
