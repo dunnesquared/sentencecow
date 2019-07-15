@@ -2,6 +2,16 @@ from nose.tools import *
 from textanalysis.textanalysis import *
 from textwrap import dedent
 
+'''
+To do:
+    * fix find_start_last test on line 320 when using re (remove subtraction)
+
+Done:
+    * add test for curly quotes in substring in find_start_end
+    * add test for curly quotes in find_start_last
+'''
+
+
 def test_get_sentences():
     '''
     TEST CASES:
@@ -274,6 +284,8 @@ def test_find_start_end():
     9. "  " for a non-empty sentence in a non-empty text; sentence not there
     10. "  " for a non-empty sentence in a non-empty text; sentence there
     11. Same as 8, but with multiple of occurrences of sentence in text
+    12. Make sure text is clean of curly quotes
+    13. Make sure substring is clean of curly quotes
     '''
 
     # 1
@@ -311,10 +323,20 @@ def test_find_start_end():
 
     # 10
     text = "Yesterday, she was here. Tomorrow she is not."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
     # 11
     text = "Yesterday, she was here. Tomorrow she is not. Yesterday she was here."
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence) - 1))
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
+
+    # 12
+    sentence = '"Tomorrow she is not."'
+    text = "“Tomorrow she is not.” So it goes."
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
+
+    # 13
+    sentence = '“Tomorrow she is not.”'
+    text = "\"Tomorrow she is not.\" So it goes."
+    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
 
 def test_ussr():
