@@ -208,8 +208,9 @@ class LeGuinnCounter:
         start_pos = 0
 
         for s in sentlist:
-            print("DEBUG: start, end = {}; sentence = {}".format(ta.find_start_end(s, text, start_pos), s))
+            print("DEBUG: start, end = {}; sentence = {}".format(ta.find_start_end(s, text, start_pos), s, ))
             start, end = ta.find_start_end(s, text, start_pos)
+            print(f"DEBUG: slice = {text[start:end]}")
             isOver = self.more_than(s, max)
             lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
             lg_sentlist.append(lg_sent)
