@@ -51,7 +51,7 @@ def index():
 
             #TEMPORARY CODE - you need to handle this situation better
             #Strip text of any leading whitespace
-            input_text = input_text.lstrip()
+            # input_text = input_text.lstrip()
 
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
@@ -88,7 +88,7 @@ def index():
 
             #TEMPORARY CODE - you need to handle this situation better
             #Strip text of any leading whitespace
-            input_text = input_text.lstrip()
+            # input_text = input_text.lstrip()
 
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
