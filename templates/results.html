@@ -13,9 +13,9 @@
         {% set end = item[1] %}
 
         {% if item[2] == true %}
-          <pre style="background-color:yellow;font-weight:900;display:inline;">{{ input_text[start:end] }}</pre>
+          <pre style="background-color:yellow;font-weight:900;display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
         {% else %}
-          <pre style="display:inline;">{{ input_text[start:end] }}</pre>
+          <pre style="display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
         {% endif %}
 
       {% endfor %}
