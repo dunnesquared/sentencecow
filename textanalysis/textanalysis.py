@@ -226,16 +226,10 @@ def __clean_text(text):
         text (str): edited text ready for parsing
     '''
 
-    # Remove trailing/leading spaces, indents on subsequent lines
-    text = textwrap.dedent(text).strip()
-
     # No need to continue cleaning if dealing with an empty string
     if text:
         # Parsing only works for straight quotes
         text = re.sub(r'[\“\”]', '"', text)
-
-        # Escape characters such as \n or \t mess up the parsing
-        text = re.sub(r'[\n\t\r]', ' ', text)
 
         # Add a space at the end so last sentence won't be forgotten
         text = text + " "
@@ -257,15 +251,19 @@ def __get_first_punctuation_mark(text, start):
     '''
     end_of_text = len(text)
 
-    # Search text for first occurence of the following punctuation marks
-    pos_period = text.find('. ', start, end_of_text+1)
-    pos_qmark = text.find('? ', start, end_of_text+1)
-    pos_exclam = text.find('! ', start, end_of_text+1)
-    # Look for these too..
-    pos_qper = text.find('." ', start, end_of_text+1)
-    pos_qque = text.find('?" ', start, end_of_text+1)
-    pos_qexc = text.find('!" ', start, end_of_text+1)
-    pos_qdsh = text.find('—" ', start, end_of_text+1)
+    # Search text for first occurence of the following punctuation marks:
+    # Period
+    pos_period = 0
+    match = re.search('[\.]\s', text[start:])
+    pos_period = start + match.start() if match else -1
+    # Exclamation or question mark
+    pos_exqmark = 0
+    match = re.search('[\?!]\s', text[start:])
+    pos_exqmark = start + match.start() if match else -1
+    # Period, question, exclamation, em-dash followed by a quotation mark
+    pos_quote = 0
+    match = re.search('[\.\?!—]"\s', text[start:])
+    pos_quote = start + match.start() if match else -1
 
     # Abbreviations (e.g. Mr.) give false poisitives. Ignore 'em!!
     new_start = start
@@ -279,14 +277,11 @@ def __get_first_punctuation_mark(text, start):
     # Check to see whether first non-space character after end of a
     # quotation or not is lowercase. If it is, don't treat the end of the
     # quotation as the end of the sentence
-    pos_qque = __ignore_quote(pos_qque, text)
-    pos_qexc = __ignore_quote(pos_qexc, text)
-    pos_qdsh = __ignore_quote(pos_qdsh, text)
+    pos_quote = __ignore_quote(pos_quote, text)
 
     # Get position of the punctuation mark at the end of the current
     # sentence
-    pos_list = [pos_period, pos_qmark, pos_exclam, pos_qper, pos_qque,
-                pos_qexc, pos_qdsh]
+    pos_list = [pos_period, pos_exqmark, pos_quote]
 
     # Negative values will always be the smaller index; get rid of them!!
     while -1 in pos_list:
@@ -294,10 +289,7 @@ def __get_first_punctuation_mark(text, start):
 
     # Return position of the punctuation mark at the end of the current
     # sentence assuming there's a mark in the firs place!
-    if pos_list:
-        index = min(pos_list)
-    else:
-        index = -1
+    index = min(pos_list) if pos_list else -1
 
     return index
 
