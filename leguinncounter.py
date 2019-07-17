@@ -218,7 +218,7 @@ class LeGuinnCounter:
             start_pos = end + 1
 
         # Copy white-space characters before a sentence
-        lg_sentlist = __whitespace_before(lg_sentlist, text)
+        lg_sentlist = self.__whitespace_before(lg_sentlist, text)
 
         return lg_sentlist
 
@@ -240,7 +240,7 @@ class LeGuinnCounter:
 
         # iterate through list
         expected_start = 0
-        for i in range(lg_sentlist):
+        for i in range(len(lg_sentlist)):
             # See whether there is a gap between the first character in LGSent-
             # ence and the next one.
             highlight_start = lg_sentlist[i].start
