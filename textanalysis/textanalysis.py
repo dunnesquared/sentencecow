@@ -18,6 +18,7 @@ in production code.
 
 
 To Do:
+    * Fix offset handling issue
     * READ REGEX tutorial
     * Need to be able to handle \n\t\r at end of sentences; removing them
      in __clean_text screwing presentation in upper layers
@@ -72,12 +73,17 @@ def get_sentences(text):
     # Prepare text for parsing
     text = __clean_text(text)
 
+    # Find index of first non-white space character
+    # start (int): index where parsing begins; moves as each sentence extracted
+    start = offset(text)
+
     # Set it up...
     # i (int): index of the end of a sentence
     # start (int): index where parsing begins; moves as each sentence extracted
     # sentence (str): extracted sentence from text
     # sent_list (list): list of extracted sentences
-    i, start, sentence, sent_list = 0, 0, "", []
+    #i, start, sentence, sent_list = 0, 0, "", []
+    i, sentence, sent_list = 0, "", []
 
     while start < len(text):
 
@@ -157,9 +163,15 @@ def find_start_end(substring, text, start_search=0):
         the start and end indices of the substring in the searched string
     '''
 
-    # Get rid of all leading and tailing whitespaces
-    substring = substring.strip()
-    text = text.strip()
+    '''NEW CODE'''
+    # Don't bother to find empty substrings in possibly empty texts
+    sublen  = len(substring.strip())
+    textlen = len(text.strip())
+
+    if sublen == 0 or textlen == 0:
+        raise ValueError("ValueError in textanalysis.find_start_end:" +
+                         "empty string(s) passed to parameters 'substring' " +
+                         "or 'text'.")
 
     # Substrings came from cleaned text. You won't get matches unless you
     # make sure your text is cleaned too.
@@ -167,12 +179,6 @@ def find_start_end(substring, text, start_search=0):
 
     # Clean the substring too of curly quotes
     substring = re.sub(r'[\“\”]', '"', substring)
-
-    # Don't bother to find empty substrings in possibly empty texts
-    if not substring or not text:
-        raise ValueError("ValueError in textanalysis.find_start_end:" +
-                         "empty string(s) passed to parameters 'substring' " +
-                         "or 'text'.")
 
     # Make sure our start position is something sensible
     if start_search < 0:
@@ -212,6 +218,19 @@ def find_start_end(substring, text, start_search=0):
     #
     # return (start, end)
 
+def offset(text):
+    '''Return index of first non white-space character from left.
+    Args:
+        text (str): string to be analyzed for white-spaces
+
+    Returns:
+        index (int): index of first non-white-space character; -1 if none found
+    '''
+    index = 0
+    match = re.search('[^\s]', text, re.IGNORECASE)
+    index = match.start() if match else -1
+
+    return index
 
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions

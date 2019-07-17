@@ -34,6 +34,7 @@ class LeGuinnSentence:
         self.start = start
         self.end = end
         self.isOver = isOver
+        self.whitespace = ""
 
     def __str__(self):
         '''Print vitals'''
@@ -205,7 +206,7 @@ class LeGuinnCounter:
             return []
 
         lg_sentlist = []
-        start_pos = 0
+        start_pos = ta.offset(text)
 
         for s in sentlist:
             print("DEBUG: start, end = {}; sentence = {}".format(ta.find_start_end(s, text, start_pos), s, ))
@@ -216,7 +217,46 @@ class LeGuinnCounter:
             lg_sentlist.append(lg_sent)
             start_pos = end + 1
 
+        # Copy white-space characters before a sentence
+        lg_sentlist = self.__whitespace_before(lg_sentlist, text)
+
         return lg_sentlist
+
+# -------------------------PRIVATE--------------------------------------------
+
+    def __whitespace_before(self, lg_sentlist, text):
+        '''Return list of LeGuinnSentences such that any white-space characters
+        before each sentence are saved
+
+        Args:
+            lg_sentlist (LeGuinnSentence []): A complete list of sentences
+                                              in a text
+            text (str): text from which whitespace characters will be copied
+
+        Return:
+            lg_sentlist (LeGuinnSentence []): An updated list with white-space
+                                              preceding a sentence saved
+        '''
+
+        # iterate through list
+        expected_start = 0
+        for i in range(len(lg_sentlist)):
+            # See whether there is a gap between the first character in LGSent-
+            # ence and the next one.
+            highlight_start = lg_sentlist[i].start
+            diff = highlight_start - expected_start
+
+            #If difference is more than just a space, copy it.
+            if diff:
+                lg_sentlist[i].whitespace = text[expected_start:highlight_start]
+
+            #Reset exprected start
+            expected_start = lg_sentlist[i].end + 1
+
+        return lg_sentlist
+
+
+
 
 
 # ---------------------MAIN------------
