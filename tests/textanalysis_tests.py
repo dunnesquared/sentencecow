@@ -353,3 +353,9 @@ def test_ussr():
     text = "He lived in the U.S. I think."
     expected = ['He lived in the U.S. I think.']
     assert_equal(get_sentences(text), expected)
+
+def test_offset():
+
+    text = "      Once upon a time, there was a dog called Tutu."
+    expected = 6
+    assert_equal(offset(text), expected)
