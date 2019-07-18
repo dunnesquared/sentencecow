@@ -22,6 +22,7 @@ Notes:
 
 from textanalysis import textanalysis as ta
 import textwrap as tw
+import re
 
 
 class LeGuinnSentence:
@@ -238,22 +239,33 @@ class LeGuinnCounter:
                                               preceding a sentence saved
         '''
 
-        # iterate through list
+        # The index where you think the a sentence starts at in the text
         expected_start = 0
+
         for i in range(len(lg_sentlist)):
+
             # See whether there is a gap between the first character in LGSent-
-            # ence and the next one.
+            # ence and the next LGSentence. Gaps (should) imply whitespaces.
             highlight_start = lg_sentlist[i].start
             diff = highlight_start - expected_start
 
-            #If difference is more than just a space, copy it.
+            # If difference is more than just a space, copy the whitespace
+            # string. We'll need it for highlighting the text in the presentat-
+            # layer.
             if diff:
                 lg_sentlist[i].whitespace = text[expected_start:highlight_start]
+                # Bug in HTML rendering means newlines don't show up as they
+                # would in the console. Adding an extra newline character
+                # seems to fix this. (Code should probably not be in the
+                # in the domain layer)
+                lg_sentlist[i].whitespace = re.sub(r'[\r]', r'\n',
+                                                   lg_sentlist[i].whitespace)
 
             #Reset exprected start
             expected_start = lg_sentlist[i].end + 1
 
             print(f"DEBUG: whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
+            print(f"DEBUG: content of sentence {i} = {lg_sentlist[i].content}")
 
         return lg_sentlist
 

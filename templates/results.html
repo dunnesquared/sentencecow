@@ -4,7 +4,7 @@
 {% block content %}
 
   <h1>Original Text</h1>
-  <p><pre style="white-space:pre-wrap;"> {{input_text}} </pre></p>
+  <p><pre style="white-space:pre-wrap;">{{input_text}}</pre></p>
 
   <h1>Highlighted Text</h1>
   <p>
@@ -14,7 +14,7 @@
         {% set highlight = item[2] %}
         {% set whitespace = item[3] %}
 
-        <pre style="display:inline;white-space:pre-wrap;">{{whitespace}}</pre> 
+        <pre style="display:inline;white-space:pre-wrap;">{{whitespace}}</pre>
 
         {% if highlight == true %}
           <pre style="background-color:yellow;font-weight:900;display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
