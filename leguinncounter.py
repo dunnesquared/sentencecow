@@ -253,6 +253,8 @@ class LeGuinnCounter:
             #Reset exprected start
             expected_start = lg_sentlist[i].end + 1
 
+            print(f"DEBUG: whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
+
         return lg_sentlist
 
 
