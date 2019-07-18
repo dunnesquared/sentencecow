@@ -76,7 +76,7 @@ def index():
 
             # Create a tuples list that you can send to the template; also
             # want to decouple the domain stuff from the controller/ui stuff
-            highlight_data = [ (l.start, l.end, l.isOver) for l in lg_sentlist]
+            highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
 
 
         # First parsing of text!
@@ -101,7 +101,7 @@ def index():
 
             # Create a tuples list that you can send to the template; also
             # want to decouple the domain stuff from the controller/ui stuff
-            highlight_data = [ (l.start, l.end, l.isOver) for l in lg_sentlist]
+            highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
 
         # Get list of sentences that have more words than max
         long_sentences = lg.sentences_more_than(max)
