@@ -6,71 +6,81 @@
   <h1>Original Text</h1>
   <p><pre style="white-space:pre-wrap;">{{input_text}}</pre></p>
 
-  <h1>Highlighted Text</h1>
-  <p>
-      {% for item in highlight_data %}
-        {% set start = item[0] %}
-        {% set end = item[1] %}
-        {% set highlight = item[2] %}
-        {% set whitespace = item[3] %}
+  <!--Only worth displaying if there's actually sentences to be parsed.-->
+  {% if (sentences|length) != 0 %}
+        <h1>Highlighted Text</h1>
+        <p>
+            {% for item in highlight_data %}
+              {% set start = item[0] %}
+              {% set end = item[1] %}
+              {% set highlight = item[2] %}
+              {% set whitespace = item[3] %}
 
-        <pre style="display:inline;white-space:pre-wrap;">{{whitespace}}</pre>
+              <pre style="display:inline;white-space:pre-wrap;">{{whitespace}}</pre>
 
-        {% if highlight == true %}
-          <pre style="background-color:yellow;font-weight:900;display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
-        {% else %}
-          <pre style="display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
-        {% endif %}
+              {% if highlight == true %}
+                <pre style="background-color:yellow;font-weight:900;display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
+              {% else %}
+                <pre style="display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
+              {% endif %}
 
-      {% endfor %}
-
-
-  </p>
-
-  <h1>All sentences</h1>
-
-  {% for s in sentences %}
-    <p>{{s}} (# words: {{lgcounter.count_words(s)}})</p>
-  {% endfor %}
-
-  <h1>Long sentences (word_max = {{max}})</h1>
+            {% endfor %}
 
 
-  {% for ls in long_sentences %}
-    <p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>
-  {% endfor %}
+        </p>
+
+        <h1>All sentences</h1>
+
+        {% for s in sentences %}
+          <p>{{s}} (# words: {{lgcounter.count_words(s)}})</p>
+        {% endfor %}
+
+        <h1>Long sentences (word_max = {{max}})</h1>
 
 
-  <h1>Not quite right?</h1>
-  <p>Sometimes detected sentences are shorter than they actually are,
-    especially when quotes and abbreviations are involved. To combine to
-    two consecutive too-short sentences, click 'Merge next' on the sentence
-    you want to be joined with the one following it.
-  </p>
-
-  <form action="/leguinncounter" method="POST">
-
-    <!-- For each option, you need to send back the index of the sentence
-    as per its position in the sentence list; the max num of words allowed,
-    the original text that was submitted, and, most importantly, an up-to-date
-    list of sentences that reflects all previous merges
-    -->
-
-    <select name="merge_list">
-      {% for i in range(sentences|length) %}
-        <option name="index" value="{{ [ i, max, lgcounter.text, lgcounter.sentences|join('||')] | join('::') }}">
-          {{sentences[i]}} (# words: {{lgcounter.count_words(sentences[i])}})
-        </option>
-      {% endfor %}
-    </select>
+        {% for ls in long_sentences %}
+          <p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>
+        {% endfor %}
 
 
-    <div>
-        <br>
-      <input name="merge_button" type="Submit" value="Merge"></input>
-    </div>
+        <h1>Not quite right?</h1>
+        <p>Sometimes detected sentences are shorter than they actually are,
+          especially when quotes and abbreviations are involved. To combine to
+          two consecutive too-short sentences, click 'Merge next' on the sentence
+          you want to be joined with the one following it.
+        </p>
 
-  </form>
+        <form action="/leguinncounter" method="POST">
+
+          <!-- For each option, you need to send back the index of the sentence
+          as per its position in the sentence list; the max num of words allowed,
+          the original text that was submitted, and, most importantly, an up-to-date
+          list of sentences that reflects all previous merges
+          -->
+
+          <select name="merge_list">
+            {% for i in range(sentences|length) %}
+              <option name="index" value="{{ [ i, max, lgcounter.text, lgcounter.sentences|join('||')] | join('::') }}">
+                {{sentences[i]}} (# words: {{lgcounter.count_words(sentences[i])}})
+              </option>
+            {% endfor %}
+          </select>
+
+
+          <div>
+              <br>
+            <input name="merge_button" type="Submit" value="Merge"></input>
+          </div>
+
+        </form>
+
+    {% else %}
+      <h1>Nothing to process!</h1>
+      <p>There are no sentences to process. Either you entered nothing, entered
+      only whitespace characters, or wrote a phrase without a sentence-ending
+      punctuation mark.</p>
+
+    {% endif %}
 
 
 <br>
