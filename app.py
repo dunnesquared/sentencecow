@@ -40,18 +40,17 @@ def index():
 
     elif request.method == 'POST':
         # User requests to merge a sentence with the one following it.
-        if 'merge_list' in request.form:
+        if 'index' in request.form:
 
             #Get everything we'll need to merge sentences and send data back
-            index, max, input_text, sent_list = request.form['merge_list'].split('::')
+            max = request.form['max']
+            input_text = request.form['input_text']
+            sent_list = request.form.getlist('sent_list[]')
+            index = request.form['index']
 
             # LeGuinnCounter expects integers, not strings for these values
             index = int(index)
             max = int(max)
-
-            #TEMPORARY CODE - you need to handle this situation better
-            #Strip text of any leading whitespace
-            # input_text = input_text.lstrip()
 
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
@@ -62,22 +61,20 @@ def index():
             # Thus, it's important we use the sentences from our last merge.
             # and replace the sentences in our object with them. Not the best
             # design; will fix in later iteration
-            sentences = sent_list.split('||')
-            lg.sentences = sentences
+            lg.sentences = sent_list
 
             # Merge sentence at current index with the one following it
             lg.merge_next(index)
 
-            # So we can send back sentence list to user
-            sentences = lg.sentences
-
             # Get list of LG_sentences so we can do highlighing more easily
-            lg_sentlist = lg.generate_LGSentenceList(input_text, sentences, max)
+            lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
 
             # Create a tuples list that you can send to the template; also
             # want to decouple the domain stuff from the controller/ui stuff
             highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
 
+            # So we can send back sentence list to user
+            sentences = lg.sentences
 
         # First parsing of text!
         else:
@@ -86,22 +83,18 @@ def index():
             input_text = request.form['input_text']
             max = int(request.form['max'])
 
-            #TEMPORARY CODE - you need to handle this situation better
-            #Strip text of any leading whitespace
-            # input_text = input_text.lstrip()
-
             # Initialize domain object
             lg = LeGuinnCounter(input_text)
 
-            # So we can send back sentence list to user
-            sentences = lg.sentences
-
             # Get list of LG_sentences so we can do highlighing more easily
-            lg_sentlist =lg.generate_LGSentenceList(input_text, sentences, max)
+            lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
 
             # Create a tuples list that you can send to the template; also
             # want to decouple the domain stuff from the controller/ui stuff
             highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
+
+            # So we can send back sentence list to user
+            sentences = lg.sentences
 
         # Get list of sentences that have more words than max
         long_sentences = lg.sentences_more_than(max)
