@@ -8,6 +8,8 @@ def test_init():
         - Check contents of attribute text
         - Check contentes of attribute sentences
         - Pass invalid argument
+        - Pass empty string ""
+        - Pass empty string "   \n\t  \r\n  "
     '''
 
     # Returns expected object
@@ -27,6 +29,19 @@ def test_init():
     # Pass invalid Argument
     text = None
     assert_raises(TypeError, LeGuinnCounter, text)
+
+    # Pass empty string ""
+    text = ""
+    expected = ("", [])
+    lg = LeGuinnCounter(text)
+    assert_equal((lg.text, lg.sentences), expected)
+
+    # Pass empty string  "   \n\t  \r\n  "
+    text = "   \n\t  \r\n  "
+    expected = expected = ("   \n\t  \r\n  ", [])
+    lg = LeGuinnCounter(text)
+    assert_equal((lg.text, lg.sentences), expected)
+
 
 
 def test_parse():

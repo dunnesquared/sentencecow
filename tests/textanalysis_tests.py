@@ -73,6 +73,7 @@ def test_get_sentences():
             for more cases
         x) No punct in last part of text
             "Hello there, good sir. Would you like a chocolate"
+        xi) Purely symbolic sentence #$? ! #.
 
     '''
     #i)
@@ -222,6 +223,11 @@ def test_get_sentences():
     # X
     text  = "Hello there, good sir. Would you like a chocolate"
     expected = ["Hello there, good sir."]
+    assert_equal(get_sentences(text), expected)
+
+    # xi) Purely symbolic sentence #$? ! #.
+    text = "#$? ! ^."
+    expected = ['#$?', '!', '^.']
     assert_equal(get_sentences(text), expected)
 
 
