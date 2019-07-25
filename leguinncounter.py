@@ -258,8 +258,17 @@ class LeGuinnCounter:
                 # would in the console. Adding an extra newline character
                 # seems to fix this. (Code should probably not be in the
                 # in the domain layer)
-                lg_sentlist[i].whitespace = re.sub(r'[\r]', r'\n',
-                                                   lg_sentlist[i].whitespace)
+                print(f"DEBUG: (BEFORE sub) whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
+
+                # OLD CODE
+                # if lg_sentlist[i].whitespace.count('\n') == 1:
+                #     lg_sentlist[i].whitespace = re.sub(r'[\n]', r'\n\n',
+                #                                        lg_sentlist[i].whitespace)
+
+                # Add an extra newline so highlighted text renders properly
+                # This code should be in app.py (UI concern)
+                if '\n' in lg_sentlist[i].whitespace:
+                    lg_sentlist[i].whitespace = '\n' + lg_sentlist[i].whitespace
 
             #Reset exprected start
             expected_start = lg_sentlist[i].end + 1
