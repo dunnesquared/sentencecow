@@ -184,7 +184,12 @@ class LeGuinnCounter:
             # Merge sentences
             curr = self.sentences[index]
             next = self.sentences[index + 1]
-            self.sentences[index] = " ".join([curr, next])
+
+            # OLD CODE
+            # self.sentences[index] = " ".join([curr, next])
+
+            # NEW TEST CODE
+            self.sentences[index] = curr + next
 
             # No need for that second sentence anymore
             self.sentences.pop(index + 1)
@@ -202,6 +207,10 @@ class LeGuinnCounter:
             lg_sentlist (LGSentences): list of LGSentences
         '''
 
+        print("***********DEBUGGING GENERATE_LGSENTENCES***************")
+        print("=========================================================")
+        print("")
+
         # Empty list of sentences sent as argument
         if not sentlist:
             return []
@@ -209,14 +218,21 @@ class LeGuinnCounter:
         lg_sentlist = []
         start_pos = ta.offset(text)
 
+        print(f"\nDEBUG: start_pos = {start_pos}")
+
         for s in sentlist:
-            print("DEBUG: start, end = {}; sentence = {}".format(ta.find_start_end(s, text, start_pos), s, ))
+            print(f"\nDEBUG: start_pos = {start_pos}")
+            print("\nDEBUG: leguincounter:generate_LGSentenceList, start, end = {}; sentence = {}\n".format(ta.find_start_end(s, text, start_pos), s))
             start, end = ta.find_start_end(s, text, start_pos)
-            print(f"DEBUG: slice = {text[start:end]}")
+            print(f"DEBUG: leguincounter:generate_LGSentenceList, slice = {text[start:end]}\n")
             isOver = self.more_than(s, max)
             lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
             lg_sentlist.append(lg_sent)
-            start_pos = end + 1
+
+            # OLD CODE
+            # start_pos = end + 1
+            #NEW fix
+            start_pos = end
 
         # Copy white-space characters before a sentence
         lg_sentlist = self.__whitespace_before(lg_sentlist, text)
