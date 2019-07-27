@@ -344,7 +344,6 @@ def test_find_start_end():
     text = "\"Tomorrow she is not.\" So it goes."
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
-
     # BASE CASE
 
     # 14
@@ -368,6 +367,12 @@ def test_find_start_end():
        Project Gutenberg Literary Archive Foundation'''
 
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
+
+    '''
+    DEBUG: find_start_end, text = 'X Y. Z. A B C. '
+
+    DEBUG: find_start_end substring, = ' Z.'
+    '''
 
     # 15
 #     text = '''
@@ -396,11 +401,6 @@ def test_find_start_end():
 #
 #     '''s.  The fee is
 #  something.'''
-
-
-
-
-
 
 
 def test_ussr():
