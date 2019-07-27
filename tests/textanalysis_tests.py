@@ -373,8 +373,6 @@ def test_find_start_end():
     DEBUG: find_start_end, text = 'X Y. Z. A B C. '
 
     DEBUG: find_start_end substring, = ' Z.'
-
-
     '''
 
     # 15
