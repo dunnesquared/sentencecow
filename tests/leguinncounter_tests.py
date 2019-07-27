@@ -23,7 +23,7 @@ def test_init():
     assert_equal(lg.text, expected)
 
     # Check contents of attribute sentences
-    expected = ["Blah!", "Blah, blah."]
+    expected = ["Blah!", " Blah, blah."]
     assert_equal(lg.sentences, expected)
 
     # Pass invalid Argument
@@ -54,7 +54,7 @@ def test_parse():
     text = "Blah! Blah, blah."
     lg = LeGuinnCounter(text)
     lg.parse(text)
-    expected = ["Blah!", "Blah, blah."]
+    expected = ["Blah!", " Blah, blah."]
     assert_equal(lg.sentences, expected)
 
     # Pass invalid argument

@@ -85,7 +85,9 @@ def test_get_sentences():
     assert_equal(get_sentences("This is a sentence?!"), ['This is a sentence?!'])
     assert_equal(get_sentences("This is a sentence..."), ['This is a sentence...'])
     #iii)
-    assert_equal(get_sentences("?.!>?,?!. ?!!!...?,,,?"), ["?.!>?,?!.", "?!!!...?,,,?"])
+    assert_equal(get_sentences("?.!>?,?!. ?!!!...?,,,?"), ["?.!>?,?!.", " ?!!!...?,,,?"])
+
+
     #iv)
     fin = open("./tests/metamorphosis_kafka.txt")
     fout = open("./tests/output.txt", 'w')
@@ -99,6 +101,8 @@ def test_get_sentences():
         fout.write(x + '\n')
 
     assert_equal(num_sentences >= 896, True)
+
+
     #v)
     '''
     dialog = '"I\'m not read for this," said the Blue Russian.'
@@ -132,7 +136,7 @@ def test_get_sentences():
 
     #viii - Honorifics
     text = "Hello, Mrs. Dunne. I've been waiting a long time for you."
-    assert_equal(get_sentences(text),["Hello, Mrs. Dunne.", "I've been waiting a long time for you."])
+    assert_equal(get_sentences(text),["Hello, Mrs. Dunne.", " I've been waiting a long time for you."])
 
     #Quote test
     '''
@@ -179,7 +183,7 @@ def test_get_sentences():
 
     # e
     text = "\"He ate a donut,\" she said, hoping to provoke a reaction. \"But you didn't care.\""
-    assert_equal(get_sentences(text), ["\"He ate a donut,\" she said, hoping to provoke a reaction.", "\"But you didn't care.\""])
+    assert_equal(get_sentences(text), ["\"He ate a donut,\" she said, hoping to provoke a reaction.", " \"But you didn't care.\""])
 
     # i, j, k
     text = "\"He ate a donut?\" she asked."
@@ -204,11 +208,11 @@ def test_get_sentences():
 
     expected = [
                 "\"He wasn’t sure, said he had to ask his wife.",
-                "Thank God I don’t have to ask permission of a wife.",
-                "None of that ball and chain stuff for me, no sir.",
-                "I can go where I want, when I want.",
-                "Yep, freedom.",
-                "Nothing beats freedom.\""
+                " Thank God I don’t have to ask permission of a wife.",
+                " None of that ball and chain stuff for me, no sir.",
+                " I can go where I want, when I want.",
+                " Yep, freedom.",
+                " Nothing beats freedom.\""
                 ]
 
     assert_equal(get_sentences(dedent(text)), expected)
@@ -217,7 +221,7 @@ def test_get_sentences():
 
     # n
     text=  "“Curly quotes are going to be problem.” I ignored Mario."
-    expected = ["\"Curly quotes are going to be problem.\"", "I ignored Mario."]
+    expected = ["\"Curly quotes are going to be problem.\"", " I ignored Mario."]
     assert_equal(get_sentences(text), expected)
 
     # X
@@ -227,7 +231,7 @@ def test_get_sentences():
 
     # xi) Purely symbolic sentence #$? ! #.
     text = "#$? ! ^."
-    expected = ['#$?', '!', '^.']
+    expected = ['#$?', ' !', ' ^.']
     assert_equal(get_sentences(text), expected)
 
 
@@ -344,63 +348,10 @@ def test_find_start_end():
     text = "\"Tomorrow she is not.\" So it goes."
     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
 
-    # BASE CASE
-
     # 14
-    text = '''
-    - You pay a royalty fee of 20% of the gross profits you derive from
-         the use of Project Gutenberg-tm works calculated using the method
-         you already use to calculate your applicable taxes.  The fee is
-         owed to the owner of the Project Gutenberg-tm trademark, but he
-         has agreed to donate royalties under this paragraph to the
-         Project Gutenberg Literary Archive Foundation.  Royalty payments
-         must be paid within 60 days following each date on which you
-         prepare (or are legally required to prepare) your periodic tax
-         returns.  Royalty payments should be clearly marked as such and
-         sent to the Project Gutenberg Literary Archive Foundation at the
-         address specified in Section 4, "Information about donations to
-         the Project Gutenberg Literary Archive Foundation."
-    '''
-    sentence = '''The fee is
-       owed to the owner of the Project Gutenberg-tm trademark, but he
-       has agreed to donate royalties under this paragraph to the
-       Project Gutenberg Literary Archive Foundation'''
-
-    assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
-
-    '''
-    DEBUG: find_start_end, text = 'X Y. Z. A B C. '
-
-    DEBUG: find_start_end substring, = ' Z.'
-    '''
-
-    # 15
-#     text = '''
-#     - You pay a royalty fee of 20% of the gross profits you derive from
-#          the use of Project Gutenberg-tm works calculated using the method
-#          you already use to calculate your applicable taxes.  The fee is
-#          owed to the owner of the Project Gutenberg-tm trademark, but he
-#          has agreed to donate royalties under this paragraph to the
-#          Project Gutenberg Literary Archive Foundation.  Royalty payments
-#          must be paid within 60 days following each date on which you
-#          prepare (or are legally required to prepare) your periodic tax
-#          returns.  Royalty payments should be clearly marked as such and
-#          sent to the Project Gutenberg Literary Archive Foundation at the
-#          address specified in Section 4, "Information about donations to
-#          the Project Gutenberg Literary Archive Foundation."
-#     '''
-#
-#     sentence = '''The fee is
-# owed to the owner of the Project Gutenberg-tm trademark, but he
-# has agreed to donate royalties under this paragraph to the
-# Project Gutenberg Literary Archive Foundation.'''
-#
-#     assert_equal(find_start_end(sentence, text, start_search=0), (0, len(sentence)))
-#
-#
-#
-#     '''s.  The fee is
-#  something.'''
+    text = 'X Y. Z. A B C. '
+    sentence = ' Z.'
+    assert_equal(find_start_end(sentence, text, start_search=0), (4, 4+ len(sentence)))
 
 
 def test_ussr():
@@ -411,7 +362,7 @@ def test_ussr():
     assert_equal(get_sentences(text), expected)
 
     text = "He lived in the U.S.S.R. I think."
-    expected = ['He lived in the U.S.S.R.', 'I think.']
+    expected = ['He lived in the U.S.S.R.', ' I think.']
     assert_equal(get_sentences(text), expected)
 
     text = "He lived in the U.S. I think."
