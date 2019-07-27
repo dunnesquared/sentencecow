@@ -93,10 +93,10 @@ def test_first_parse():
 
     '''
 
-    # # Very, very large input
-    # fin = open("./tests/metamorphosis_kafka.txt")
-    # input_text = fin.read()
-    # max = '4'
-    # data = {"input_text" : input_text, 'max' : max}
-    # rv = web.post(resource_name, follow_redirects=True, data=data)
-    # assert_in(b'Highlighted Text', rv.data)
+    # Very, very large input
+    fin = open("./tests/metamorphosis_kafka.txt")
+    input_text = fin.read()
+    max = '25'
+    data = {"input_text" : input_text, 'max' : max}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Highlighted Text', rv.data)
