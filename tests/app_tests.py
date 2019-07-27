@@ -93,7 +93,7 @@ def test_first_parse():
 
     '''
 
-    # Very, very large input
+    # # Very, very large input
     # fin = open("./tests/metamorphosis_kafka.txt")
     # input_text = fin.read()
     # max = '4'
