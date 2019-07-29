@@ -300,7 +300,7 @@ class LeGuinnCounter:
                 # would in the console. Adding an extra newline character
                 # seems to fix this. (Code should probably not be in the
                 # in the domain layer)
-                print(f"DEBUG: (BEFORE sub) whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
+                print(f"DEBUG: whitepace characters before sentence {i} = {repr(lg_sentlist[i].whitespace)}, length = {len(lg_sentlist[i].whitespace)}")
 
                 # OLD CODE
                 # if lg_sentlist[i].whitespace.count('\n') == 1:
