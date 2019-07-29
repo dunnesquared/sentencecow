@@ -4,7 +4,7 @@
 {% block content %}
 
   <h1>Original Text</h1>
-  <p><pre style="white-space:pre-wrap;">{{input_text}}</pre></p>
+  <p><pre>{{input_text}}</pre></p>
 
   <!--Only worth displaying if there's actually sentences to be parsed.-->
   {% if (sentences|length) != 0 %}
@@ -16,12 +16,12 @@
               {% set highlight = item[2] %}
               {% set whitespace = item[3] %}
 
-              <pre style="display:inline;white-space:pre-wrap;">{{whitespace}}</pre>
+              <pre>{{whitespace}}</pre>
 
               {% if highlight == true %}
-                <pre style="background-color:yellow;font-weight:900;display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
+                  <pre class="highlight">{{ input_text[start:end] }}</pre>
               {% else %}
-                <pre style="display:inline;white-space:pre-wrap;">{{ input_text[start:end] }}</pre>
+                <pre>{{ input_text[start:end] }}</pre>
               {% endif %}
 
             {% endfor %}
