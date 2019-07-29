@@ -221,12 +221,28 @@ class LeGuinnCounter:
         print(f"\nDEBUG: start_pos = {start_pos}")
 
         for s in sentlist:
+
             print(f"\nDEBUG: start_pos = {start_pos}")
             print("\nDEBUG: leguincounter:generate_LGSentenceList, start, end = {}; sentence = {}\n".format(ta.find_start_end(s, text, start_pos), s))
+
             start, end = ta.find_start_end(s, text, start_pos)
+
+            #New code - modeify start such that you get first position of non-white space character
+            start += ta.offset(s)
+            print(f"\nDEBUG: (start, end), offset accounted = {(start, end)}")
+
+
             print(f"DEBUG: leguincounter:generate_LGSentenceList, slice = {text[start:end]}\n")
+
             isOver = self.more_than(s, max)
+
+            # Old code No strip
+            # lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
+
+            # New code - sentences stripped
+            s = s.strip()
             lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
+
             lg_sentlist.append(lg_sent)
 
             # OLD CODE
@@ -255,6 +271,9 @@ class LeGuinnCounter:
                                               preceding a sentence saved
         '''
 
+        print(f"*******DEBUGGING __whitespace before*********")
+        print(f"==============================================")
+
         # The index where you think the a sentence starts at in the text
         expected_start = 0
 
@@ -264,6 +283,13 @@ class LeGuinnCounter:
             # ence and the next LGSentence. Gaps (should) imply whitespaces.
             highlight_start = lg_sentlist[i].start
             diff = highlight_start - expected_start
+
+            print(tw.dedent(f'''
+                expected_start = {expected_start}
+                sentlist[i].start/highlight_start = {highlight_start}
+                diff = {diff}
+                sentlist[i].end = {lg_sentlist[i].end}
+            '''))
 
             # If difference is more than just a space, copy the whitespace
             # string. We'll need it for highlighting the text in the presentat-
@@ -287,10 +313,18 @@ class LeGuinnCounter:
                     lg_sentlist[i].whitespace = '\n' + lg_sentlist[i].whitespace
 
             #Reset exprected start
-            expected_start = lg_sentlist[i].end + 1
+            # OLD
+            # expected_start = lg_sentlist[i].end + 1
+
+            #NEW
+            expected_start = lg_sentlist[i].end
+
 
             print(f"DEBUG: whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
             print(f"DEBUG: content of sentence {i} = {lg_sentlist[i].content}")
+
+        print(f"*******END __whitespace before*********")
+        print(f"==============================================")
 
         return lg_sentlist
 
