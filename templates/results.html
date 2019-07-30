@@ -8,6 +8,8 @@
 
   <!--Only worth displaying if there's actually sentences to be parsed.-->
   {% if (sentences|length) != 0 %}
+
+        <!--Build highlighted text with pre-tags -->
         <h1>Highlighted Text</h1>
         <p>
             {% for item in highlight_data %}
@@ -16,12 +18,14 @@
               {% set highlight = item[2] %}
               {% set whitespace = item[3] %}
 
+              <!-- Print any white space characters preceding sentence
+                   to preserve formatting of original text.-->
               <pre>{{whitespace}}</pre>
 
               {% if highlight == true %}
-                  <pre class="highlight">{{ input_text[start:end] }}</pre>
+                  <pre class="highlight">{{input_text[start:end]}}</pre>
               {% else %}
-                <pre>{{ input_text[start:end] }}</pre>
+                <pre>{{input_text[start:end]}}</pre>
               {% endif %}
 
             {% endfor %}
