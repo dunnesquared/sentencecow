@@ -382,27 +382,24 @@ def test_general_punctuation():
         DOT_1LEADER = '․'
         DOT_2LEADER = '‥'
         ELLIPSIS = '…'
-
         DOUBLE_EXCLAM = '‼'
         DOUBLE_Q = '⁇'
         QEXCLAM = '⁈'
         EXCLAMQ = '⁉'
 
         SINGLE_QUOTE = '\''
-
         HSINGLE_QUOTE = '‛'
         LSINGLE_QUOTE = '‘'
         RSINGLE_QUOTE = '’' # same as apostrophe
         LHSINGLE_QUOTE = '❛'
         RHSINGLE_QUOTE = '❜'
 
-        HDOUBLE_QUOTE = '‟'
-        LHDOUBLE_QUOTE = '❝'
-        RHDOUBLE_QUOTE = '❞'
-        FULLWIDTH_QUOTE = '＂'
-
-        LDOUBLE_PRIMEQUOTE = '〝'
-        RDOUBLE_PRIMEQUOTE = '〞'
+        H_DQUOTE = '‟' # high double quote
+        LBIG_DQUOTE = '❝'
+        RBIG_DQUOTE = '❞'
+        FW_DQUOTE = '＂' # full-width double-quote
+        LPRIME_DQUOTE = '〝'
+        RPRIME_DQUOTE = '〞'
     '''
 
     # 1 dot leader
@@ -444,5 +441,29 @@ def test_general_punctuation():
     # Interrobang !?
     text = 'X⁉ Y⁉ Z⁉'
     expected = ['X⁉', ' Y⁉', ' Z⁉']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Left, right big double quotes
+    text = '❝X. Y. Z.❞'
+    expected = ['"X.', ' Y.', ' Z."']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # High double quotes
+    text = '‟X. Y. Z.‟'
+    expected = ['"X.', ' Y.', ' Z."']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Full-width double quotes
+    text = '＂X. Y. Z.＂'
+    expected = ['"X.', ' Y.', ' Z."']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Left, right prime double quotes
+    text = '〝X. Y. Z.〞'
+    expected = ['"X.', ' Y.', ' Z."']
     result = get_sentences(text)
     assert_equal(result, expected)

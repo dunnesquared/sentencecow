@@ -58,20 +58,26 @@ LSINGLE_QUOTE = '‘'
 RSINGLE_QUOTE = '’' # same as apostrophe
 LHSINGLE_QUOTE = '❛'
 RHSINGLE_QUOTE = '❜'
-HDOUBLE_QUOTE = '‟'
-LHDOUBLE_QUOTE = '❝'
-RHDOUBLE_QUOTE = '❞'
-FULLWIDTH_QUOTE = '＂'
-LDOUBLE_PRIMEQUOTE = '〝'
-RDOUBLE_PRIMEQUOTE = '〞'
+H_DQUOTE = '‟' # high double quote
+LBIG_DQUOTE = '❝'
+RBIG_DQUOTE = '❞'
+FW_DQUOTE = '＂' # full-width double-quote
+LPRIME_DQUOTE = '〝'
+RPRIME_DQUOTE = '〞'
 
+# Group them for concise regular expressions below
 LEADERS = DOT_1LEADER + DOT_2LEADER + ELLIPSIS
 QEX = DOUBLE_EXCLAM + DOUBLE_Q + QEXCLAM + EXCLAMQ
+DQUOTES = (H_DQUOTE + LBIG_DQUOTE + RBIG_DQUOTE + FW_DQUOTE + LPRIME_DQUOTE
+           + RPRIME_DQUOTE)
 
 # End-of-sentence patterns to help determine the end of a sentence
 REGEX_PERIOD = '[\.' + LEADERS + ']\s'
 REGEX_QEXMARK = '[\?!' + QEX  +  ']\s'
 REGEX_QUOTE = '[\.\?!—' + LEADERS + QEX  + ']"\s'
+
+# These will be replaced by a simpler, straight single/double quotes: ' / "
+REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
 
 
 class NotInTextError(Exception):
@@ -312,7 +318,8 @@ def __clean_text(text):
     # No need to continue cleaning if dealing with an empty string
     if text:
         # Parsing only works for straight quotes
-        text = re.sub(r'[\“\”]', '"', text)
+        # OLD CODE # text = re.sub(r'[\“\”]', '"', text)
+        text = re.sub(REGEX_DQUOTE, '"', text)
 
         # Add a space at the end so last sentence won't be forgotten
         text = text + " "
