@@ -7,15 +7,15 @@ This module provides the following functions
 2. get_words - extract words from a text, minus punctuation marks
 3. find_start_last - find the start and end indices of a substring in a text
 
-Functions designed and tested for English texts only. The solutions to these
-problems do not rely on any NLP/machine-learning algorithms. As such,
-they're a bit wonky. E.g. Sentences with dialogue attribution show the most
-errors; unaccounted for abbreviations will show up as false end-of-sentences.
-But it works for a lot of other cases too :-).
+Functions designed and tested for English texts only, using mostly
+American conventions. The solutions to these problems do not rely on any
+NLP/machine-learning algorithms. As such, they're a bit wonky.
+E.g. Sentences with dialogue attribution show the most errors; unaccounted for
+abbreviations will show up as false end-of-sentences. But it works for a lot of
+other cases too :-).
 
 This is a 'homemade' module made for learning/enjoyment purposes: do not use
 in production code.
-
 
 To Do:
     * Fix offset handling issue
@@ -44,6 +44,7 @@ import textwrap  # dedent
 # appear at the end of a sentence. Module should handle '⁇' no differently
 # than '??'
 
+# Other possible end-of-sentence punctuation marks
 DOT_1LEADER = '․'
 DOT_2LEADER = '‥'
 ELLIPSIS = '…'
@@ -52,18 +53,26 @@ DOUBLE_Q = '⁇'
 QEXCLAM = '⁈'
 EXCLAMQ = '⁉'
 
-SINGLE_QUOTE = '\''
-HSINGLE_QUOTE = '‛'
-LSINGLE_QUOTE = '‘'
-RSINGLE_QUOTE = '’' # same as apostrophe
-LHSINGLE_QUOTE = '❛'
-RHSINGLE_QUOTE = '❜'
+# Double quotation marks
 H_DQUOTE = '‟' # high double quote
 LBIG_DQUOTE = '❝'
 RBIG_DQUOTE = '❞'
 FW_DQUOTE = '＂' # full-width double-quote
 LPRIME_DQUOTE = '〝'
 RPRIME_DQUOTE = '〞'
+
+# Single quotation marks
+# Module uses the American convention that single quotes should only be
+# used within double quotes. Moreover, there is currently no functionality
+# to parse a sentence within a sentence. E.g. The quote
+# "Don said, 'Go to work!' to Sheila." will be parsed as a single sentence.
+# The general punctuation marks are left here, however, for possible future
+# versions that could handle this as two separate sentences.
+H_SQUOTE = '‛' # High single quote
+L_SQUOTE = '‘'
+R_SQUOTE = '’' # same as apostrophe
+LH_SQUOTE = '❛'
+RH_SQUOTE = '❜'
 
 # Group them for concise regular expressions below
 LEADERS = DOT_1LEADER + DOT_2LEADER + ELLIPSIS
