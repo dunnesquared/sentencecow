@@ -40,6 +40,40 @@ import re   # sub
 import textwrap  # dedent
 
 
+# Unicode general punctuation encodes several punctuation marks that can
+# appear at the end of a sentence. Module should handle '⁇' no differently
+# than '??'
+
+DOT_1LEADER = '․'
+DOT_2LEADER = '‥'
+ELLIPSIS = '…'
+DOUBLE_EXCLAM = '‼'
+DOUBLE_Q = '⁇'
+QEXCLAM = '⁈'
+EXCLAMQ = '⁉'
+
+SINGLE_QUOTE = '\''
+HSINGLE_QUOTE = '‛'
+LSINGLE_QUOTE = '‘'
+RSINGLE_QUOTE = '’' # same as apostrophe
+LHSINGLE_QUOTE = '❛'
+RHSINGLE_QUOTE = '❜'
+HDOUBLE_QUOTE = '‟'
+LHDOUBLE_QUOTE = '❝'
+RHDOUBLE_QUOTE = '❞'
+FULLWIDTH_QUOTE = '＂'
+LDOUBLE_PRIMEQUOTE = '〝'
+RDOUBLE_PRIMEQUOTE = '〞'
+
+LEADERS = DOT_1LEADER + DOT_2LEADER + ELLIPSIS
+QEX = DOUBLE_EXCLAM + DOUBLE_Q + QEXCLAM + EXCLAMQ
+
+# End-of-sentence patterns to help determine the end of a sentence
+REGEX_PERIOD = '[\.' + LEADERS + ']\s'
+REGEX_QEXMARK = '[\?!' + QEX  +  ']\s'
+REGEX_QUOTE = '[\.\?!—' + LEADERS + QEX  + ']"\s'
+
+
 class NotInTextError(Exception):
     '''Exception for instances when sentence is not in a text
 
@@ -298,20 +332,26 @@ def __get_first_punctuation_mark(text, start):
         index (int): index of first end-of sentence punctuation mark; -1
                      if no punctuation mark found
     '''
+
     end_of_text = len(text)
 
     # Search text for first occurence of the following punctuation marks:
     # Period
     pos_period = 0
-    match = re.search('[\.]\s', text[start:])
+    # OLD CODE # match = re.search('[\.]\s', text[start:])
+    match = re.search(REGEX_PERIOD, text[start:])
     pos_period = start + match.start() if match else -1
+
     # Exclamation or question mark
     pos_exqmark = 0
-    match = re.search('[\?!]\s', text[start:])
+    # OLD CODE # match = re.search('[\?!]\s', text[start:])
+    match = re.search(REGEX_QEXMARK, text[start:])
     pos_exqmark = start + match.start() if match else -1
+
     # Period, question, exclamation, em-dash followed by a quotation mark
     pos_quote = 0
-    match = re.search('[\.\?!—]"\s', text[start:])
+    # OLD CODE # match = re.search('[\.\?!—]"\s', text[start:])
+    match = re.search(REGEX_QUOTE, text[start:])
     pos_quote = start + match.start() if match else -1
 
     # Abbreviations (e.g. Mr.) give false poisitives. Ignore 'em!!

@@ -374,3 +374,75 @@ def test_offset():
     text = "      Once upon a time, there was a dog called Tutu."
     expected = 6
     assert_equal(offset(text), expected)
+
+def test_general_punctuation():
+    '''
+        Test texts with the following punctuatio marks:
+
+        DOT_1LEADER = '․'
+        DOT_2LEADER = '‥'
+        ELLIPSIS = '…'
+
+        DOUBLE_EXCLAM = '‼'
+        DOUBLE_Q = '⁇'
+        QEXCLAM = '⁈'
+        EXCLAMQ = '⁉'
+
+        SINGLE_QUOTE = '\''
+
+        HSINGLE_QUOTE = '‛'
+        LSINGLE_QUOTE = '‘'
+        RSINGLE_QUOTE = '’' # same as apostrophe
+        LHSINGLE_QUOTE = '❛'
+        RHSINGLE_QUOTE = '❜'
+
+        HDOUBLE_QUOTE = '‟'
+        LHDOUBLE_QUOTE = '❝'
+        RHDOUBLE_QUOTE = '❞'
+        FULLWIDTH_QUOTE = '＂'
+
+        LDOUBLE_PRIMEQUOTE = '〝'
+        RDOUBLE_PRIMEQUOTE = '〞'
+    '''
+
+    # 1 dot leader
+    text = 'X․ Y․ Z․'
+    expected = ['X․', ' Y․', ' Z․']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # 2 dot leader
+    text = 'X‥ Y‥ Z‥'
+    expected = ['X‥', ' Y‥', ' Z‥']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # ellipsis
+    text = 'X… Y… Z…'
+    expected = ['X…', ' Y…', ' Z…']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Double exclamation
+    text = 'X‼ Y‼ Z‼'
+    expected = ['X‼', ' Y‼', ' Z‼']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Double question mark
+    text = 'X⁇ Y⁇ Z⁇'
+    expected = ['X⁇', ' Y⁇', ' Z⁇']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Interrobang ?!
+    text = 'X⁈ Y⁈ Z⁈'
+    expected = ['X⁈', ' Y⁈', ' Z⁈']
+    result = get_sentences(text)
+    assert_equal(result, expected)
+
+    # Interrobang !?
+    text = 'X⁉ Y⁉ Z⁉'
+    expected = ['X⁉', ' Y⁉', ' Z⁉']
+    result = get_sentences(text)
+    assert_equal(result, expected)
