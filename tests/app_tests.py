@@ -1,6 +1,6 @@
 from nose.tools import *
 from app import *
-
+from flask import request
 from leguinncounter import LeGuinnCounter
 
 app.config['TESTING'] = True
@@ -49,7 +49,7 @@ def test_status_codes():
     rv = web.head(resource_name, follow_redirects=True)
     assert_in(b"", rv.data)
 
-def test_first_parse():
+def test_form():
     # TEST CASES
     # No input
     # Whitespace input
@@ -60,6 +60,7 @@ def test_first_parse():
     # Very, very, large max
     # Negative max
     # Non-integer max
+    # Valid, working input
 
     # No input
     data = {"input_text" : "", 'max' : '4'}
@@ -121,7 +122,21 @@ def test_first_parse():
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Bad Request', rv.data)
 
+    # Valid, working input
+    input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
+    max = 7
+    data = {"input_text" : input_text, 'max' : max}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+
+    expected = b"Once upon a time, there was a dog called Tutu. (# words: 10)"
+    assert_in(expected, rv.data)
+    expected = b"If you met him, you would like him too. (# words: 9)"
+    assert_in(expected, rv.data)
 
 
-def test_merge():
+
+
+def test_results():
+    # Test cases
+    # Valid input
     pass
