@@ -164,7 +164,7 @@ def test_results():
     index = 0
     sentences = LeGuinnCounter(input_text).sentences
     data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
-    expected = b"Nothing to process!"
+    expected = b"Merge cannot be performed on an empty sentence list."
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(expected, rv.data)
 
@@ -210,7 +210,7 @@ def test_results():
     data = setup()
     data['sent_list[]'] = None
     rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'Nothing to process!', rv.data)
+    assert_in(b'Merge cannot be performed on an empty sentence list.', rv.data)
 
     # submit_button is None
     data = setup()
