@@ -52,7 +52,9 @@ def index():
 
         elif request.method == 'POST':
             # User requests to merge a sentence with the one following it.
-            if 'index' in request.form:
+
+            # OLD CODE # if 'index' in request.form:
+            if request.form['submit_button'] == 'Merge':
 
                 #Get everything we'll need to merge sentences and send data back
                 max = request.form['max']
@@ -96,7 +98,7 @@ def index():
                 sentences = lg.sentences
 
             # First parsing of text!
-            else:
+            elif request.form['submit_button'] == 'Count':
 
                 #Get everything we'll need to get the sentences from a text
                 input_text = request.form['input_text']
@@ -123,6 +125,11 @@ def index():
                 # So we can send back sentence list to user
                 sentences = lg.sentences
 
+            else:
+                err = "submit_button neither Count nor Merge!"
+                stack_trace = "Not an exception!"
+                return render_template("error.html", err=err, stack_trace=stack_trace)
+
             # Get list of sentences that have more words than max
             long_sentences = lg.sentences_more_than(max)
 
@@ -130,7 +137,6 @@ def index():
                                     input_text=input_text, sentences = sentences,
                                     long_sentences = long_sentences, max = max,
                                     highlight_data = highlight_data)
-
 
         else:
             #server will return a 405 error code if other methods specified
