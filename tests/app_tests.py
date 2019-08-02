@@ -54,7 +54,7 @@ def test_form():
     # No input
     # Whitespace input
     # Non-valid sentence input
-    # Very, very large input
+    # Very, very large input - see last test function below
     # Input_text passed None
     # Max passed None
     # Very, very, large max
@@ -82,16 +82,6 @@ def test_form():
     data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Nothing to process!', rv.data)
-
-    ''' DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
-    # Very, very large input
-    fin = open("./tests/metamorphosis_kafka.txt")
-    input_text = fin.read()
-    max = '25'
-    data = {"input_text" : input_text, 'max' : max}
-    rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'Highlighted Text', rv.data)
-    '''
 
     # Input_text passed None
     input_text = None
@@ -268,3 +258,15 @@ def test_results():
     data['index'] = len(data['sent_list[]']) - 1
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'If you met him, you would like him too.', rv.data)
+
+
+# DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
+# def test_longtext():
+#     # Very, very large input
+#     fin = open("./tests/metamorphosis_kafka.txt")
+#     button = 'Count'
+#     input_text = fin.read()
+#     max = '25'
+#     data = {"input_text" : input_text, 'max' : max, 'submit_button' : button}
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'Highlighted Text', rv.data)
