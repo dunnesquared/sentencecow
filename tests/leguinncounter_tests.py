@@ -198,9 +198,11 @@ def test_mergenext():
     text = ""
     lg = LeGuinnCounter(text)
     before = len(lg.sentences)
-    lg.merge_next(0)
-    after = len(lg.sentences)
-    assert_equal(before, after)
+    val = 0
+    assert_raises(ValueError, lg.merge_next, val)
+    #lg.merge_next(0)
+    #after = len(lg.sentences)
+    #assert_equal(before, after)
 
 
     text = '''
