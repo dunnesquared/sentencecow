@@ -3,10 +3,12 @@
 
 {% block content %}
 
-<div id="problem">
-  <h1 class="title">ERROR!!</h1>
-  <p class="description error"> {{err}} </p>
-  <!--Allow user to go back and enter form info again -->
-  <a class="button" href="http://localhost:5000/prob0003">Try again?</a>
-</div>
+  <h1>Error</h1>
+  <pre class="error"> {{err}} </pre>
+  <h2> Stack Trace </h2>
+  <pre class="error"> {{stack_trace}} </pre>
+  <br>
+  <br>
+  <a href="http://localhost:5000/leguinncounter">Return to main page</a>
+
 {% endblock %}

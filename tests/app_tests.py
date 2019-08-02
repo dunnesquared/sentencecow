@@ -1,5 +1,7 @@
 from nose.tools import *
 from app import *
+from flask import request
+from leguinncounter import LeGuinnCounter
 
 app.config['TESTING'] = True
 web = app.test_client()
@@ -47,52 +49,41 @@ def test_status_codes():
     rv = web.head(resource_name, follow_redirects=True)
     assert_in(b"", rv.data)
 
-def test_first_parse():
+def test_form():
     # TEST CASES
     # No input
     # Whitespace input
     # Non-valid sentence input
     # Very, very large input
+    # Input_text passed None
+    # Max passed None
     # Very, very, large max
     # Negative max
     # Non-integer max
+    # Valid, working input
+
+    button = 'Count'
 
     # No input
-    data = {"input_text" : "", 'max' : '4'}
+    data = {"input_text" : "", 'max' : '4', 'submit_button': button}
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Nothing to process!', rv.data)
 
     # No input
     input_text = "\n\t\r     \n\n\n\n\t   \t\t\r\r\r\n"
     max = '4'
-    data = {"input_text" : input_text, 'max' : max}
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Nothing to process!', rv.data)
 
     # Non-valid sentence input
     input_text = "This is not a sentence Neither is this Why No punctuation"
     max = '4'
-    data = {"input_text" : input_text, 'max' : max}
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Nothing to process!', rv.data)
 
-
-    '''Problem text
-    - You pay a royalty fee of 20% of the gross profits you derive from
-         the use of Project Gutenberg-tm works calculated using the method
-         you already use to calculate your applicable taxes.  The fee is
-         owed to the owner of the Project Gutenberg-tm trademark, but he
-         has agreed to donate royalties under this paragraph to the
-         Project Gutenberg Literary Archive Foundation.  Royalty payments
-         must be paid within 60 days following each date on which you
-         prepare (or are legally required to prepare) your periodic tax
-         returns.  Royalty payments should be clearly marked as such and
-         sent to the Project Gutenberg Literary Archive Foundation at the
-         address specified in Section 4, "Information about donations to
-         the Project Gutenberg Literary Archive Foundation."
-
-    '''
-
+    ''' DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
     # Very, very large input
     fin = open("./tests/metamorphosis_kafka.txt")
     input_text = fin.read()
@@ -100,3 +91,180 @@ def test_first_parse():
     data = {"input_text" : input_text, 'max' : max}
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Highlighted Text', rv.data)
+    '''
+
+    # Input_text passed None
+    input_text = None
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # Very large max
+    input_text = "Once upon a time, there was named Tutu. He was nice."
+    max = '9999999999'
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Highlighted Text', rv.data)
+
+    # Negative max
+    max = '-5'
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Max must be a number &gt;= 1.', rv.data)
+    #assert_raises(ValueError, web.post, resource_name, follow_redirects=True, data=data)
+
+    # Non-integer max
+    max = "Are you having fun yet?!"
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b"Bad input: &#39;max&#39; can only be a positive whole number.", rv.data)
+
+    max = None
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # Valid, working input
+    input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
+    max = 7
+    data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+
+    expected = b"Once upon a time, there was a dog called Tutu. (# words: 10)"
+    assert_in(expected, rv.data)
+    expected = b"If you met him, you would like him too. (# words: 9)"
+    assert_in(expected, rv.data)
+
+
+def test_results():
+    # Test cases
+
+    # Valid input - Normal merge
+    button = 'Merge'
+    input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
+    max = 7
+    index = 1
+    sentences = LeGuinnCounter(input_text).sentences
+    data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
+    expected = b"He was nice. If you met him, you would like him too. (# words: 12)"
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(expected, rv.data)
+
+    # Valid input except bad index - out of bounds
+    data['index'] = 3
+    expected = b"IndexError"
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(expected, rv.data)
+    data['index'] = -4
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(expected, rv.data)
+
+    # Merge with no sentences
+    input_text = ''
+    index = 0
+    sentences = LeGuinnCounter(input_text).sentences
+    data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
+    expected = b"Nothing to process!"
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(expected, rv.data)
+
+    # Try mergeing when there is only one sentence
+    input_text = "Once upon a time, there was a dog called Tutu."
+    max = 7
+    index = 0
+    sentences = LeGuinnCounter(input_text).sentences
+    data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
+    expected = b"Once upon a time, there was a dog called Tutu. (# words: 10)"
+
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(expected, rv.data)
+
+
+    # Merging with None-types
+
+    #Initial state
+    def setup():
+        input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
+        max = 7; index = 0; sentences = LeGuinnCounter(input_text).sentences
+        return {
+                "input_text" : input_text,
+                'max' : max,
+                'index': index,
+                'sent_list[]': sentences,
+                'submit_button': button
+                }
+
+    # Max = None
+    data = setup()
+    data['max'] = None
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # index is None
+    data = setup()
+    data['index'] = None
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # sent_list -- This should not happen!
+    data = setup()
+    data['sent_list[]'] = None
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Nothing to process!', rv.data)
+
+    # submit_button is None
+    data = setup()
+    data['submit_button'] = None
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # input_text is None
+    data = setup()
+    data['input_text'] = None
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Bad Request', rv.data)
+
+    # BAD DATA
+
+    # Index passed non-integer type
+    data = setup()
+    data['index'] = 'r'
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'ValueError', rv.data)
+
+    # Max - negative value
+    data = setup()
+    data['max'] = -5
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'ValueError', rv.data)
+    # Max - letter
+    data['max'] = 'go'
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'ValueError', rv.data)
+
+    # submit_button - bad name
+    data = setup()
+    data['submit_button'] = "CRAZYTOWN!!"
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'submit_button neither Count nor Merge!', rv.data)
+
+    # sent_list doesn't match original text
+    data = setup()
+    data['sent_list[]'] = ['A.', ' B.' , ' C.']
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'NotInTextError', rv.data)
+
+    # input_text doesn't match sent_list
+    data = setup()
+    data['input_text'] = "A. B. C."
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'NotInTextError', rv.data)
+
+
+    # Merging with last sentence
+    # NB This may fail in future as users shouldn't have the option of merging
+    # with the last sentence in the text
+    data = setup()
+    data['index'] = len(data['sent_list[]']) - 1
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'If you met him, you would like him too.', rv.data)
