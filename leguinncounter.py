@@ -172,7 +172,7 @@ class LeGuinnCounter:
 
         # No sentences to merge: do nothing.
         if len(self.sentences) == 0:
-            return
+            raise ValueError("Mege cannot be performed on empty sentence list.")
 
         # Index out of bounds
         if index < 0 or index >= len(self.sentences):
