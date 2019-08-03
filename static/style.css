@@ -13,8 +13,10 @@ pre.highlight{
   font-weight: 900;
 }
 
-textarea{
+textarea[name=input_text]{
   resize: none;
+  height: 15em; /* Each em = 1 char-size; equiv to 15 rows*/
+  width: 25em; /* Each em = 1 char-size; equiv to 50 cols */
 }
 
 pre.error{
