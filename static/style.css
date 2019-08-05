@@ -24,3 +24,7 @@ pre.error{
   font-weight: 900;
   font-size: 1.5em;
 }
+
+select[name=index]{
+  width: 95%
+}
