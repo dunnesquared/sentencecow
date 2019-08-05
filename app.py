@@ -146,7 +146,7 @@ def index():
             err = "Not a GET or POST request; HEAD request likely made: " + request.method
             return render_template("error.html", err=err)
 
-    except (ta.NotInTextError, ValueError, TypeError, IndexError) as e:
+    except (ta.NotInTextError, ValueError, TypeError, IndexError, MemoryError) as e:
         err = str(e)
         stack_trace = tb.format_exc()
         return render_template("error.html", err=err, stack_trace=stack_trace)
