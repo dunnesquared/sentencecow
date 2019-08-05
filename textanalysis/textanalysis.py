@@ -36,9 +36,14 @@ Last Done:
 """
 
 import os   # getcwd, path.join, path.dirname, path.realpath
+import sys # getsizeof
 import re   # sub
 import textwrap  # dedent
 
+
+# Arbitrary text size set to avoid program from gobbling up too much memory
+# Set to what you will...
+MAX_TEXTSIZE = 100 * 1024 * 1024 # 100 MB
 
 # Unicode general punctuation encodes several punctuation marks that can
 # appear at the end of a sentence. Module should handle '⁇' no differently
@@ -122,6 +127,9 @@ def get_sentences(text):
     print("***********DEBUGGING GET_SENTENCES***************")
     print("=================================================")
     print("")
+
+    # Check to see whether text is less than defined memory maximum
+    __too_big(text)
 
     # Prepare text for parsing
     text = __clean_text(text)
@@ -523,6 +531,32 @@ def __get_dir():
     # Get rid of any possible symbolic links found along and return the
     # absolute path
     return os.path.realpath(joinedpath)
+
+
+def __too_big(text):
+    '''Determine whether text string is larger than programmed-placed size
+       limit.
+
+    Args:
+        text (str): input text to be parsed
+        MAX_TEXTSIZE (int, global): max number of bytes allowed
+
+    Raises:
+        MemoryError: 'text' memory size > MAX_TEXTSIZE
+
+    Returns:
+        Nil
+    '''
+
+    if sys.getsizeof(text) > MAX_TEXTSIZE:
+        max_mb = MAX_TEXTSIZE / 2**20
+        text_mb = sys.getsizeof(text) / 2**20
+        err = textwrap.dedent('''
+             Python string object 'text' greater than MAX_TEXTSIZE:
+             MAX_TEXTSIZE = {:.2f} MB
+             'text'object size = {:.2f} MB'''.format(max_mb, text_mb))
+        raise MemoryError(err)
+
 
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
