@@ -16,7 +16,7 @@ pre.highlight{
 textarea[name=input_text]{
   resize: none;
   height: 15em; /* Each em = 1 char-size; equiv to 15 rows*/
-  width: 25em; /* Each em = 1 char-size; equiv to 50 cols */
+  width: 95%; /* Take only 95% width of screen*/
 }
 
 pre.error{
