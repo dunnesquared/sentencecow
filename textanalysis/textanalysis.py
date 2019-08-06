@@ -547,14 +547,17 @@ def _too_big(text):
     Returns:
         False (bool): 'text' is <= MAX_TEXTSIZE
     '''
-    
+
     if sys.getsizeof(text) > MAX_TEXTSIZE:
-        max_mb = MAX_TEXTSIZE / 2**20
-        text_mb = sys.getsizeof(text) / 2**20
+        # Give reading in kilobytes rather than bytes
+        max_mb = MAX_TEXTSIZE / 1000
+        text_mb = sys.getsizeof(text) / 2**10
+
         err = textwrap.dedent('''
              Python string object 'text' greater than MAX_TEXTSIZE:
-             MAX_TEXTSIZE =\t{:10.2f} MB
-             'text'object size =\t{:10.2f} MB'''.format(max_mb, text_mb))
+             MAX_TEXTSIZE:\t\t\t{:10.4f} kB
+             'text'object size:\t\t{:10.4f} kB'''.format(max_mb, text_mb))
+
         raise MemoryError(err)
 
     # Everything good
