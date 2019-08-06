@@ -1,6 +1,8 @@
+import sys
 from nose.tools import *
 from textanalysis.textanalysis import *
 from textwrap import dedent
+
 
 '''
 To do:
@@ -369,11 +371,12 @@ def test_ussr():
     expected = ['He lived in the U.S. I think.']
     assert_equal(get_sentences(text), expected)
 
-def test_offset():
 
+def test_offset():
     text = "      Once upon a time, there was a dog called Tutu."
     expected = 6
     assert_equal(offset(text), expected)
+
 
 def test_general_punctuation():
     '''
@@ -467,3 +470,26 @@ def test_general_punctuation():
     expected = ['"X.', ' Y.', ' Z."']
     result = get_sentences(text)
     assert_equal(result, expected)
+
+
+def test_too_big():
+
+    # Necessary to import private module function
+    from textanalysis.textanalysis import _too_big
+
+    #Set up
+    text = "My dog is always right."
+    size_txt = sys.getsizeof(text)
+
+    #Cases
+    # Text < MAX_TEXTSIZE
+    expected = False
+    assert_equal(_too_big(text), False)
+
+    # Text > MAX_TEXTSIZE
+    text = text * int((MAX_TEXTSIZE // size_txt)*10)
+    size_txt = sys.getsizeof(text)
+
+    print("MAX_TEXTSIZE =\t{:15d} bytes".format(MAX_TEXTSIZE))
+    print("size_txt =\t{:15d} bytes".format(size_txt))
+    assert_raises(MemoryError, _too_big, text)

@@ -129,7 +129,7 @@ def get_sentences(text):
     print("")
 
     # Check to see whether text is less than defined memory maximum
-    __too_big(text)
+    _too_big(text)
 
     # Prepare text for parsing
     text = __clean_text(text)
@@ -533,7 +533,7 @@ def __get_dir():
     return os.path.realpath(joinedpath)
 
 
-def __too_big(text):
+def _too_big(text):
     '''Determine whether text string is larger than programmed-placed size
        limit.
 
@@ -545,18 +545,20 @@ def __too_big(text):
         MemoryError: 'text' memory size > MAX_TEXTSIZE
 
     Returns:
-        Nil
+        False (bool): 'text' is <= MAX_TEXTSIZE
     '''
-
+    
     if sys.getsizeof(text) > MAX_TEXTSIZE:
         max_mb = MAX_TEXTSIZE / 2**20
         text_mb = sys.getsizeof(text) / 2**20
         err = textwrap.dedent('''
              Python string object 'text' greater than MAX_TEXTSIZE:
-             MAX_TEXTSIZE = {:.2f} MB
-             'text'object size = {:.2f} MB'''.format(max_mb, text_mb))
+             MAX_TEXTSIZE =\t{:10.2f} MB
+             'text'object size =\t{:10.2f} MB'''.format(max_mb, text_mb))
         raise MemoryError(err)
 
+    # Everything good
+    return False
 
 
 # ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
