@@ -21,7 +21,7 @@ To Do:
     * Fix offset handling issue
     * READ REGEX tutorial
     * Need to be able to handle \n\t\r at end of sentences; removing them
-     in __clean_text screwing presentation in upper layers
+     in _clean_text screwing presentation in upper layers
     * Handle curly quotes via regex instead cleaning the text of them
     * Be able handle sentences ending with quote then new line:  ."\n
     * check documentation in interpreter
@@ -132,7 +132,7 @@ def get_sentences(text):
     _too_big(text)
 
     # Prepare text for parsing
-    text = __clean_text(text)
+    text = _clean_text(text)
 
     # Find index of first non-white space character
     # start (int): index where parsing begins; moves as each sentence extracted
@@ -148,7 +148,7 @@ def get_sentences(text):
 
     while start < len(text):
 
-        i = __get_first_punctuation_mark(text, start)
+        i = _get_first_punctuation_mark(text, start)
 
         # No end-of-sentence punctuation marks in sentence
         if i == -1:
@@ -256,7 +256,7 @@ def find_start_end(substring, text, start_search=0):
     print(f"DEBUG: find_start_end, text = {repr(text)}")
     print(f"\nDEBUG: find_start_end, substring = {repr(substring)}")
 
-    text = __clean_text(text)
+    text = _clean_text(text)
 
     # Clean the substring too of curly quotes
     substring = re.sub(r'[\“\”]', '"', substring)
@@ -322,7 +322,7 @@ def offset(text):
 # +++++++++++++++++++++++++++++PRIVATE++++++++++++++++++++++++++++++++++++++
 # Private module helper functions
 
-def __clean_text(text):
+def _clean_text(text):
     '''Returns text that is ready for sentence-parsing
 
     Args:
@@ -344,7 +344,7 @@ def __clean_text(text):
     return text
 
 
-def __get_first_punctuation_mark(text, start):
+def _get_first_punctuation_mark(text, start):
     '''Return index of the punctuation mark that marks the end of a sentence
 
     Args:
@@ -381,7 +381,7 @@ def __get_first_punctuation_mark(text, start):
     # Abbreviations (e.g. Mr.) give false poisitives. Ignore 'em!!
     new_start = start
     while True:
-        if __is_abbreviation(text, new_start, pos_period):
+        if _is_abbreviation(text, new_start, pos_period):
             new_start = pos_period + 1
             pos_period = text.find('. ', new_start, end_of_text+1)
         else:
@@ -390,7 +390,7 @@ def __get_first_punctuation_mark(text, start):
     # Check to see whether first non-space character after end of a
     # quotation or not is lowercase. If it is, don't treat the end of the
     # quotation as the end of the sentence
-    pos_quote = __ignore_quote(pos_quote, text)
+    pos_quote = _ignore_quote(pos_quote, text)
 
     # Get position of the punctuation mark at the end of the current
     # sentence
@@ -407,7 +407,7 @@ def __get_first_punctuation_mark(text, start):
     return index
 
 
-def __is_abbreviation(text, start, index):
+def _is_abbreviation(text, start, index):
     '''Returns True if abbreviation found; False otherwise.
 
     Args:
@@ -421,7 +421,7 @@ def __is_abbreviation(text, start, index):
     '''
 
     # Common abbreviations found in English language
-    abbreviations = __load_abbreviations()
+    abbreviations = _load_abbreviations()
 
     # Focus on the part of text that may contain an abbreviation
     part = text[start:index+1]
@@ -440,7 +440,7 @@ def __is_abbreviation(text, start, index):
     return False
 
 
-def __ignore_quote(pos, text):
+def _ignore_quote(pos, text):
     '''Check whether quote is truly end of a sentence.
 
     The end of quotation may not be the end of the sentence. This function
@@ -470,7 +470,7 @@ def __ignore_quote(pos, text):
     return pos
 
 
-def __load_abbreviations():
+def _load_abbreviations():
     '''Return list of abbreviations as per contents of abbreviations.txt
 
     Args:
@@ -487,7 +487,7 @@ def __load_abbreviations():
     input_filename = "abbreviations.txt"
 
     # Get directory where input exists, i.e. same dir as this module
-    absdir = __get_dir()
+    absdir = _get_dir()
 
     # Intelligently concatenate the directory and the input file name together
     full_filename = os.path.join(absdir, input_filename)
@@ -507,7 +507,7 @@ def __load_abbreviations():
     return abbreviations
 
 
-def __get_dir():
+def _get_dir():
     '''Return absolute path of the directory where script exists
 
     Args:
