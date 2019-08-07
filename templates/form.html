@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<script type="text/javascript" src="{{ url_for('static', filename='count.js') }}">
+</script>
+
 <h1>Welcome to LeGuinn Word-Counter!</h1>
 
 <h2>Text:</h2>
@@ -9,7 +12,7 @@
 
 <form action="/leguinncounter" method="POST">
 
-    <!-- Display message if input text over word count --> 
+    <!-- Display message if input text over word count -->
     {% if is_over == True %}
       <p class="over"> {{ msg }} </p>
       <textarea name="input_text" wrap="soft">{{ input_text }}</textarea>
