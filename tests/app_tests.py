@@ -260,6 +260,28 @@ def test_results():
     assert_in(b'If you met him, you would like him too.', rv.data)
 
 
+def test_word_max():
+
+    from app import _is_over
+
+    # Over
+    text = 'Giovanni ' * 151
+    expected = True
+    assert_equal(_is_over(text), expected)
+
+    # Not over
+    text = 'Giovanni ' * 149
+    expected = False
+    assert_equal(_is_over(text), expected)
+
+    text = 'Giovanni ' * 150
+    expected = False
+    assert_equal(_is_over(text), expected)
+
+
+
+
+
 # DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
 # def test_longtext():
 #     # Very, very large input

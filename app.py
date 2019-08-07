@@ -29,6 +29,21 @@ import traceback as tb
 
 app = Flask(__name__)
 
+# Server-side restriction on word-count in case client-side script disabled
+WORD_MAX = 150
+
+def _is_over(text):
+    '''Return whether 'text' contains more words than WORD_MAX
+
+    Args:
+        text (str): String in which words are to be counted
+
+    Return
+        True: number of words in text is greater than WORD_MAX
+        False: number of words in text is NOT greater than WORD_MAX
+    '''
+    return True if len(ta.get_words(text)) > WORD_MAX else False
+
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -51,14 +66,13 @@ def index():
             return render_template("form.html")
 
         elif request.method == 'POST':
-            # User requests to merge a sentence with the one following it.
 
-            # OLD CODE # if 'index' in request.form:
+            # User requests to merge a sentence with the one following it.
             if request.form['submit_button'] == 'Merge':
 
                 #Get everything we'll need to merge sentences and send data back
-                max = request.form['max']
                 input_text = request.form['input_text']
+                max = request.form['max']
                 sent_list = request.form.getlist('sent_list[]')
                 index = request.form['index']
 
@@ -100,8 +114,14 @@ def index():
             # First parsing of text!
             elif request.form['submit_button'] == 'Count':
 
-                #Get everything we'll need to get the sentences from a text
+                # Get everything we'll need to get the sentences from a text
+                # Check that word_max has been respected
                 input_text = request.form['input_text']
+
+                if _is_over(input_text):
+                    msg = f"Text more than {WORD_MAX} words."
+                    return render_template("form.html", msg=msg,
+                                            input_text=input_text, is_over=True)
 
                 # LeGuinnCounter expects integers, not strings for these values
                 try:

@@ -8,23 +8,29 @@
 
 
 <form action="/leguinncounter" method="POST">
-      <!--<input class="textbox" type="textarea" name="text"></input>-->
+
+    <!-- Display message if input text over word count --> 
+    {% if is_over == True %}
+      <p class="over"> {{ msg }} </p>
+      <textarea name="input_text" wrap="soft">{{ input_text }}</textarea>
+    {% else %}
       <textarea name="input_text" wrap="soft">
-      Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too. Have you a dog? Say yes!! He lived in the U.S.S.R. I think. Or was it the U.S. of good ole A?
+        Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too. Have you a dog? Say yes!! He lived in the U.S.S.R. I think. Or was it the U.S. of good ole A?
       </textarea>
+    {% endif %}
 
-      <h2>Word Max:</h2>
+    <h2>Word Max:</h2>
 
-     <div><input name="max" type="number" min=1 max=1000 value="7"></input></div>
+    <div><input name="max" type="number" min=1 max=1000 value="7"></input></div>
 
-      <!--For testing purposes
-      <div><input name="max"></input></div>
-      -->
+    <!--For testing purposes
+    <div><input name="max"></input></div>
+    -->
 
-      <br>
-      <br>
+     <br>
+     <br>
 
-      <div><input name='submit_button' type="Submit", value="Count"></input></div>
+     <div><input name='submit_button' type="Submit", value="Count"></input></div>
 </form>
 
 
