@@ -119,7 +119,7 @@ def index():
                 input_text = request.form['input_text']
 
                 if _is_over(input_text):
-                    msg = f"Text more than {WORD_MAX} words."
+                    msg = f"Text more than {WORD_MAX} words: {len(ta.get_words(input_text))} words"
                     return render_template("form.html", msg=msg,
                                             input_text=input_text, is_over=True)
 
