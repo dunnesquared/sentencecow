@@ -1,39 +1,38 @@
 // To do:
-// Make enableSubmit more responsive - doesn't disable button if just detelete all contents but don't click down later
+// Add clear button
+// Understand regex below
+// Make text typing in box faster
+// Ensure word max has entry filled before disabling submit
 
-
+// Max number of inputted words allowed
 const WORD_MAX = 150;
+
+// On loadig page...
+// Ensure that user can't submit an empty textarea to web script
+// Ensure that we count the words on the page
 let textarea = document.querySelector("textarea");
-
-// Ensure that user can't submit an empty textarea to web script on first load
+let count_button = document.getElementById('count');
 textarea.addEventListener("load", enableSubmit());
+textarea.addEventListener("load", updateWordCount());
 
 
-
-function sayHello(){
-  alert("Hello World Pizza!!")
-  return true;
-}
-
-
+/**
+ * Return number of words in a string.
+*/
 function countWords(text){
   let words = text.match(/\S+/g);
   return words ? words.length : 0;
 }
 
-
-
-
+/**
+ * Check # of words in string < WORD_MAX
+ */
 function checkWordCount(){
-  //Get input text
   let text = "";
   let numWords = 0;
 
   try{
-    text = document.getElementsByName("input_text")[0].value; //have to specify index as there is more than element by that name
-    //console.log(text); //NOT WORKING! Giving undefined! try using id instead
-
-    //Get number of words in text
+    text = document.getElementsByName("input_text")[0].value;
     numWords = countWords(text);
     console.log("numWords =  " + numWords);
   }
@@ -41,70 +40,34 @@ function checkWordCount(){
     console.log(err.message);
   }
 
-  //See whether number of words is greater than WORD_MAX
-  //True -> show alert; deactivate submit button
-  //False -> carry on
+
   if (numWords > WORD_MAX){
     let count_button = document.getElementById('count');
-    //count_button.disabled = true;
-    alert("Your text is over " + WORD_MAX + " words long.");
+    count_button.disabled = true;
+    //Change colour of word count to red
+    document.getElementById('word-count').style.color = 'red';
   }else{
-    alert("Looks good!");
+    // Change text colour back to black
+    document.getElementById('word-count').style.color = 'black';
+
+
   }
+
 }
-
-
-
-function check(){
-  //Get input text
-  let text = "";
-  let numWords = 0;
-
-  try{
-    text = document.getElementsByName("input_text")[0].value; //have to specify index as there is more than element by that name
-    //console.log(text); //NOT WORKING! Giving undefined! try using id instead
-
-    //Get number of words in text
-    numWords = countWords(text);
-    console.log("numWords =  " + numWords);
-  }
-  catch(err){
-    console.log(err.message);
-  }
-
-  //See whether number of words is greater than WORD_MAX
-  //True -> show alert; deactivate submit button
-  //False -> carry on
-  if (numWords > WORD_MAX){
-    let count_button = document.getElementById('count');
-    //count_button.disabled = true;
-    alert("Your text is over " + WORD_MAX + " words long.");
-  }else{
-    alert("Looks good!");
-  }
-}
-
 
 
 /**
- *
- *
- *
+ * Refresh output that indicates number of words currently in textarea
 */
 function updateWordCount(){
     let text = "";
     let numWords = 0;
 
     try{
-      text = document.getElementsByName("input_text")[0].value; //have to specify index as there is more than element by that name
-      //console.log(text); //NOT WORKING! Giving undefined! try using id instead
-
-      //Get number of words in text
+      text = document.getElementsByName("input_text")[0].value;
       numWords = countWords(text);
       console.log("numWords =  " + numWords);
-
-      document.getElementById('word-count').innerHTML = numWords;
-
+      document.getElementById('word-count').innerHTML = numWords + ` out of ${WORD_MAX}.`;
     }
     catch(err){
       console.log(err.message);
@@ -116,18 +79,15 @@ function updateWordCount(){
  * Disable submit button if textarea empty.
 */
 function enableSubmit(){
-
   let countButton = document.getElementById('count');
   const text = document.getElementsByName("input_text")[0].value;
 
   //console.log("IN enableSubmit");
-
-
   if (countWords(text)){
-    console.log("ENABLED!!");
-    //countButton.disabled = false;
+    //console.log("ENABLED!!");
+    countButton.disabled = false;
   }else{
-    console.log("DISABLED!!");
-    //countButton.disabled = true;
+    //console.log("DISABLED!!");
+    countButton.disabled = true;
   }
 }

@@ -2,21 +2,18 @@
 
 {% block content %}
 
+  <h1>Welcome to LeGuinn Word-Counter!</h1>
 
+  <h2>Text:</h2>
 
-<h1>Welcome to LeGuinn Word-Counter!</h1>
-
-<h2>Text:</h2>
-
-
-<form action="/leguinncounter" method="POST">
+  <form action="/leguinncounter" method="POST">
 
     <!-- Display message if input text over word count -->
     {% if is_over == True %}
-      <textarea name="input_text" wrap="soft" onload="updateWordCount();" oninput="enableSubmit();">{{ input_text }}</textarea>
+      <textarea name="input_text" wrap="soft" oninput="enableSubmit(); updateWordCount(); checkWordCount();">{{ input_text }}</textarea>
       <p class="over"> {{ msg }} </p>
     {% else %}
-      <textarea name="input_text" wrap="soft" onload="updateWordCount();" oninput="enableSubmit();"></textarea>
+      <textarea name="input_text" wrap="soft" oninput="enableSubmit(); updateWordCount(); checkWordCount();">Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too. Have you a dog? Say yes!! He lived in the U.S.S.R. I think. Or was it the U.S. of good ole A?</textarea>
     {% endif %}
 
     <p>Word Count: <span id='word-count'>0</span> </p>
@@ -32,32 +29,12 @@
      <br>
      <br>
 
-     <div><input id='count' name='submit_button' type="Submit", value="Count", onclick="check();"></input></div>
+     <div><input id='count' name='submit_button' type="Submit", value="Count"></input></div>
 
 
-</form>
-
-<script type="text/javascript" src="{{ url_for('static', filename='count.js') }}"></script>
-
-<!--Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too. Have you a dog? Say yes!! He lived in the U.S.S.R. I think. Or was it the U.S. of good ole A?-->
-
-
-<!--
-<div id="problem">
-  <h1 class="title">Project Euler Problem #{{prob_num}}</h1>
-  <p class="description">{{prob_descr}}</p>
-  <p> Enter the value below to find out the answer,
-    or find the largest prime factor of another value!
-  </p>
-  <form action="/leguinncounter" method="POST">
-    <input type="text" name="var">
-    <br/>
-    <br/>
-    <input type="Submit" value="Calculate Largest Prime Factor" class="button"></input>
   </form>
-</div>
--->
+
+  <script type="text/javascript" src="{{ url_for('static', filename='count.js') }}"></script>
+
 
 {% endblock %}
-
-<!--oninput="enableSubmit();"-->
