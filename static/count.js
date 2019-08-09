@@ -1,8 +1,9 @@
 // To do:
-// Add clear button
 // Understand regex below
 // Make text typing in box faster
 // Ensure word max has entry filled before disabling submit
+// Wrap three oninput functions into a single function
+// cross browser testing
 
 // Max number of inputted words allowed
 const WORD_MAX = 150;
@@ -64,7 +65,7 @@ function updateWordCount(){
       text = document.getElementsByName("input_text")[0].value;
       numWords = countWords(text);
       console.log("numWords =  " + numWords);
-      document.getElementById('word-count').innerHTML = numWords + ` out of ${WORD_MAX}.`;
+      document.getElementById('word-count').innerHTML = numWords + ` out of ${WORD_MAX}`;
     }
     catch(err){
       console.log(err.message);
@@ -78,9 +79,15 @@ function updateWordCount(){
 function enableSubmit(){
   let countButton = document.getElementById('count');
   const text = document.getElementsByName("input_text")[0].value;
+  const max = document.getElementsByName("max")[0].value;
+
+  console.log("Max = " + max);
+  console.log(typeof(max));
+  console.log(max === '');
+  maxBlank = max === ''
 
   //console.log("IN enableSubmit");
-  if (countWords(text)){
+  if (countWords(text) && !maxBlank) {
     //console.log("ENABLED!!");
     countButton.disabled = false;
   }else{
@@ -96,7 +103,8 @@ function resetAll(){
   // Clear form to default values
   document.getElementById("lgcform").reset();
 
-  // Handle whatever reset didn't 
+  // Handle whatever reset didn't
   enableSubmit();
   updateWordCount();
+  checkWordCount();
 }
