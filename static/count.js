@@ -49,10 +49,7 @@ function checkWordCount(){
   }else{
     // Change text colour back to black
     document.getElementById('word-count').style.color = 'black';
-
-
   }
-
 }
 
 
@@ -90,4 +87,16 @@ function enableSubmit(){
     //console.log("DISABLED!!");
     countButton.disabled = true;
   }
+}
+
+/**
+ * Reset all form elements to initial states
+*/
+function resetAll(){
+  // Clear form to default values
+  document.getElementById("lgcform").reset();
+
+  // Handle whatever reset didn't 
+  enableSubmit();
+  updateWordCount();
 }
