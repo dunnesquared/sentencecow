@@ -5,20 +5,29 @@
 // cross browser testing
 
 // Max number of inputted words allowed
-const WORD_MAX = -150;
+const WORD_MAX = 150;
 
 // In case the bizzare happens...
 try{
-  if (WORD_MAX < 1 || !Number.isInteger(WORD_MAX)){
+  if (WORD_MAX < 1){
     let s = `
     Error in count.js:
     WORD_MAX = ${WORD_MAX}
-    Bad value or type.
+    Value outside acceptable range.
     WORD_MAX must be an
     integer > 0.
     `
-   throw new Error(s);
-  }
+   throw new RangeError(s);
+ }else if(!Number.isInteger(WORD_MAX)){
+   let s = `
+   Error in count.js:
+   WORD_MAX = ${WORD_MAX}
+   Bad type.
+   WORD_MAX must be an integer.
+   `
+  throw new TypeError(s);
+
+ }
 }
 catch(err){
   disableInputs();
@@ -30,7 +39,7 @@ catch(err){
  * Display error messages on console and form page
 */
 function displayError(err){
-  console.error(err.message);
+  console.error(err.name + err.message);
   let errTag = document.getElementsByClassName('error')[0];
   errTag.color = 'red';
   errTag.innerHTML =  '\n' + err.name + err.message;
