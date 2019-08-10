@@ -52,7 +52,7 @@ function disableInputs(){
   document.querySelector("textarea").readOnly = true;
   document.getElementsByName("max")[0].readOnly = true;
   document.getElementById('count').disabled = true;
-  document.getElementById('reset').disabled = true;
+  document.getElementById('reset_button').disabled = true;
 }
 
 
