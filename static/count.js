@@ -1,12 +1,42 @@
 // To do:
 // Understand regex below
 // Make text typing in box faster
-// Ensure word max has entry filled before disabling submit
 // Wrap three oninput functions into a single function
 // cross browser testing
 
 // Max number of inputted words allowed
-const WORD_MAX = 150;
+const WORD_MAX = -150;
+
+// In case the bizzare happens...
+try{
+  if (WORD_MAX < 1 || !Number.isInteger(WORD_MAX)){
+    let s = `
+    Error in count.js: WORD_MAX = ${WORD_MAX}
+    Bad value or type.
+    WORD_MAX must be an integer greater than 0.';
+    `
+   throw new Error(s);
+  }
+}
+catch(err){
+  disableInputs();
+  console.error(err.message);
+}
+
+//UPON ALL EXCEPTIONS
+//PRINT TO FORM SCREEN
+//DISABLE ALL FORM INPUTS
+
+/**
+ * Ensure user can't proceed with form if exception thrown
+*/
+function disableInputs(){
+  document.querySelector("textarea").readOnly = true;
+  document.getElementsByName("max")[0].readOnly = true;
+  document.getElementById('count').disabled = true;
+  document.getElementById('reset').disabled = true;
+}
+
 
 // On loadig page...
 // Ensure that user can't submit an empty textarea to web script
@@ -38,7 +68,8 @@ function checkWordCount(){
     console.log("numWords =  " + numWords);
   }
   catch(err){
-    console.log(err.message);
+    disableInputs();
+    console.error(err.message);
   }
 
 
@@ -68,7 +99,8 @@ function updateWordCount(){
       document.getElementById('word-count').innerHTML = numWords + ` out of ${WORD_MAX}`;
     }
     catch(err){
-      console.log(err.message);
+      disableInputs();
+      console.error(err.message);
     }
 }
 
