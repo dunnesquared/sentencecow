@@ -11,21 +11,30 @@ const WORD_MAX = -150;
 try{
   if (WORD_MAX < 1 || !Number.isInteger(WORD_MAX)){
     let s = `
-    Error in count.js: WORD_MAX = ${WORD_MAX}
+    Error in count.js:
+    WORD_MAX = ${WORD_MAX}
     Bad value or type.
-    WORD_MAX must be an integer greater than 0.';
+    WORD_MAX must be an
+    integer > 0.
     `
    throw new Error(s);
   }
 }
 catch(err){
   disableInputs();
-  console.error(err.message);
+  displayError(err);
 }
 
-//UPON ALL EXCEPTIONS
-//PRINT TO FORM SCREEN
-//DISABLE ALL FORM INPUTS
+
+/**
+ * Display error messages on console and form page
+*/
+function displayError(err){
+  console.error(err.message);
+  let errTag = document.getElementsByClassName('error')[0];
+  errTag.color = 'red';
+  errTag.innerHTML =  '\n' + err.name + err.message;
+}
 
 /**
  * Ensure user can't proceed with form if exception thrown
@@ -69,9 +78,8 @@ function checkWordCount(){
   }
   catch(err){
     disableInputs();
-    console.error(err.message);
+    displayError(err);
   }
-
 
   if (numWords > WORD_MAX){
     let count_button = document.getElementById('count');
@@ -100,7 +108,7 @@ function updateWordCount(){
     }
     catch(err){
       disableInputs();
-      console.error(err.message);
+      displayError(err);
     }
 }
 
