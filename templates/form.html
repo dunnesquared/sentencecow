@@ -10,10 +10,10 @@
 
     <!-- Display message if input text over word count -->
     {% if is_over == True %}
-      <textarea name="input_text" wrap="soft" oninput="enableSubmit(); updateWordCount(); checkWordCount();">{{ input_text }}</textarea>
+      <textarea name="input_text" wrap="soft" oninput="refresh();">{{ input_text }}</textarea>
       <p class="over"> {{ msg }} </p>
     {% else %}
-      <textarea name="input_text" wrap="soft" oninput="enableSubmit(); updateWordCount(); checkWordCount();"></textarea>
+      <textarea name="input_text" wrap="soft" oninput="refresh();"></textarea>
     {% endif %}
 
 

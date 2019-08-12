@@ -153,6 +153,15 @@ function resetAll(){
   document.getElementById("lgcform").reset();
 
   // Handle whatever reset didn't
+  refresh();
+}
+
+
+/**
+ * Check and update other parts of form vis-a-vis current state
+ * Wrapper function
+*/
+function refresh(){
   enableSubmit();
   updateWordCount();
   checkWordCount();
