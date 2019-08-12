@@ -1,7 +1,5 @@
 // To do:
 // Understand regex below
-// Make text typing in box faster
-// Wrap three oninput functions into a single function
 // cross browser testing
 
 // Max number of inputted words allowed
@@ -135,12 +133,9 @@ function enableSubmit(){
   console.log(max === '');
   maxBlank = max === ''
 
-  //console.log("IN enableSubmit");
   if (countWords(text) && !maxBlank) {
-    //console.log("ENABLED!!");
     countButton.disabled = false;
   }else{
-    //console.log("DISABLED!!");
     countButton.disabled = true;
   }
 }
@@ -153,16 +148,32 @@ function resetAll(){
   document.getElementById("lgcform").reset();
 
   // Handle whatever reset didn't
-  refresh();
+  enableSubmit();
+  updateWordCount();
+  checkWordCount();
 }
 
 
 /**
- * Check and update other parts of form vis-a-vis current state
- * Wrapper function
+ * Check and update other parts of form vis-a-vis current state. functions
+ * delays updating the form with the current word count in order to so the
+ * update function runs every time a key is pressed. This should hopefully
+ * avoid any typing-lag on older or busy machines.
 */
+
+let timeout;
+
 function refresh(){
   enableSubmit();
-  updateWordCount();
+
+  // Tell users what's happening so they don't freak out
+  document.getElementById('word-count').innerHTML = 'Processing...';
+
+  // Kill the last timeout. If we're typing at normal speed, there's no
+  // benefit to every single invocation of updateWordCount when a key is pressed.
+  // Only the last one matters (i.e. when the user stops typing.)
+  clearTimeout(timeout);
+  timeout = setTimeout(updateWordCount, 500); //500 milliseconds
+
   checkWordCount();
 }
