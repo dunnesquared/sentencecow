@@ -6,6 +6,7 @@ body{
 pre{
   display: inline;
   white-space: pre-wrap;
+  font-family: "Helvetica Neue", "Arial", "sans-serif";
 }
 
 pre.highlight{
@@ -17,6 +18,10 @@ textarea[name=input_text]{
   resize: none;
   height: 15em; /* Each em = 1 char-size; equiv to 15 rows*/
   width: 95%; /* Take only 95% width of screen*/
+  outline: none;
+  /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
+  font-family: "Times New Roman", Times, serif;
+  font-size: 0.95em;
 }
 
 pre.error{
