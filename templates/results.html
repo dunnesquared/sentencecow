@@ -43,7 +43,8 @@
 
 
         {% for ls in long_sentences %}
-          <p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>
+          <!--<p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>-->
+          <p>{{ls['sentence']}} (# words: {{ls['wordcount']}})</p>
         {% endfor %}
 
 
