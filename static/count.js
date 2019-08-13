@@ -1,8 +1,7 @@
 // To do:
-// Understand regex below
-// cross browser testing
+// Cross browser testing
+// Documentation at top of module
 
-// Max number of inputted words allowed
 const WORD_MAX = 150;
 
 // In case the bizzare happens...
@@ -67,6 +66,10 @@ textarea.addEventListener("load", updateWordCount());
  * Return number of words in a string.
 */
 function countWords(text){
+  // arrayStrings = s.match(/regex/modifier);
+  // \S+ Find string of at least one character with no whitespace characters
+  // g  Find all matching strings, not just the first one found
+  // match: return all strings that match regex
   let words = text.match(/\S+/g);
   return words ? words.length : 0;
 }
