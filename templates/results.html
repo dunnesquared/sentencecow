@@ -65,7 +65,7 @@
            previously merged: parsing the original text will bring us back give
           us sentences before they were merged.-->
           {% for i in range(sentences|length) %}
-            <input type='hidden' name="sent_list[]" value="{{lgcounter.sentences[i]}}"</input>
+            <input type='hidden' name="sent_list[]" value="{{sentences[i]}}"</input>
           {% endfor %}
 
           <!-- Index of sentence chosen to merge with next-->
