@@ -144,7 +144,12 @@ class LeGuinnCounter:
         for sentence in self.sentences:
             if self.more_than(sentence, max):
                 start, end = ta.find_start_end(sentence, self.text, start_pos)
-                item = {'sentence':sentence, 'start': start, 'end': end}
+                item = {
+                        'sentence':sentence,
+                        'start': start,
+                        'end': end,
+                        'wordcount': self.count_words(sentence)
+                        }
                 long_sentences.append(item)
                 # Do not start searching for positions at beginning of text;
                 # Start from where the last sentence ended:
