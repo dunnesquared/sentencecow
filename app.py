@@ -109,7 +109,8 @@ def index():
                 highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
 
                 # So we can send back sentence list to user
-                sentences = lg.sentences
+                # sentences = lg.sentences
+                sentences = [{'content': s, 'wordcount': lg.count_words(s)} for s in lg.sentences]
 
             # First parsing of text!
             elif request.form['submit_button'] == 'Count':
@@ -143,7 +144,11 @@ def index():
                 highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
 
                 # So we can send back sentence list to user
-                sentences = lg.sentences
+                # sentences = lg.sentences
+                sentences = [{'content': s, 'wordcount': lg.count_words(s)} for s in lg.sentences]
+
+                # So we can have the word counts of each sentence without
+                # having to call wordcount function in template
 
             else:
                 err = "submit_button neither Count nor Merge!"

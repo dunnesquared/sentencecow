@@ -36,7 +36,7 @@
         <h1>All sentences</h1>
 
         {% for s in sentences %}
-          <p>{{s}} (# words: {{lgcounter.count_words(s)}})</p>
+          <p>{{s['content']}} (# words: {{s['wordcount']}})</p>
         {% endfor %}
 
         <h1>Long sentences (word_max = {{max}})</h1>
@@ -66,14 +66,14 @@
            previously merged: parsing the original text will bring us back give
           us sentences before they were merged.-->
           {% for i in range(sentences|length) %}
-            <input type='hidden' name="sent_list[]" value="{{sentences[i]}}"</input>
+            <input type='hidden' name="sent_list[]" value="{{sentences[i]['content']}}"</input>
           {% endfor %}
 
           <!-- Index of sentence chosen to merge with next-->
           <select name="index">
             {% for i in range(sentences|length) %}
               <option value="{{ i }}">
-                {{sentences[i]}} (# words: {{lgcounter.count_words(sentences[i])}})
+                {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
               </option>
             {% endfor %}
           </select>
