@@ -2,7 +2,15 @@
 // Cross browser testing
 // Documentation at top of module
 
+// Max number of words allowed in textarea
 const WORD_MAX = 150;
+
+// Regular expression containing oft-used punctuation marks and symbols
+const PUNC_REGEX = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/g;
+
+// Regular expression containing less-used punctuation marks
+const MOREPUNC_REGEX = /[․‥…‼⁇⁈⁉‟❝❞＂〝〞‛‘’❛❜]/g;
+
 
 // In case the bizzare happens...
 try{
@@ -66,11 +74,24 @@ textarea.addEventListener("load", updateWordCount());
  * Return number of words in a string.
 */
 function countWords(text){
+  // Edit text so we over-count or undercount words in text`
+  // Em-dashes are used to separate clauses. The words touching an em-dash are
+  // distinct (unlike a hyphen that creates one word out of usually two)
+  text = text.replace('—', ' ');
+
+  // Remove all punctuation and sybols from text.
+  // Something like '? ! % ^' should not register as four separate words,
+  // but as zero words.
+  text = text.replace(PUNC_REGEX, '');
+  text = text.replace (MOREPUNC_REGEX, '');
+
+  // Get words from text
+  let words = text.match(/\S+/g);
+
   // arrayStrings = s.match(/regex/modifier);
   // \S+ Find string of at least one character with no whitespace characters
   // g  Find all matching strings, not just the first one found
   // match: return all strings that match regex
-  let words = text.match(/\S+/g);
   return words ? words.length : 0;
 }
 
