@@ -2,6 +2,7 @@ import sys
 from nose.tools import *
 from textanalysis.textanalysis import *
 from textwrap import dedent
+import string # punctuation
 
 
 '''
@@ -271,16 +272,31 @@ def test_get_words():
     expected = ["Giovanni", "loves", "pizza", "Do", "you"]
     assert_equal(get_words(text), expected)
 
-    # 7. Keep hyphens; remove em-dashes
+    # 7. Remove hyphens (not really needed, but test for anyway)
     text  = "My dog-sitter likes hot-dogs—how unsettling."
-    expected = ["My", "dog-sitter", 'likes', 'hot-dogs', 'how', 'unsettling']
+    expected = ["My", "dogsitter", 'likes', 'hotdogs', 'how', 'unsettling']
     assert_equal(get_words(text), expected)
 
-    text  = "My dog-sitter likes— "
-    expected = ["My", "dog-sitter", 'likes']
+    # 8. Ensure that a space replaces en and em-dashes
+    text  = "My dog-sitter likes—what?"
+    expected = ["My", "dogsitter", 'likes', 'what']
+    assert_equal(get_words(text), expected)
+
+    text = "WWII lasted from 1939–1945."
+    expected = ["WWII", "lasted", "from", "1939", "1945"]
+    assert_equal(get_words(text), expected)
+
+    # 9. Symbols by themselves do not constitute words
+    text = 'two' + string.punctuation + LEADERS + QEX + DQUOTES + ' words.'
+    expected = ['two', 'words']
     assert_equal(get_words(text), expected)
 
 
+    # 10. Pure symbols
+    word = string.punctuation + LEADERS + QEX + DQUOTES
+    text = word + " " + word
+    expected = []
+    assert_equal(get_words(text), expected)
 
 
 def test_find_start_end():

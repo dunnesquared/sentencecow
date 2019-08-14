@@ -39,6 +39,7 @@ import os   # getcwd, path.join, path.dirname, path.realpath
 import sys # getsizeof
 import re   # sub
 import textwrap  # dedent
+import string # punctuation
 
 
 # Arbitrary text size set to avoid program from gobbling up too much memory
@@ -93,6 +94,8 @@ REGEX_QUOTE = '[\.\?!—' + LEADERS + QEX  + ']"\s'
 # These will be replaced by a simpler, straight single/double quotes: ' / "
 REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
 
+# To be removed when counting words
+REGEX_ALLSYMOBLS = r'[' + string.punctuation + LEADERS + QEX + DQUOTES + ']'
 
 class NotInTextError(Exception):
     '''Exception for instances when sentence is not in a text
@@ -201,14 +204,21 @@ def get_words(sentence):
         words (list): Sequence of words from the given sentence
      '''
 
-    # Remove certain punctuation marks from sentence
-    sentence = re.sub(r'[\.\,\!\?\:\;\“\”\"]', '', sentence)
+    # Remove all symbols and punctuation from sentence
+    # Do not something like "? ^ & * -" to count as five different words:
+    # should return no words
+    sentence = re.sub(REGEX_ALLSYMOBLS, '', sentence)
+    # Only symbol not removed from above. Don't know why...
+    sentence = sentence.replace('\\', '')
 
-    # Since em dash can separate two clauses, you'll want to avoid
-    # the case where you get a word that is a suture of the last word in the
-    # first clause and the first word in the next one.
-    if '—' in sentence:
-        sentence = sentence.replace("—", " ")
+    # Remove en dash – and em dash —
+    # An en dash is used to denote a period, e.g. 1914–1918
+    # An em dash is used to insert a parenthetical phrase in the middle of or
+    # an interruption at the end of a sentence
+    # Removing them will prevent two distinct words being counted as one
+    if '–' in sentence or '—' in sentence:
+        sentence = sentence.replace("–", " ") # en dash
+        sentence = sentence.replace("—", " ") # em dash
 
     # Default delimiter in split is blank space
     words = sentence.split()
