@@ -79,8 +79,8 @@ function countWords(text){
   // Em dashes are used to separate clauses. The words touching an em-dash are
   // distinct (unlike a hyphen that creates one word out of usually two)
 
-  text = text.replace('—', ' '); // em dash
-  text = text.replace('–', ' '); // en dashes
+  text = text.replace(/—/g, ' '); // em dash
+  text = text.replace(/–/g, ' '); // en dashes
 
   // Remove all punctuation and sybols from text.
   // Something like '? ! % ^' should not register as four separate words,
@@ -89,12 +89,12 @@ function countWords(text){
   text = text.replace (MOREPUNC_REGEX, '');
 
   // Get words from text
-  let words = text.match(/\S+/g);
-
   // arrayStrings = s.match(/regex/modifier);
   // \S+ Find string of at least one character with no whitespace characters
   // g  Find all matching strings, not just the first one found
   // match: return all strings that match regex
+  let words = text.match(/\S+/g);
+
   return words ? words.length : 0;
 }
 
