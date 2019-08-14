@@ -291,12 +291,29 @@ def test_get_words():
     expected = ['two', 'words']
     assert_equal(get_words(text), expected)
 
-
     # 10. Pure symbols
     word = string.punctuation + LEADERS + QEX + DQUOTES
     text = word + " " + word
     expected = []
     assert_equal(get_words(text), expected)
+
+    # 11. Other whitespace sybols
+    text = "This\nis\ta\rsample."
+    expected = ['This', 'is', 'a', 'sample']
+    assert_equal(get_words(text), expected)
+
+    # 12 Strings made out of a series of em or en dashes
+    text = "––– –––"
+    expected = []
+    assert_equal(get_words(text), expected)
+
+    text = "——— ———"
+    expected = []
+    assert_equal(get_words(text), expected)
+
+
+
+
 
 
 def test_find_start_end():
