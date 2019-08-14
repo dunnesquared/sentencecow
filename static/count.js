@@ -75,9 +75,12 @@ textarea.addEventListener("load", updateWordCount());
 */
 function countWords(text){
   // Edit text so we over-count or undercount words in text`
-  // Em-dashes are used to separate clauses. The words touching an em-dash are
+  // En dashes are used to denote durations, e.g. WWII was from 1939–1945
+  // Em dashes are used to separate clauses. The words touching an em-dash are
   // distinct (unlike a hyphen that creates one word out of usually two)
-  text = text.replace('—', ' ');
+
+  text = text.replace('—', ' '); // em dash
+  text = text.replace('–', ' '); // en dashes
 
   // Remove all punctuation and sybols from text.
   // Something like '? ! % ^' should not register as four separate words,
