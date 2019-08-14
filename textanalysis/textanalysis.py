@@ -46,6 +46,10 @@ import string # punctuation
 # Set to what you will...
 MAX_TEXTSIZE = 100 * 1024 * 1024 # 100 MB
 
+# Check global just in case the bizarre happens...
+if MAX_TEXTSIZE < 0:
+    raise ValueError("MAX_TEXTSIZE set to value less than zero.")
+
 # Unicode general punctuation encodes several punctuation marks that can
 # appear at the end of a sentence. Module should handle '⁇' no differently
 # than '??'
