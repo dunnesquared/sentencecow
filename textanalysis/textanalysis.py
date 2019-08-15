@@ -101,6 +101,75 @@ REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
 # To be removed when counting words
 REGEX_ALLSYMOBLS = r'[' + string.punctuation + LEADERS + QEX + DQUOTES + ']'
 
+#==============================ABBREVIATIONS====================================
+
+def _load_abbreviations():
+    '''Return list of abbreviations as per contents of abbreviations.txt
+
+    Args:
+        None
+
+    Raises:
+        FileNotFoundError: abbreviations.txt not found
+
+    Returns:
+        abbreviations (list): list of common English abbreviations
+    '''
+
+    # File to be read
+    input_filename = "abbreviations.txt"
+
+    # Get directory where input exists, i.e. same dir as this module
+    absdir = _get_dir()
+
+    # Intelligently concatenate the directory and the input file name together
+    full_filename = os.path.join(absdir, input_filename)
+
+    # Read input file
+    # 'with as' ensures file is closed even if exception raised
+    with open(full_filename, "r") as fin:
+        data = fin.read()
+
+    # Parse data and put into list
+    abbreviations = data.split('\n')
+
+    # Get rid of extra '' entry caused by text editor inexplicably adding
+    # a line after the last abbreviation upon saving the file
+    abbreviations.pop()
+
+    return abbreviations
+
+
+def _get_dir():
+    '''Return absolute path of the directory where script exists
+
+    Args:
+        None
+
+    Returns:
+        dir (str): the unique ('canonical') absolute path of the directory
+                   (i.e. no symbolic links in path)
+    '''
+
+    # Get the current working directory in Terminal
+    # when you try to launch the script
+    cwd = os.getcwd()
+
+    # Get the name of the directoy where this script exists
+    script_dir = os.path.dirname(__file__)
+
+    # Intelligently cocantenate the two
+    joinedpath = os.path.join(cwd, script_dir)
+
+    # Get rid of any possible symbolic links found along and return the
+    # absolute path
+    return os.path.realpath(joinedpath)
+
+
+# Common abbreviations found in English language
+abbreviations = _load_abbreviations()
+#==============================================================================
+
 class NotInTextError(Exception):
     '''Exception for instances when sentence is not in a text
 
@@ -433,9 +502,8 @@ def _is_abbreviation(text, start, index):
         True (bool):  abbreviation found.
         False (bool): No abbreviation found.
     '''
-
-    # Common abbreviations found in English language
-    abbreviations = _load_abbreviations()
+    
+    global abbreviations
 
     # Focus on the part of text that may contain an abbreviation
     part = text[start:index+1]
@@ -482,69 +550,6 @@ def _ignore_quote(pos, text):
 
     # Quote 'may' be end of sentence
     return pos
-
-
-def _load_abbreviations():
-    '''Return list of abbreviations as per contents of abbreviations.txt
-
-    Args:
-        None
-
-    Raises:
-        FileNotFoundError: abbreviations.txt not found
-
-    Returns:
-        abbreviations (list): list of common English abbreviations
-    '''
-
-    # File to be read
-    input_filename = "abbreviations.txt"
-
-    # Get directory where input exists, i.e. same dir as this module
-    absdir = _get_dir()
-
-    # Intelligently concatenate the directory and the input file name together
-    full_filename = os.path.join(absdir, input_filename)
-
-    # Read input file
-    # 'with as' ensures file is closed even if exception raised
-    with open(full_filename, "r") as fin:
-        data = fin.read()
-
-    # Parse data and put into list
-    abbreviations = data.split('\n')
-
-    # Get rid of extra '' entry caused by text editor inexplicably adding
-    # a line after the last abbreviation upon saving the file
-    abbreviations.pop()
-
-    return abbreviations
-
-
-def _get_dir():
-    '''Return absolute path of the directory where script exists
-
-    Args:
-        None
-
-    Returns:
-        dir (str): the unique ('canonical') absolute path of the directory
-                   (i.e. no symbolic links in path)
-    '''
-
-    # Get the current working directory in Terminal
-    # when you try to launch the script
-    cwd = os.getcwd()
-
-    # Get the name of the directoy where this script exists
-    script_dir = os.path.dirname(__file__)
-
-    # Intelligently cocantenate the two
-    joinedpath = os.path.join(cwd, script_dir)
-
-    # Get rid of any possible symbolic links found along and return the
-    # absolute path
-    return os.path.realpath(joinedpath)
 
 
 def _too_big(text):
