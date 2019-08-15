@@ -167,7 +167,8 @@ def _get_dir():
 
 
 # Common abbreviations found in English language
-abbreviations = _load_abbreviations()
+# Casting them as a set will allow us perform an intersection with other data
+abbreviations = set(_load_abbreviations())
 #==============================================================================
 
 class NotInTextError(Exception):
@@ -502,8 +503,8 @@ def _is_abbreviation(text, start, index):
         True (bool):  abbreviation found.
         False (bool): No abbreviation found.
     '''
-    
-    global abbreviations
+
+    global abbreviations # Remember this is not a list, but a set...
 
     # Focus on the part of text that may contain an abbreviation
     part = text[start:index+1]
@@ -513,13 +514,27 @@ def _is_abbreviation(text, start, index):
     # not a substring of it
     # E.g. "Back in the U.S.S.R." the abbreviation U.S. should not return
     # True!
-    word_list = part.split()
-    for abbreviation in abbreviations:
-        if abbreviation in word_list:
-            return True  # Abbreviation found!!
+    sent_words = set(part.split())
 
-    # Period is not part of the abbreviation. Period is at end of sentence
-    return False
+    # Disjoint means two sets share nothing in common (essentially their
+    # intersection is the null set). So, if the two sets are not disjoint,
+    # then you've found an abbreviation; otherwise you (maybe) haven't.
+    return True if not sent_words.isdisjoint(abbreviations) else False
+
+
+    # OLD CODE!!
+    # See whether any of the abbreviations are in that part.
+    # Need words of sentence since we want to check for a whole abbreviation
+    # not a substring of it
+    # E.g. "Back in the U.S.S.R." the abbreviation U.S. should not return
+    # True!
+    # word_list = part.split()
+    # for abbreviation in abbreviations:
+    #     if abbreviation in word_list:
+    #         return True  # Abbreviation found!!
+    #
+    # # Period is not part of the abbreviation. Period is at end of sentence
+    # return False
 
 
 def _ignore_quote(pos, text):
