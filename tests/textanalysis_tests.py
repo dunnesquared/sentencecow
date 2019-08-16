@@ -311,8 +311,9 @@ def test_get_words():
     expected = []
     assert_equal(get_words(text), expected)
 
-
-
+    text = "[x] ‘!"
+    expected = ['x']
+    assert_equal(get_words(text), expected)
 
 
 

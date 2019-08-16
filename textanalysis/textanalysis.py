@@ -89,6 +89,7 @@ LEADERS = DOT_1LEADER + DOT_2LEADER + ELLIPSIS
 QEX = DOUBLE_EXCLAM + DOUBLE_Q + QEXCLAM + EXCLAMQ
 DQUOTES = (H_DQUOTE + LBIG_DQUOTE + RBIG_DQUOTE + FW_DQUOTE + LPRIME_DQUOTE
            + RPRIME_DQUOTE)
+SQUOTES = H_SQUOTE + L_SQUOTE + R_SQUOTE + LH_SQUOTE + RH_SQUOTE
 
 # End-of-sentence patterns to help determine the end of a sentence
 REGEX_PERIOD = '[\.' + LEADERS + ']\s'
@@ -99,7 +100,7 @@ REGEX_QUOTE = '[\.\?!—' + LEADERS + QEX  + ']"\s'
 REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
 
 # To be removed when counting words
-REGEX_ALLSYMOBLS = r'[' + string.punctuation + LEADERS + QEX + DQUOTES + ']'
+REGEX_ALLSYMOBLS = r'[' + string.punctuation + LEADERS + QEX + DQUOTES + SQUOTES +']'
 
 #==============================ABBREVIATIONS====================================
 
