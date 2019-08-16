@@ -87,6 +87,9 @@ def index():
 
                 index = int(index)
 
+                # Trailing white spaces are suprefluous
+                input_text = input_text.rstrip()
+
                 # Initialize domain object
                 lg = LeGuinnCounter(input_text)
 
@@ -132,6 +135,9 @@ def index():
                     stack_trace = tb.format_exc()
                     return render_template("error.html", err=err,
                                             stack_trace=stack_trace)
+
+                # Trailing white spaces are suprefluous
+                input_text = input_text.rstrip()
 
                 # Initialize domain object
                 lg = LeGuinnCounter(input_text)
