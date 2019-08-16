@@ -32,11 +32,12 @@ app = Flask(__name__)
 # Server-side restriction on word-count in case client-side script disabled
 WORD_MAX = 150
 
-def _is_over(text):
-    '''Return whether 'text' contains more words than WORD_MAX
+def _is_over(text, max):
+    '''Return whether 'text' contains more words than given max allowed.
 
     Args:
         text (str): String in which words are to be counted
+        max (int): Maximum number of words allowed from user input
 
     Return
         True: number of words in text is greater than WORD_MAX
@@ -55,7 +56,7 @@ def bad_request(error):
 
 @app.route("/leguinncounter", methods=['POST', 'GET'])
 def index():
-    '''Returns web pages that allow users to see whether their texts satisfy
+    '''Return web pages that allow users to see whether their texts satisfy
        the criterion that their sentences have fewer or the same user-set
        number of words.
       '''
@@ -122,7 +123,7 @@ def index():
                 # Check that word_max has been respected
                 input_text = request.form['input_text']
 
-                if _is_over(input_text):
+                if _is_over(input_text, WORD_MAX):
                     msg = f"Text more than {WORD_MAX} words: {len(ta.get_words(input_text))} words"
                     return render_template("form.html", msg=msg,
                                             input_text=input_text, is_over=True)

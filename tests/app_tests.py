@@ -263,23 +263,25 @@ def test_results():
 def test_word_max():
 
     from app import _is_over
+    from app import WORD_MAX
 
     # Over
-    text = 'Giovanni ' * 151
+    max = WORD_MAX + 1
+    text = 'Giovanni ' * max
     expected = True
-    assert_equal(_is_over(text), expected)
+    assert_equal(_is_over(text, max), expected)
 
     # Not over
-    text = 'Giovanni ' * 149
+    max = WORD_MAX - 1
+    text = 'Giovanni ' * max
     expected = False
-    assert_equal(_is_over(text), expected)
+    assert_equal(_is_over(text, max), expected)
 
-    text = 'Giovanni ' * 150
+    # Equal
+    max = WORD_MAX
+    text = 'Giovanni ' * max
     expected = False
-    assert_equal(_is_over(text), expected)
-
-
-
+    assert_equal(_is_over(text, max), expected)
 
 
 # DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
