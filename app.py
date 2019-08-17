@@ -30,7 +30,7 @@ import traceback as tb
 app = Flask(__name__)
 
 # Server-side restriction on word-count in case client-side script disabled
-WORD_MAX = 150
+WORD_MAX = 300
 
 def _is_over(text, max):
     '''Return whether 'text' contains more words than given max allowed.
@@ -64,7 +64,7 @@ def index():
     try:
         if request.method == 'GET':
             # Render main page of web app
-            return render_template("form.html")
+            return render_template("form.html", max=WORD_MAX)
 
         elif request.method == 'POST':
 

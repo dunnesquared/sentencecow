@@ -3,7 +3,8 @@
 // Documentation at top of module
 
 // Max number of words allowed in textarea
-const WORD_MAX = 150;
+// Fetch from html file--originally from app.py: the one place to set max val
+const WORD_MAX = parseInt(document.getElementsByName('max')[0].max);
 
 // Regular expression containing oft-used punctuation marks and symbols
 const PUNC_REGEX = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/g;
