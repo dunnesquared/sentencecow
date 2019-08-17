@@ -175,6 +175,19 @@ function resetAll(){
   // Clear form to default values
   document.getElementById("lgcform").reset();
 
+  // It's possible, though hopefully unlikely, that the Jinja template rendered
+  // an "you're over the word count max" error message. If this JS script is
+  // is doing its job, that shouldn't happen
+  // That said, if it does, you'll want to erase the error message when
+  // the user presses the reset button.
+  let appMsg = document.getElementsByClassName("over")[0];
+
+  // Check to see whether the appMSg was rendered in the first place. If so,
+  // clear it!
+  if (typeof appMsg !== 'undefined'){
+    appMsg.innerHTML = "";
+  }
+
   // Handle whatever reset didn't
   enableSubmit();
   updateWordCount();

@@ -126,7 +126,9 @@ def index():
                 if _is_over(input_text, WORD_MAX):
                     msg = f"Text more than {WORD_MAX} words: {len(ta.get_words(input_text))} words"
                     return render_template("form.html", msg=msg,
-                                            input_text=input_text, is_over=True)
+                                            input_text=input_text,
+                                            max=WORD_MAX,
+                                            is_over=True)
 
                 # LeGuinnCounter expects integers, not strings for these values
                 try:
