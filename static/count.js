@@ -41,6 +41,15 @@ catch(err){
 }
 
 
+// On loadig page...
+// Ensure that user can't submit an empty textarea to web script
+// Ensure that we count the words on the page
+let textarea = document.querySelector("textarea");
+let count_button = document.getElementById('count');
+textarea.addEventListener("load", enableSubmit());
+textarea.addEventListener("load", updateWordCount());
+
+
 /**
  * Display error messages on console and form page
 */
@@ -51,6 +60,7 @@ function displayError(err){
   errTag.innerHTML =  '\n' + err.name + err.message;
 }
 
+
 /**
  * Ensure user can't proceed with form if exception thrown
 */
@@ -60,15 +70,6 @@ function disableInputs(){
   document.getElementById('count').disabled = true;
   document.getElementById('reset_button').disabled = true;
 }
-
-
-// On loadig page...
-// Ensure that user can't submit an empty textarea to web script
-// Ensure that we count the words on the page
-let textarea = document.querySelector("textarea");
-let count_button = document.getElementById('count');
-textarea.addEventListener("load", enableSubmit());
-textarea.addEventListener("load", updateWordCount());
 
 
 /**
@@ -99,47 +100,52 @@ function countWords(text){
   return words ? words.length : 0;
 }
 
-/**
- * Check # of words in string < WORD_MAX
- */
-function checkWordCount(){
-  let text = "";
-  let numWords = 0;
-
-  try{
-    text = document.getElementsByName("input_text")[0].value;
-    numWords = countWords(text);
-    console.log("numWords =  " + numWords);
-  }
-  catch(err){
-    disableInputs();
-    displayError(err);
-  }
-
-  if (numWords > WORD_MAX){
-    let count_button = document.getElementById('count');
-    count_button.disabled = true;
-    //Change colour of word count to red
-    document.getElementById('word-count').style.color = 'red';
-  }else{
-    // Change text colour back to black
-    document.getElementById('word-count').style.color = 'black';
-  }
-}
 
 
 /**
  * Refresh output that indicates number of words currently in textarea
+ * If text over max allowed, don't allow the user to send the form!
 */
 function updateWordCount(){
     let text = "";
     let numWords = 0;
+    let msg = "";
 
     try{
+
+      // Count words
       text = document.getElementsByName("input_text")[0].value;
       numWords = countWords(text);
-      console.log("numWords =  " + numWords);
-      document.getElementById('word-count').innerHTML = numWords + ` out of ${WORD_MAX}`;
+      wordCount = document.getElementById('word-count');
+
+      // If text over max, make sure users know about it and don't let them
+      // send the form
+      if (numWords > WORD_MAX){
+
+        // Disable submit
+        let count_button = document.getElementById('count');
+        count_button.disabled = true;
+
+        // Change colour of word count to indicate user has gone over max
+        document.getElementById('word-count').style.color = 'Crimson';
+        document.getElementById('word-count').style.fontWeight = '900';
+
+      }else{
+        // Word count okay. Reset it back to blacl.
+        document.getElementById('word-count').style.color = 'black';
+        document.getElementById('word-count').style.fontWeight = '400';
+      }
+
+      // Handle singular and plural case for word count display
+      msg = numWords;
+
+      if (numWords == 1){
+        msg +=  ' word'
+      }else{
+        msg += ' words'
+      }
+
+      wordCount.innerHTML = msg;
     }
     catch(err){
       disableInputs();
@@ -156,9 +162,11 @@ function enableSubmit(){
   const text = document.getElementsByName("input_text")[0].value;
   const max = document.getElementsByName("max")[0].value;
 
+  // DEBUG statements
   console.log("Max = " + max);
   console.log(typeof(max));
   console.log(max === '');
+
   maxBlank = max === ''
 
   if (countWords(text) && !maxBlank) {
@@ -191,7 +199,6 @@ function resetAll(){
   // Handle whatever reset didn't
   enableSubmit();
   updateWordCount();
-  checkWordCount();
 }
 
 
@@ -208,6 +215,9 @@ function refresh(){
   enableSubmit();
 
   // Tell users what's happening so they don't freak out
+  // Need to switch back to black in case word count is over the max
+  document.getElementById('word-count').style.color = 'black';
+  document.getElementById('word-count').style.fontWeight = '400';
   document.getElementById('word-count').innerHTML = 'Processing...';
 
   // Kill the last timeout. If we're typing at normal speed, there's no
@@ -215,6 +225,4 @@ function refresh(){
   // Only the last one matters (i.e. when the user stops typing.)
   clearTimeout(timeout);
   timeout = setTimeout(updateWordCount, 500); //500 milliseconds
-
-  checkWordCount();
 }
