@@ -4,31 +4,39 @@
 
   <h1>Welcome to Le Guin Sentence Word Counter!</h1>
 
-  <h2>Text:</h2>
+  <p>This program extracts sentences from a text and counts the number of words
+    in each sentence, <i>as best as possible.</i></p>
 
-  <form id="lgcform" action="/leguinncounter" method="POST">
+  <p>In the boxes below, write or paste a short text ({{max}} words or less)
+    and set the maximum number of words that should appear in each sentence.
+    Click 'Count' to see how your sentences measure up!</p>
 
-    <!-- Display message if input text over word count -->
-    {% if is_over == True %}
-      <textarea
-      name="input_text"
-      placeholder="Write your story here..."
-      onfocus= "this.placeholder =''"
-      wrap="soft"
-      oninput="refresh();">{{ input_text }}</textarea>
+    <form id="lgcform" action="/leguinncounter" method="POST">
 
-      <p class="over"> {{ msg }} </p>
-    {% else %}
-      <textarea name="input_text"
-       placeholder="Write your story here..."
-       onfocus= "this.placeholder =''"
-      wrap="soft" oninput="refresh();"></textarea>
-    {% endif %}
+      <!-- Display message if input text over word count -->
+      <div>
+      {% if is_over == True %}
+        <textarea
+        name="input_text"
+        placeholder="Write your story here..."
+        onfocus= "this.placeholder =''"
+        wrap="soft"
+        oninput="refresh();">{{ input_text }}</textarea>
+
+        <p class="over"> {{ msg }} </p>
+      {% else %}
+        <textarea name="input_text"
+         placeholder="Write your story here..."
+         onfocus= "this.placeholder =''"
+        wrap="soft"
+        oninput="refresh();"></textarea>
+      {% endif %}
+
+      <p id="wcTitle">Word Count (Max = {{max}}):  <span id='word-count'>0</span> </p>
+      </div>
 
 
-    <p>Word Count: <span id='word-count'>0</span> </p>
-
-    <h2>Word Max:</h2>
+    <h3>Max Number of Words per Sentence:</h3>
 
     <div>
       <input name="max"
@@ -44,6 +52,7 @@
     -->
 
      <br>
+      <br>
 
      <div>
       <input id='count' name='submit_button' type="Submit", value="Count" disabled></input>
