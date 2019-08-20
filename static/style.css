@@ -31,7 +31,11 @@ pre.error{
 }
 
 select[name=index]{
-  width: 95%
+  width: 95%;
+}
+
+p{
+  width:95%;
 }
 
 p.over{

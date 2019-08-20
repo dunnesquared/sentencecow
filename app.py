@@ -31,9 +31,12 @@ app = Flask(__name__)
 
 # Server-side restriction on word-count in case client-side script disabled
 WORD_MAX = 300
+CHAR_MAX = WORD_MAX * 20
 
-def _is_over(text, max):
-    '''Return whether 'text' contains more words than given max allowed.
+
+def _is_over(text, word_max, char_max):
+    '''Return whether 'text' contains more words or character
+       than given max allowed.
 
     Args:
         text (str): String in which words are to be counted
@@ -43,7 +46,15 @@ def _is_over(text, max):
         True: number of words in text is greater than WORD_MAX
         False: number of words in text is NOT greater than WORD_MAX
     '''
-    return True if len(ta.get_words(text)) > WORD_MAX else False
+    word_over = True if len(ta.get_words(text)) > word_max else False
+    char_over = True if len(text) > char_max else False
+
+    print(len(ta.get_words(text)))
+    print(True if len(ta.get_words(text)) > word_max else False)
+    print(f"word over = {word_over}\nchar_over = {char_over}")
+    return word_over or char_over
+
+    # return True if len(ta.get_words(text)) > WORD_MAX else False
 
 
 @app.errorhandler(400)
@@ -64,7 +75,7 @@ def index():
     try:
         if request.method == 'GET':
             # Render main page of web app
-            return render_template("form.html", max=WORD_MAX)
+            return render_template("form.html", max=WORD_MAX, char_max=CHAR_MAX)
 
         elif request.method == 'POST':
 
@@ -118,13 +129,16 @@ def index():
 
             # First parsing of text!
             elif request.form['submit_button'] == 'Count':
-
                 # Get everything we'll need to get the sentences from a text
                 # Check that word_max has been respected
                 input_text = request.form['input_text']
 
-                if _is_over(input_text, WORD_MAX):
-                    msg = f"Text more than {WORD_MAX} words: {len(ta.get_words(input_text))} words"
+                if _is_over(input_text, WORD_MAX, CHAR_MAX):
+                    msg = f'''Text exceeds {WORD_MAX} words or
+                             {CHAR_MAX} characters:
+                             {len(ta.get_words(input_text))} words;
+                             {len(input_text)} characters.'''
+
                     return render_template("form.html", msg=msg,
                                             input_text=input_text,
                                             max=WORD_MAX,

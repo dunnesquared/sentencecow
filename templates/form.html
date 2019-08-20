@@ -2,6 +2,8 @@
 
 {% block content %}
 
+
+
   <h1>Welcome to Le Guin Sentence Word Counter!</h1>
 
   <p>This program extracts sentences from a text and counts the number of words
@@ -11,9 +13,10 @@
     and set the maximum number of words that should appear in each sentence.
     Click 'Count' to see how your sentences measure up!</p>
 
+
     <form id="lgcform" action="/leguinncounter" method="POST">
 
-      <!-- Display message if input text over word count -->
+      <!-- Display message if input text over word count-->
       <div>
       {% if is_over == True %}
         <textarea
@@ -21,6 +24,7 @@
         placeholder="Write your story here..."
         onfocus= "this.placeholder =''"
         wrap="soft"
+        maxlength="{{char_max}}"
         oninput="refresh();">{{ input_text }}</textarea>
 
         <p class="over"> {{ msg }} </p>
@@ -28,11 +32,12 @@
         <textarea name="input_text"
          placeholder="Write your story here..."
          onfocus= "this.placeholder =''"
-        wrap="soft"
-        oninput="refresh();"></textarea>
+         wrap="soft"
+         maxlength="{{char_max}}"
+         oninput="refresh();"></textarea>
       {% endif %}
 
-      <p id="wcTitle">Word Count (Max = {{max}}):  <span id='word-count'>0</span> </p>
+      <p id="wcTitle">Word Count (Max. {{max}}):  <span id='word-count'>0</span> </p>
       </div>
 
 
@@ -52,8 +57,6 @@
     -->
 
      <br>
-      <br>
-
      <div>
       <input id='count' name='submit_button' type="Submit", value="Count" disabled></input>
       <button id='reset_button' type="button" value="Reset" onclick="resetAll();">Reset</button>
@@ -62,6 +65,11 @@
 
 
   </form>
+
+ <br>
+  <p>N.B. The maximum number of <i>characters</i> allowed
+    in the text box is {{char_max}}, whitespaces included. That should
+    be plenty.</p>
 
   <!--To display exceptions-->
   <pre class='error'></pre>

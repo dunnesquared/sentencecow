@@ -263,25 +263,50 @@ def test_results():
 def test_word_max():
 
     from app import _is_over
-    from app import WORD_MAX
+    from app import WORD_MAX, CHAR_MAX
 
+    # Test number of words
     # Over
-    max = WORD_MAX + 1
-    text = 'Giovanni ' * max
+    n = WORD_MAX + 1
+    text = 'Giovanni ' * n
+    print(len(text))
     expected = True
-    assert_equal(_is_over(text, max), expected)
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
 
-    # Not over
-    max = WORD_MAX - 1
-    text = 'Giovanni ' * max
+    # Under
+    n = WORD_MAX - 1
+    text = 'Giovanni ' * n
     expected = False
-    assert_equal(_is_over(text, max), expected)
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
 
     # Equal
-    max = WORD_MAX
-    text = 'Giovanni ' * max
+    n = WORD_MAX
+    text = 'Giovanni ' * n
     expected = False
-    assert_equal(_is_over(text, max), expected)
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
+
+    # Test number of characters
+    # over
+    n = CHAR_MAX + 1
+    text = 'P' * n
+    expected = True
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
+
+    # Under
+    n = CHAR_MAX - 1
+    text = 'P' * n
+    expected = False
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
+
+    # Equal
+    n = CHAR_MAX
+    text = 'P' * n
+    expected = False
+    assert_equal(_is_over(text, WORD_MAX, CHAR_MAX), expected)
+
+
+
+
 
 
 # DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
