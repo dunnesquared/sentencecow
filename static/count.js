@@ -144,9 +144,9 @@ function updateWordCount(){
       msg = numWords;
 
       if (numWords == 1){
-        msg +=  ' word'
+        msg +=  ' word' + `       (${text.length} character(s))`
       }else{
-        msg += ' words'
+        msg += ' words' + `        (${text.length} character(s))`
       }
 
       wordCount.innerHTML = msg;
