@@ -31,7 +31,7 @@ app = Flask(__name__)
 
 # Server-side restriction on word-count in case client-side script disabled
 WORD_MAX = 300
-CHAR_MAX = WORD_MAX * 20
+CHAR_MAX = WORD_MAX * 10
 
 
 def _is_over(text, word_max, char_max):
