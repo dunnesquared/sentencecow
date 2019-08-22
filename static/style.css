@@ -42,12 +42,41 @@ p.over{
   color: red;
 }
 
-#wcTitle{
-  font-weight: 900;
-  margin-bottom: 2em;
-
+#count_table{
+  font-size: 0.8em;
 }
 
-#wcTitle > span{
-  font-weight: 400;
+tr{
+  height: 1.5em;
+}
+
+#char-count{
+  text-align: right;
+  padding-left: 0.5em;
+}
+
+#word-count{
+  text-align: right;
+  padding-left: 0.5em;
+}
+
+#charcount-over{
+  text-align: left;
+  color: crimson;
+  font-weight: 900;
+}
+
+#wordcount-over{
+  text-align: left;
+  color: crimson;
+  font-weight: 900;
+}
+
+#maxboxtitle{
+  margin-top: 0.85em;
+  font-weight: 900;
+}
+
+#button-container{
+  margin-top: 1.5em;
 }

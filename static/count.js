@@ -5,7 +5,9 @@
 // Max number of words allowed in textarea
 // Fetch from html file--originally from app.py: the one place to set max val
 const WORD_MAX = parseInt(document.getElementsByName('max')[0].max);
-const CHAR_MAX = parseInt(document.getElementsByName('input_text')[0].maxLength);
+const CHAR_MAX = parseInt(document.getElementsByName('input_text')[0].getAttribute('data-charmax'));
+
+//const CHAR_MAX = parseInt(document.getElementsByName('input_text')[0].maxLength);
 
 // DEBUG
 console.log("CHAR_MAX = ", CHAR_MAX);
@@ -49,7 +51,6 @@ catch(err){
 // Ensure that user can't submit an empty textarea to web script
 // Ensure that we count the words on the page
 let textarea = document.querySelector("textarea");
-let count_button = document.getElementById('count');
 textarea.addEventListener("load", enableSubmit());
 textarea.addEventListener("load", updateWordCount());
 
@@ -113,6 +114,72 @@ function countWords(text){
 function updateWordCount(){
     let text = "";
     let numWords = 0;
+    let numChars = 0;
+    let msg = "";
+
+    console.log("updateWordCount button: ", document.getElementById('count').disabled);
+    try{
+
+      // Count words
+      text = document.getElementsByName("input_text")[0].value;
+      numWords = countWords(text);
+      numChars = text.length;
+      let wordCount = document.getElementById('word-count');
+      let charCount = document.getElementById('char-count');
+      let wordCountOver = document.getElementById('wordcount-over');
+      let charCountOver = document.getElementById('charcount-over');
+      let count_button = document.getElementById('count');
+
+      // If text over max, make sure users know about it and don't let them
+      // send the form
+      if (numWords > WORD_MAX){
+        // Disable submit
+
+        count_button.disabled = true;
+
+
+        msg = "← Too many words!"
+
+        // Change colour of word count to indicate user has gone over max
+        wordCountOver.innerHTML = msg;
+        //wordCountOver.style.color = 'Crimson';
+        //wordCountOver.style.fontWeight = '900';
+
+      }else{
+        wordCountOver.innerHTML = "";
+      }
+
+      if (numChars > CHAR_MAX){
+        // Disable submit
+        count_button.disabled = true;
+
+
+        msg = "← Too many characters!"
+
+        // Change colour of word count to indicate user has gone over max
+        charCountOver.innerHTML = msg;
+        //charCountOver.style.color = 'Crimson';
+        //charCountOver.style.fontWeight = '900';
+
+      }else{
+        charCountOver.innerHTML = "";
+      }
+
+
+      wordCount.innerHTML = numWords;
+      charCount.innerHTML = numChars;
+
+    }
+    catch(err){
+      disableInputs();
+      displayError(err);
+    }
+}
+
+/*
+function updateWordCount(){
+    let text = "";
+    let numWords = 0;
     let msg = "";
 
     try{
@@ -156,6 +223,7 @@ function updateWordCount(){
       displayError(err);
     }
 }
+*/
 
 /**
  * Enable submit button if text in textarea;
@@ -165,18 +233,23 @@ function enableSubmit(){
   let countButton = document.getElementById('count');
   const text = document.getElementsByName("input_text")[0].value;
   const max = document.getElementsByName("max")[0].value;
+  const numWords = countWords(text)
+  const numChars = text.length
 
   // DEBUG statements
   console.log("Max = " + max);
   console.log(typeof(max));
   console.log(max === '');
+  console.log("enableSubmit button: ", document.getElementById('count').disabled);
 
+  wordOk = numWords > 0 && numWords <= WORD_MAX
+  charOk = numChars > 0 && numChars <= CHAR_MAX
   maxBlank = max === ''
 
-  if (countWords(text) && !maxBlank) {
-    countButton.disabled = false;
+  if (wordOk && !maxBlank && charOk) {
+    countButton.disabled = false; // enable!
   }else{
-    countButton.disabled = true;
+    countButton.disabled = true; // disable!
   }
 }
 
@@ -220,9 +293,12 @@ function refresh(){
 
   // Tell users what's happening so they don't freak out
   // Need to switch back to black in case word count is over the max
-  document.getElementById('word-count').style.color = 'black';
-  document.getElementById('word-count').style.fontWeight = '400';
+  //document.getElementById('word-count').style.color = 'black';
+  //document.getElementById('word-count').style.fontWeight = '400';
   document.getElementById('word-count').innerHTML = 'Processing...';
+  document.getElementById('char-count').innerHTML = 'Processing...';
+  document.getElementById('wordcount-over').innerHTML = '';
+  document.getElementById('charcount-over').innerHTML = '';
 
   // Kill the last timeout. If we're typing at normal speed, there's no
   // benefit to every single invocation of updateWordCount when a key is pressed.

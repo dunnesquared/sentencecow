@@ -7,11 +7,17 @@
   <h1>Welcome to Le Guin Sentence Word Counter!</h1>
 
   <p>This program extracts sentences from a text and counts the number of words
-    in each sentence, <i>as best as possible.</i></p>
+    in each sentence, <i>as best as possible.</i> Any string of alphanumeric
+    characters that ends with a terminating punctuation mark such as . ! ? and
+    the like is considered to be a sentence.</p>
 
-  <p>In the boxes below, write or paste a short text ({{max}} words or less)
-    and set the maximum number of words that should appear in each sentence.
-    Click 'Count' to see how your sentences measure up!</p>
+  <p>Your text should be {{max}} words or less; {{char_max}} characters
+     or less. I designed the program to parse texts written in English, but
+     you're free to try texts written in other languages. </p>
+
+   <p>In the boxes below, write or paste a short text
+     and set the maximum number of words that should appear in each sentence.
+     Click 'Count' to see how your sentences measure up!</p>
 
 
     <form id="lgcform" action="/leguinncounter" method="POST">
@@ -24,7 +30,7 @@
         placeholder="Write your story here..."
         onfocus= "this.placeholder =''"
         wrap="soft"
-        maxlength="{{char_max}}"
+        data-charmax="{{char_max}}"
         oninput="refresh();">{{ input_text }}</textarea>
 
         <p class="over"> {{ msg }} </p>
@@ -33,43 +39,49 @@
          placeholder="Write your story here..."
          onfocus= "this.placeholder =''"
          wrap="soft"
-         maxlength="{{char_max}}"
+         data-charmax="{{char_max}}"
          oninput="refresh();"></textarea>
       {% endif %}
 
-      <p id="wcTitle">Word Count (Max. {{max}}):  <span id='word-count'>0</span> </p>
+      <!--Word and chatacter count table-->
+      <table id='count_table'>
+        <tr>
+            <td>Word Count:</td>
+            <td id='word-count'>0</td>
+            <td id='wordcount-over'></td>
+        </tr>
+
+        <tr>
+          <td>Character Count:</td>
+          <td id='char-count'>0</td>
+          <td id='charcount-over'></td>
+        </tr>
+
+      </table>
+
+      <!--<p id="wcTitle">Word Count (Max. {{max}}):  <span id='word-count'>0</span> </p>-->
       </div>
 
-
-    <h3>Max Number of Words per Sentence:</h3>
-
-    <div>
+    <div id='maxboxtitle'>Max Number of Words per Sentence:</div>
       <input name="max"
        type="number"
        min=1
        max="{{max}}"
        value="7"
        oninput="enableSubmit();"></input>
-    </div>
 
-    <!--For testing purposes
-    <div><input name="max"></input></div>
-    -->
 
-     <br>
-     <div>
+     <div id="button-container">
       <input id='count' name='submit_button' type="Submit", value="Count" disabled></input>
       <button id='reset_button' type="button" value="Reset" onclick="resetAll();">Reset</button>
     </div>
 
 
 
+
   </form>
 
- <br>
-  <p>N.B. The maximum number of <i>characters</i> allowed
-    in the text box is {{char_max}}, whitespaces included. That should
-    be plenty.</p>
+
 
   <!--To display exceptions-->
   <pre class='error'></pre>
