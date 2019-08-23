@@ -80,3 +80,22 @@ tr{
 #button-container{
   margin-top: 1.5em;
 }
+
+#sent-table{
+ border: 1px solid black;
+ width: 100%;
+ border-collapse: collapse;
+}
+
+#sent-table th{
+  border: 1px solid black;
+  text-align: center;
+}
+
+#sent-table td{
+  border: 1px solid black;
+}
+
+.cell {
+  text-align: center;
+}

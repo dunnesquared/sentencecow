@@ -3,14 +3,15 @@
 
 {% block content %}
 
-  <h1>Original Text</h1>
+  <h1>Results</h1>
+  <h2>Original Text</h2>
   <p><pre>{{input_text}}</pre></p>
 
   <!--Only worth displaying if there's actually sentences to be parsed.-->
   {% if (sentences|length) != 0 %}
 
         <!--Build highlighted text with pre-tags -->
-        <h1>Highlighted Text</h1>
+        <h2>Parsed Text (long sentences highlighted)</h2>
         <p>
             {% for item in highlight_data %}
               {% set start = item[0] %}
@@ -33,20 +34,45 @@
 
         </p>
 
-        <h1>All sentences</h1>
-
-        {% for s in sentences %}
-          <p>{{s['content']}} (# words: {{s['wordcount']}})</p>
-        {% endfor %}
-
-        <h1>Long sentences (word_max = {{max}})</h1>
+        <h2>Details</h2>
 
 
-        {% for ls in long_sentences %}
-          <!--<p>{{ls['sentence']}} (# words: {{lgcounter.count_words(ls['sentence'])}})</p>-->
-          <p>{{ls['sentence']}} (# words: {{ls['wordcount']}})</p>
-        {% endfor %}
+        <table id="sent-table">
+          <tr>
+            <th>#</th>
+            <th>Sentence</th>
+            <th># words</th>
+            <th>More than {{max}} words?</th>
+          </tr>
 
+          <!-- Highlight the rows where sentences exceed word max -->
+          {% for s in sentences %}
+            {% if s['wordcount'] > max %}
+              <tr style="background-color: yellow">
+            {% else %}
+              <tr>
+            {% endif %}
+
+
+
+              <td class='cell'> {{loop.index}}</td>
+              <td>{{s['content']}}</td>
+              <td class='cell'>{{s['wordcount']}}</td>
+
+              <!-- Highlight the rows where sentences exceed word max -->
+              {% if s['wordcount'] > max %}
+                <td class='cell'>Y</td>
+              {% else %}
+                <td class='cell'>N</td>
+              {% endif %}
+
+            </tr>
+          {% endfor %}
+
+        </table>
+
+        <!--To use later!!-->
+        <!--<p>Total: {{ sentences|sum(attribute='wordcount')}}</p>-->
 
         <h1>Not quite right?</h1>
         <p>Sometimes detected sentences are shorter than they actually are,
@@ -73,7 +99,7 @@
           <select name="index">
             {% for i in range(sentences|length) %}
               <option value="{{ i }}">
-                {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
+                {{loop.index}}) {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
               </option>
             {% endfor %}
           </select>
