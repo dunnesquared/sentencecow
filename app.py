@@ -49,9 +49,6 @@ def _is_over(text, word_max, char_max):
     word_over = True if len(ta.get_words(text)) > word_max else False
     char_over = True if len(text) > char_max else False
 
-    print(len(ta.get_words(text)))
-    print(True if len(ta.get_words(text)) > word_max else False)
-    print(f"word over = {word_over}\nchar_over = {char_over}")
     return word_over or char_over
 
     # return True if len(ta.get_words(text)) > WORD_MAX else False
@@ -179,11 +176,24 @@ def index():
                 return render_template("error.html", err=err, stack_trace=stack_trace)
 
 
+            # Get number of words in original and parsed texts
+            # If they're not equal, then it's likely the last part of the
+            # original text got lobbed off because it was missing a terminating
+            # punctuation mark.
+            wordcounts = {
+                          'original': len(ta.get_words(input_text)),
+                          'parsed': sum(sentence['wordcount'] for sentence in sentences)
+                         }
+
+            # DEBUG statement
+            print(f"******WORDCOUNTS = {wordcounts}*********")
+
             return render_template("results.html",
                                     input_text=input_text,
                                     sentences = sentences,
                                     max = max,
-                                    highlight_data = highlight_data)
+                                    highlight_data = highlight_data,
+                                    wordcounts = wordcounts)
 
         else:
             #server will return a 405 error code if other methods specified

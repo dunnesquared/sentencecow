@@ -259,8 +259,25 @@ def test_results():
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'If you met him, you would like him too.', rv.data)
 
+    # See whether word counts for original and parsed texts work
+    button = 'Count'
 
-def test_word_max():
+    data = setup()
+    data['input_text'] = data['input_text'][:-1] # take away period at end
+    data['sent_list[]'] = LeGuinnCounter(data['input_text']).sentences
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'13 words', rv.data)
+
+    data = setup()
+    data['input_text'] = ""# take away period at end
+    data['sent_list[]'] = LeGuinnCounter(data['input_text']).sentences
+    rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'Nothing to process', rv.data)
+
+
+
+
+def test_wordchar_max():
 
     from app import _is_over
     from app import WORD_MAX, CHAR_MAX

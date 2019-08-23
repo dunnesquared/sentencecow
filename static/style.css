@@ -99,3 +99,7 @@ tr{
 .cell {
   text-align: center;
 }
+
+.result-count{
+  font-size: 0.8em;
+}

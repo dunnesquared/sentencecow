@@ -6,6 +6,7 @@
   <h1>Results</h1>
   <h2>Original Text</h2>
   <p><pre>{{input_text}}</pre></p>
+  <p class="result-count">Word Count: {{wordcounts['original']}}</p>
 
   <!--Only worth displaying if there's actually sentences to be parsed.-->
   {% if (sentences|length) != 0 %}
@@ -30,9 +31,9 @@
               {% endif %}
 
             {% endfor %}
-
-
         </p>
+
+        <p class="result-count">Word Count: {{wordcounts['parsed']}}</p>
 
         <h2>Details</h2>
 
@@ -53,8 +54,6 @@
               <tr>
             {% endif %}
 
-
-
               <td class='cell'> {{loop.index}}</td>
               <td>{{s['content']}}</td>
               <td class='cell'>{{s['wordcount']}}</td>
@@ -70,6 +69,20 @@
           {% endfor %}
 
         </table>
+
+
+        {% if wordcounts['original'] != wordcounts['parsed'] %}
+          <p><b>Warning:</b> The word counts of your original and parsed
+          texts are different ({{wordcounts['original']}} vs.
+          {{wordcounts['parsed']}} words, respectively).
+          It's likely that the last part of the original
+          text wasn't included in the parsing because no terminating
+          punctuation
+          mark was used at the end of the text (i.e. the last bit didn't form
+          a 'valid' sentence). You can fix this by hitting your browser's
+          back button and adding a terminating punctuation mark at the end of
+          your text. </p>
+        {% endif %}
 
         <!--To use later!!-->
         <!--<p>Total: {{ sentences|sum(attribute='wordcount')}}</p>-->
