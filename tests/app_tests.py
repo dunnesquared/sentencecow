@@ -94,7 +94,7 @@ def test_form():
     max = '9999999999'
     data = {"input_text" : input_text, 'max' : max, 'submit_button': button}
     rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'Highlighted Text', rv.data)
+    assert_in(b'Parsed Text', rv.data)
 
     # Negative max
     max = '-5'
