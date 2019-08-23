@@ -178,12 +178,11 @@ def index():
                 stack_trace = "Not an exception!"
                 return render_template("error.html", err=err, stack_trace=stack_trace)
 
-            # Get list of sentences that have more words than max
-            long_sentences = lg.sentences_more_than(max)
 
-            return render_template("results.html", lgcounter=lg,
-                                    input_text=input_text, sentences = sentences,
-                                    long_sentences = long_sentences, max = max,
+            return render_template("results.html",
+                                    input_text=input_text,
+                                    sentences = sentences,
+                                    max = max,
                                     highlight_data = highlight_data)
 
         else:
