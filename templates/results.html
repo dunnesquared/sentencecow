@@ -88,11 +88,26 @@
         <!--<p>Total: {{ sentences|sum(attribute='wordcount')}}</p>-->
 
         <h1>Not quite right?</h1>
-        <p>Sometimes detected sentences are shorter than they actually are,
+
+        <div><b>Multiple sentences in one</b></div>
+        Occasionally, the program will combine two complete sentences when
+          it shouldn't. This can happen when there is no space right after a
+          terminating punctuation mark, as with footnote references. e.g.
+        <i>The full moon is an ecclesiastical full moon determined by reference
+           to a conventional cycle.[1]</i> (Wikipedia: "Computus")
+           <br>
+         The fix for this is tricky, so the easiest thing to do would be
+           to remove the 'offending' characters from the text and see whether
+           that fixes things.
+
+      <p></p>
+       <div><b>Divided sentence</b></div>
+        Sometimes detected sentences are shorter than they actually are,
           especially when quotes and abbreviations are involved. To combine to
           two consecutive too-short sentences, click 'Merge next' on the sentence
           you want to be joined with the one following it.
-        </p>
+        <p></p>
+
 
         <form action="leguinncounter" method="POST">
 
