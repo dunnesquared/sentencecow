@@ -167,6 +167,8 @@ class LeGuinnCounter:
             index (int): index of primary sentence
 
         Raises:
+            ValueError: trying to combine sentences when sentence list is empty
+
             IndexError: index is less than zero or greater the number of
                         sentences in the sentence list.
 
@@ -198,6 +200,74 @@ class LeGuinnCounter:
 
             # No need for that second sentence anymore
             self.sentences.pop(index + 1)
+
+
+    def split_sentence(self, index, split_pos):
+        '''Cuts a sentnece at specified position; add new sentence to
+        sentence list.
+
+        Args:
+            index (int): index of sentence being split in sentence list
+            split_pos (int): postion where sentence is to be cut
+
+        Raises:
+            ValueError: trying to split a sentence when sentence list is empty
+
+            IndexError: index is less than zero or greater the number of
+                        sentences in the sentence list; split_pos less than
+                        zero or greater than length of sentence
+
+        Return:
+            void: Modifies sentences list: first part of cut sentence
+            assigned to index; second part part inserted at index + 1
+        '''
+        # Algorithn
+        # 1. Check for errors
+        # 2. Get sentence at index; save first and second parts re split pos
+        # 3. Check to see whether first part is only white spaces
+            # Y - Do nothing, exit
+            # N - Go to step 5
+        # 4. Check to see whether second part is only white spaces
+            # Y - Do nothing, exit
+            # N - Go to step 5
+        # 5. Replace sentence at index with first part
+        # 6. Insert second sentence at position index + 1
+
+        # No sentences to merge: do nothing.
+        if len(self.sentences) == 0:
+            raise ValueError("Split cannot be performed on an empty sentence list.")
+
+        # Index out of bounds
+        if index < 0 or index >= len(self.sentences):
+            raise IndexError("Index cannot be less than zero or larger " +
+                             "than list")
+
+        # split_pos out of bounds
+        sentence = self.sentences[index]
+
+        if split_pos < 0 or split_pos > len(sentence):
+            raise IndexError("split_pos cannot be less than zero or larger " +
+                             "than sentence length")
+
+
+        # Get first and second parts of sentence
+        first_part = sentence[:split_pos]
+        second_part = sentence[split_pos:]
+
+        # DEBUG
+        # white space characteres (i.e. not a valid sentence)
+        print("sentence", repr(sentence))
+        print("first_part:", repr(first_part))
+        print("second_part:", repr(second_part))
+
+        # No point in modifying sentence list if one of the parts is just
+        firstOk = bool(len(first_part.strip()))
+        secondOk = bool(len(second_part.strip()))
+
+        if firstOk and secondOk:
+            self.sentences[index] = first_part
+            self.sentences.insert(index+1, second_part)
+
 
 
     def generate_LGSentenceList(self, text, sentlist, max):

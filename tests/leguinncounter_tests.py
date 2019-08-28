@@ -252,3 +252,183 @@ def test_mergenext():
     expected = 1
     actual = len(lg.sentences)
     assert_equal(actual, expected)
+
+
+def test_split_sentence():
+    # 1. Normal case, minimal white spacing
+    # Check first sentence
+    # Check second sentence
+    # Check list size
+
+    # Setup
+    text = "This is a sentence with a footnote.[1] Crazy!"
+    split_pos = 38
+    i = 0
+    lg = LeGuinnCounter(text)
+    lg.split_sentence(i, split_pos)
+
+
+    # Check first sentence
+    expected = 'This is a sentence with a footnote.[1]'
+    result = lg.sentences[i]
+    assert_equal(result, expected)
+
+    # Check second sentence
+    expected = ' Crazy!'
+    result = lg.sentences[i+1]
+    assert_equal(result, expected)
+
+    # Check size of list
+    expected = 2
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    # 2. Normal case, complicated whitespacing
+    text = '''This is a sentence with a footnote.[1] Crazy! It's followed by another.[2] And another.[3] This sentence is free.
+Just insane.
+Here's one last sentence with a footnote.[3]
+This sentence is on a separate line, but still atttached to the previous sentence.'''
+
+    # Check size BEFORE split
+    lg.parse(text)
+    expected = 4
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    # Split sentence 0 at split_pos = 38
+    split_pos = 38
+    i = 0
+    lg.split_sentence(i, split_pos)
+
+    # Test whether split worked: check sentences and list size
+    # Check first sentence
+    expected = 'This is a sentence with a footnote.[1]'
+    result = lg.sentences[i]
+    assert_equal(result, expected)
+
+    # Check second sentence
+    expected = ' Crazy!'
+    result = lg.sentences[i+1]
+    assert_equal(result, expected)
+
+    # Check size of list
+    expected = 5
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    # Test splitting the last sentence (4) at split pos 45
+    i = 4
+    split_pos = 45
+    lg.split_sentence(i, split_pos)
+
+    # Check first sentence
+    expected = "\nHere's one last sentence with a footnote.[3]"
+    result = lg.sentences[i]
+    assert_equal(result, expected)
+
+    # Check second sentence
+    expected = '''
+This sentence is on a separate line, but still atttached to the previous sentence.'''
+    result = lg.sentences[i+1]
+    assert_equal(result, expected)
+
+    # Check size of list
+    expected = 6
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+
+    #Test error conditions
+
+    # Sentence index out of bounds
+    i = -1
+    split_pos = 5
+    assert_raises(IndexError, lg.split_sentence, i, split_pos)
+
+    i = 1000
+    assert_raises(IndexError, lg.split_sentence, i, split_pos)
+
+
+    # split pos out of bounds
+    i = 5
+    split_pos = -5
+    assert_raises(IndexError, lg.split_sentence, i, split_pos)
+
+    split_pos = 1000
+    assert_raises(IndexError, lg.split_sentence, i, split_pos)
+
+
+    # No sentences
+    lg.sentences = []
+    i = 0
+    split_pos = 3
+    assert_raises(ValueError, lg.split_sentence, i, split_pos)
+
+
+    # Test: multiple splits
+    text = "0.1.2.3.4."
+    lg.parse(text)
+
+    #Check size BEFORE split
+    expected = 1
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    # Do multiple splits
+    split_pos = 2
+    for i in range(0, 4):
+        lg.split_sentence(i, split_pos)
+
+    expected = 5
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    expected = ["0.", "1.",  "2.",  "3.",  "4."]
+    result = lg.sentences
+    assert_equal(result, expected)
+
+    # Split when there's nothing to split
+    text = "1."
+    lg.parse(text)
+    i, split_pos = 0, 1
+    lg.split_sentence(i, split_pos)
+    lg.split_sentence(i, 0) # split again
+
+    # Check sentence list length
+    expected = ['1', '.']
+    result = lg.sentences
+    assert_equal(result, expected)
+
+
+    # Split with blank characters
+    text = "\n\t\r\n123!\n\t\r\n"
+    lg.parse(text)
+    i = 0
+    split_pos = 4
+    lg.split_sentence(i, split_pos)
+
+    # Check sentence list length
+    expected = 1
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    # N.B. offset in textanalysis ignores leading white spaces of first sentence
+    # Trailing whitespaces discarded since sentence only take to terminating
+    # character
+    expected = "123!"
+    result = lg.sentences[i]
+    assert_equal(result, expected)
+
+    # Split at end of sentence
+    text = "Pizza!"
+    lg.parse(text)
+    i, split_pos = 0, 6
+    lg.split_sentence(i, split_pos)
+
+    expected = 1
+    result = len(lg.sentences)
+    assert_equal(result, expected)
+
+    expected = "Pizza!"
+    result = lg.sentences[i]
+    assert_equal(result, expected)
