@@ -249,6 +249,10 @@ class LeGuinnCounter:
             raise IndexError("split_pos cannot be less than zero or larger " +
                              "than sentence length")
 
+        # Remove carriage return should it be present
+        # Text from web has shown a tendency to have carriage returns in them
+        # I'm not sure why, but it causes problems, so remove 'em
+        sentence = re.sub(r'[\r]', r'', sentence)
 
         # Get first and second parts of sentence
         first_part = sentence[:split_pos]
