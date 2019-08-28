@@ -30,6 +30,7 @@ import traceback as tb
 app = Flask(__name__)
 
 # Server-side restriction on word-count in case client-side script disabled
+# Set WORD_MAX to 26000 if running test on metamorphis_kafka.txt
 WORD_MAX = 300
 CHAR_MAX = WORD_MAX * 10
 
@@ -172,15 +173,16 @@ def index():
 
             elif request.form['submit_button'] == 'Split':
                 # Data pertaining to split the sentence
-                split_pos = request.form['splitpostion']
+                split_pos = request.form['splitposition']
                 index = request.form['sentindex']
-                first_part = request.form['firstpart']
-                second_part = request.form['secondpart']
+                #first_part = request.form['firstpart']
+                #second_part = request.form['secondpart']
 
+                # DEBUG
                 print("SPLIT POS = ", split_pos)
                 print("SENT INDEX = ", index)
-                print("FIRST PART = ", first_part)
-                print("SECOND PART = ", second_part)
+                #print("FIRST PART = ", first_part)
+                #print("SECOND PART = ", second_part)
 
 
                 # The rest
@@ -199,6 +201,7 @@ def index():
                                             stack_trace=stack_trace)
 
                 index = int(index)
+                split_pos = int(split_pos)
 
                 # Trailing white spaces are suprefluous
                 input_text = input_text.rstrip()
@@ -215,7 +218,7 @@ def index():
                 lg.sentences = sent_list
 
                 # Merge sentence at current index with the one following it
-                #lg.merge_next(index)
+                lg.split_sentence(index, split_pos)
 
                 # Get list of LG_sentences so we can do highlighing more easily
                 lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
