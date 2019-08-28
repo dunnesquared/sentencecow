@@ -55,7 +55,7 @@
             {% endif %}
 
               <td class='cell'> {{loop.index}}</td>
-              <td>{{s['content']}}</td>
+              <td><pre>{{s['content']}}</pre></td>
               <td class='cell'>{{s['wordcount']}}</td>
 
               <!-- Highlight the rows where sentences exceed word max -->
@@ -89,24 +89,12 @@
 
         <h1>Not quite right?</h1>
 
-        <div><b>Multiple sentences in one</b></div>
-        Occasionally, the program will combine two complete sentences when
-          it shouldn't. This can happen when there is no space right after a
-          terminating punctuation mark, as with footnote references. e.g.
-        <i>The full moon is an ecclesiastical full moon determined by reference
-           to a conventional cycle.[1]</i> (Wikipedia: "Computus")
-           <br>
-         The fix for this is tricky, so the easiest thing to do would be
-           to remove the 'offending' characters from the text and see whether
-           that fixes things.
-
-      <p></p>
-       <div><b>Divided sentence</b></div>
-        Sometimes detected sentences are shorter than they actually are,
-          especially when quotes and abbreviations are involved. To combine to
-          two consecutive too-short sentences, click 'Merge next' on the sentence
-          you want to be joined with the one following it.
-        <p></p>
+        <div><h2>Divided sentence</h2></div>
+         Sometimes detected sentences are shorter than they actually are,
+           especially when quotes and abbreviations are involved. To combine to
+           two consecutive too-short sentences, click 'Merge' on the sentence
+           you want to be joined with the one following it.
+         <p></p>
 
 
         <form action="leguinncounter" method="POST">
@@ -123,6 +111,8 @@
             <input type='hidden' name="sent_list[]" value="{{sentences[i]['content']}}"</input>
           {% endfor %}
 
+
+
           <!-- Index of sentence chosen to merge with next-->
           <select name="index">
             {% for i in range(sentences|length) %}
@@ -138,6 +128,91 @@
           </div>
 
         </form>
+        <!------------------------------------------------------->
+
+        <p></p>
+        <p></p>
+          <div><h2>Multiple sentences in one</h2></div>
+          Occasionally, the program will combine two complete sentences when
+            it shouldn't. This can happen when there is no space right after a
+            terminating punctuation mark, as with footnote references. e.g.
+          <i>The full moon is an ecclesiastical full moon determined by reference
+             to a conventional cycle.[1]</i> (Wikipedia: "Computus")
+
+          <p>To fix this, follow the steps below to separate the sentences.
+          Note that you can only divide a sentence into at most three parts.
+          If you need to do more splits, just repeat the process afterward.
+        </p>
+
+          <p>1. Choose the offending sentence from the drop-down list.</p>
+
+         <!-- Select sentence
+
+         <select id='sel_split'>
+           <option>This is one sentence.</option>
+           <option>This is another sentence. I am yet another.</option>
+           <option>PIZZA! It's the best.</option>
+           <option>This is a sentence with a footnote.[1]</option>
+         </select>
+          -->
+
+
+         <!-- Index of sentence chosen to merge with next-->
+         <form action="leguinncounter" method="POST">
+
+           <!--HTTP is a stateless protocol; need to send this info back, so we
+          can redisplay it once the CGI web script is done processing-->
+           <input type='hidden' name="max" value={{max}}></input>
+           <input type='hidden' name="input_text" value="{{input_text}}"></input>
+
+           <!-- Need to resend the sentence list in case sentences have been
+            previously merged: parsing the original text will bring us back give
+           us sentences before they were merged.-->
+           {% for i in range(sentences|length) %}
+             <input type='hidden' name="sent_list[]" value="{{sentences[i]['content']}}"</input>
+           {% endfor %}
+
+           <select id ="sel_split" name="index">
+             {% for i in range(sentences|length) %}
+               <option value="{{sentences[i]['content']}}">
+                 {{loop.index}}) {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
+               </option>
+             {% endfor %}
+           </select>
+
+           <p>2. Highlight with your cursor a full sentence you wish to
+           separate from the offending sentence.</p>
+           <!-- Print sentence in textarea--->
+           <div>
+           <textarea id='sentencetextarea' name='split_textarea' readonly>Sentence goes here</textarea>
+           </div>
+
+           <p>3. Confirm and split! </p>
+
+           <p>The following text will be split from offending sentence:<br>
+                <pre id='output_area'></pre>
+          </p>
+
+          <!--Data to send back-->
+          <input id="sent_index" type="hidden" name="sentindex" value="">
+          <input id="split_pos" type="hidden" name="splitpostion" value="">
+          <input id="first_part" type="hidden" name="firstpart" value="">
+          <input id="second_part" type="hidden" name="secondpart" value="">
+
+
+
+
+         <input name="submit_button" type="Submit" id='split' value="Split"></input>
+
+         <!---DEBUGGING-->
+         <p><pre id="saved"></pre></p>
+      </form>
+
+
+
+
+
+
 
     {% else %}
       <h1>Nothing to process!</h1>
@@ -152,5 +227,6 @@
 <br>
 <a href="http://localhost:5000/leguinncounter">Return to main page</a>
 
+<script type="text/javascript" src="{{ url_for('static', filename='split.js') }}"></script>
 
 {% endblock %}

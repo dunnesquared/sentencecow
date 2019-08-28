@@ -170,8 +170,68 @@ def index():
                 # So we can have the word counts of each sentence without
                 # having to call wordcount function in template
 
+            elif request.form['submit_button'] == 'Split':
+                # Data pertaining to split the sentence
+                split_pos = request.form['splitpostion']
+                index = request.form['sentindex']
+                first_part = request.form['firstpart']
+                second_part = request.form['secondpart']
+
+                print("SPLIT POS = ", split_pos)
+                print("SENT INDEX = ", index)
+                print("FIRST PART = ", first_part)
+                print("SECOND PART = ", second_part)
+
+
+                # The rest
+                #Get everything we'll need to merge sentences and send data back
+                input_text = request.form['input_text']
+                max = request.form['max']
+                sent_list = request.form.getlist('sent_list[]')
+
+                # LeGuinnCounter expects integers, not strings for these values
+                try:
+                    max = int(max)
+                except ValueError as e:
+                    err = "Max can only be an integer"
+                    stack_trace = tb.format_exc()
+                    return render_template("error.html", err=err,
+                                            stack_trace=stack_trace)
+
+                index = int(index)
+
+                # Trailing white spaces are suprefluous
+                input_text = input_text.rstrip()
+
+                # Initialize domain object
+                lg = LeGuinnCounter(input_text)
+
+                # We can't use sentence list generated when we create a LeGuinn-
+                # Counter object: regardless, how many times we merge sentences
+                # that parsing will always be the same (and so undo the parsing).
+                # Thus, it's important we use the sentences from our last merge.
+                # and replace the sentences in our object with them. Not the best
+                # design; will fix in later iteration
+                lg.sentences = sent_list
+
+                # Merge sentence at current index with the one following it
+                #lg.merge_next(index)
+
+                # Get list of LG_sentences so we can do highlighing more easily
+                lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
+
+                # Create a tuples list that you can send to the template; also
+                # want to decouple the domain stuff from the controller/ui stuff
+                highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
+
+                # So we can send back sentence list to user
+                # sentences = lg.sentences
+                sentences = [{'content': s, 'wordcount': lg.count_words(s)} for s in lg.sentences]
+
+
+
             else:
-                err = "submit_button neither Count nor Merge!"
+                err = "submit_button neither Count, Merge nor Split!"
                 stack_trace = "Not an exception!"
                 return render_template("error.html", err=err, stack_trace=stack_trace)
 

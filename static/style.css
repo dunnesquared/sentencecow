@@ -1,3 +1,5 @@
+/*****************************form.html************************************/
+
 body{
   /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
   background-color: rgb(255,240,210);
@@ -30,7 +32,7 @@ pre.error{
   font-size: 1.5em;
 }
 
-select[name=index]{
+select{
   width: 95%;
 }
 
@@ -81,6 +83,8 @@ tr{
   margin-top: 1.5em;
 }
 
+/*****************************Results.html************************************/
+
 #sent-table{
  border: 1px solid black;
  width: 100%;
@@ -102,4 +106,14 @@ tr{
 
 .result-count{
   font-size: 0.8em;
+}
+
+textarea[name=split_textarea]{
+  resize: none;
+  height: 5em; /* Each em = 1 char-size; equiv to 15 rows*/
+  width: 95%; /* Take only 95% width of screen*/
+  outline: none;
+  /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
+  font-family: "Times New Roman", Times, serif;
+  font-size: 0.95em;
 }
