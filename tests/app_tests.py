@@ -236,7 +236,7 @@ def test_results():
     data = setup()
     data['submit_button'] = "CRAZYTOWN!!"
     rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'submit_button neither Count nor Merge!', rv.data)
+    assert_in(b'submit_button neither Count, Merge nor Split!', rv.data)
 
     # sent_list doesn't match original text
     data = setup()
