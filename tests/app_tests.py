@@ -327,8 +327,8 @@ def test_split():
     def setup():
         input_text = "Once upon a time, there was a dog called Tutu. He was nice.[1] If you met him, you would like him too."
         max = 7
-        index = 0
-        split_pos = 16
+        index = 1
+        sub = 'He was nice.[1]'
         sentences = LeGuinnCounter(input_text).sentences
         return {
                 "input_text" : input_text,
@@ -336,19 +336,21 @@ def test_split():
                 'sentindex': index,
                 'sent_list[]': sentences,
                 'submit_button': 'Split',
-                'splitposition': split_pos
+                'firstpart': sub
                 }
 
-    # Normal case (no point in asserting--can't figure out what to test)
+    # Normal case
     data = setup()
     rv = web.post(resource_name, follow_redirects=True, data=data)
+    assert_in(b'He was nice.[1] ', rv.data)
+
+
 
     # No input_text
     data = setup()
     data['input_text'] = ''
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'ValueError', rv.data)
-
 
     # Bad max
     data = setup()
@@ -361,27 +363,73 @@ def test_split():
     data['sentindex'] = -20
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'IndexError', rv.data)
-
-    # Bad split position
-    data = setup()
-    data['splitposition'] = -20
-    rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'IndexError', rv.data)
-
-    # Corrupt sentence list
+    
     data = setup()
     data['sent_list[]'] = []
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'ValueError', rv.data)
 
 
+# def test_split():
+#     #Initial state
+#     def setup():
+#         input_text = "Once upon a time, there was a dog called Tutu. He was nice.[1] If you met him, you would like him too."
+#         max = 7
+#         index = 0
+#         split_pos = 16
+#         sentences = LeGuinnCounter(input_text).sentences
+#         return {
+#                 "input_text" : input_text,
+#                 'max' : max,
+#                 'sentindex': index,
+#                 'sent_list[]': sentences,
+#                 'submit_button': 'Split',
+#                 'splitposition': split_pos
+#                 }
+#
+#     # Normal case (no point in asserting--can't figure out what to test)
+#     data = setup()
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#
+#     # No input_text
+#     data = setup()
+#     data['input_text'] = ''
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'ValueError', rv.data)
+#
+#
+#     # Bad max
+#     data = setup()
+#     data['max'] = -20
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'ValueError', rv.data)
+#
+#     # Bad sent index
+#     data = setup()
+#     data['sentindex'] = -20
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'IndexError', rv.data)
+#
+#     # Bad split position
+#     data = setup()
+#     data['splitposition'] = -20
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'IndexError', rv.data)
+#
+#     # Corrupt sentence list
+#     data = setup()
+#     data['sent_list[]'] = []
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'ValueError', rv.data)
+
+
 # DISABLED TEMPORARILY SO TESTS CAN RUN FASTER
-def test_longtext():
-    # Very, very large input
-    fin = open("./tests/metamorphosis_kafka.txt")
-    button = 'Count'
-    input_text = fin.read()
-    max = '25'
-    data = {"input_text" : input_text, 'max' : max, 'submit_button' : button}
-    rv = web.post(resource_name, follow_redirects=True, data=data)
-    assert_in(b'Parsed Text', rv.data)
+# def test_longtext():
+#     # Very, very large input
+#     fin = open("./tests/metamorphosis_kafka.txt")
+#     button = 'Count'
+#     input_text = fin.read()
+#     max = '25'
+#     data = {"input_text" : input_text, 'max' : max, 'submit_button' : button}
+#     rv = web.post(resource_name, follow_redirects=True, data=data)
+#     assert_in(b'Parsed Text', rv.data)

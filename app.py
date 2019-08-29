@@ -173,15 +173,15 @@ def index():
 
             elif request.form['submit_button'] == 'Split':
                 # Data pertaining to split the sentence
-                split_pos = request.form['splitposition']
+                # split_pos = request.form['splitposition']
                 index = request.form['sentindex']
-                #first_part = request.form['firstpart']
+                first_part = request.form['firstpart']
                 #second_part = request.form['secondpart']
 
                 # DEBUG
-                print("SPLIT POS = ", split_pos)
+                # print("SPLIT POS = ", split_pos)
                 print("SENT INDEX = ", index)
-                #print("FIRST PART = ", first_part)
+                print("FIRST PART = ", first_part)
                 #print("SECOND PART = ", second_part)
 
 
@@ -201,7 +201,7 @@ def index():
                                             stack_trace=stack_trace)
 
                 index = int(index)
-                split_pos = int(split_pos)
+                # split_pos = int(split_pos)
 
                 # Trailing white spaces are suprefluous
                 input_text = input_text.rstrip()
@@ -218,7 +218,8 @@ def index():
                 lg.sentences = sent_list
 
                 # Merge sentence at current index with the one following it
-                lg.split_sentence(index, split_pos)
+                #lg.split_sentence(index, split_pos)
+                lg.split_sentence(index, first_part)
 
                 # Get list of LG_sentences so we can do highlighing more easily
                 lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
