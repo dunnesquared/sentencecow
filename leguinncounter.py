@@ -310,15 +310,14 @@ class LeGuinnCounter:
         if len(self.sentences) == 0:
             raise ValueError("Split cannot be performed on an empty sentence list.")
 
-        if len(sub.strip()) == 0:
-            raise ValueError("Split cannot be performed: substring has no " \
-                             "non white-space characters or empty.")
-
         # Index out of bounds
         if i < 0 or i >= len(self.sentences):
             raise IndexError("Index cannot be less than zero or larger " +
                              "than list")
 
+        # Do nothing if the substring is emoty or has only whitespace characters
+        if len(sub.strip()) == 0:
+            return
 
         sentence = self.sentences[i]
 

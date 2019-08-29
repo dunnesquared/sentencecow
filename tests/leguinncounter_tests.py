@@ -534,10 +534,14 @@ This sentence is on a separate line, but still atttached to the previous sentenc
     assert_raises(ValueError, lg.split_sentence, i, sub)
 
     #Substring empty
-    lg.sentences = []
+    text = "This is a sentence with a footnote.[1] Crazy!"
+    lg.parse("This is a sentence with a footnote.[1] Crazy!")
     i = 0
     sub = ""
-    assert_raises(ValueError, lg.split_sentence, i, sub)
+    expected = ["This is a sentence with a footnote.[1] Crazy!"]
+    result = lg.sentences
+    assert_equal(result, expected)
+
 
     #Substring white characters only
     lg.sentences = []
