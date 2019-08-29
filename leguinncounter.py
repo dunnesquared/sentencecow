@@ -201,21 +201,92 @@ class LeGuinnCounter:
             # No need for that second sentence anymore
             self.sentences.pop(index + 1)
 
+    # DEPRECATED
+    # def split_sentence(self, index, split_pos):
+    #     '''Cuts a sentnece at specified position; add new sentence to
+    #     sentence list.
+    #
+    #     Args:
+    #         index (int): index of sentence being split in sentence list
+    #         split_pos (int): postion where sentence is to be cut
+    #
+    #     Raises:
+    #         ValueError: trying to split a sentence when sentence list is empty
+    #
+    #         IndexError: index is less than zero or greater the number of
+    #                     sentences in the sentence list; split_pos less than
+    #                     zero or greater than length of sentence
+    #
+    #     Return:
+    #         void: Modifies sentences list: first part of cut sentence
+    #         assigned to index; second part part inserted at index + 1
+    #     '''
+    #     # Algorithn
+    #     # 1. Check for errors
+    #     # 2. Get sentence at index; save first and second parts re split pos
+    #     # 3. Check to see whether first part is only white spaces
+    #         # Y - Do nothing, exit
+    #         # N - Go to step 5
+    #     # 4. Check to see whether second part is only white spaces
+    #         # Y - Do nothing, exit
+    #         # N - Go to step 5
+    #     # 5. Replace sentence at index with first part
+    #     # 6. Insert second sentence at position index + 1
+    #
+    #     # No sentences to merge: do nothing.
+    #     if len(self.sentences) == 0:
+    #         raise ValueError("Split cannot be performed on an empty sentence list.")
+    #
+    #     # Index out of bounds
+    #     if index < 0 or index >= len(self.sentences):
+    #         raise IndexError("Index cannot be less than zero or larger " +
+    #                          "than list")
+    #
+    #     # split_pos out of bounds
+    #     sentence = self.sentences[index]
+    #
+    #     if split_pos < 0 or split_pos > len(sentence):
+    #         raise IndexError("split_pos cannot be less than zero or larger " +
+    #                          "than sentence length")
+    #
+    #     # Remove carriage return should it be present
+    #     # Text from web has shown a tendency to have carriage returns in them
+    #     # I'm not sure why, but it causes problems, so remove 'em
+    #     sentence = re.sub(r'[\r]', r'', sentence)
+    #
+    #     # Get first and second parts of sentence
+    #     first_part = sentence[:split_pos]
+    #     second_part = sentence[split_pos:]
+    #
+    #     # DEBUG
+    #     # white space characteres (i.e. not a valid sentence)
+    #     print("sentence", repr(sentence))
+    #     print("first_part:", repr(first_part))
+    #     print("second_part:", repr(second_part))
+    #
+    #     # No point in modifying sentence list if one of the parts is just
+    #     firstOk = bool(len(first_part.strip()))
+    #     secondOk = bool(len(second_part.strip()))
+    #
+    #     if firstOk and secondOk:
+    #         self.sentences[index] = first_part
+    #         self.sentences.insert(index+1, second_part)
 
-    def split_sentence(self, index, split_pos):
-        '''Cuts a sentnece at specified position; add new sentence to
+
+
+    def split_sentence(self, i, sub):
+        '''Cuts a sentence at end where substring sub ends; adds new sentences to
         sentence list.
 
         Args:
-            index (int): index of sentence being split in sentence list
-            split_pos (int): postion where sentence is to be cut
+            i (int): index of sentence in sentence list to be split
+            sub (str): substring to be matched in sentences[i]
 
         Raises:
             ValueError: trying to split a sentence when sentence list is empty
 
             IndexError: index is less than zero or greater the number of
-                        sentences in the sentence list; split_pos less than
-                        zero or greater than length of sentence
+                        sentences in the sentence list
 
         Return:
             void: Modifies sentences list: first part of cut sentence
@@ -223,40 +294,44 @@ class LeGuinnCounter:
         '''
         # Algorithn
         # 1. Check for errors
-        # 2. Get sentence at index; save first and second parts re split pos
-        # 3. Check to see whether first part is only white spaces
+        # 2. Strip substring: do not assume JS to have done it for you
+        # 3, Find start, end indices of substring in sentences[i]
+        # 4. Extract two substrings based on end index of from Step 3
+        # 5. Check to see whether first part is only white spaces
             # Y - Do nothing, exit
-            # N - Go to step 5
-        # 4. Check to see whether second part is only white spaces
+            # N - Go to step 7
+        # 6. Check to see whether second part is only white spaces
             # Y - Do nothing, exit
-            # N - Go to step 5
-        # 5. Replace sentence at index with first part
-        # 6. Insert second sentence at position index + 1
+            # N - Go to step 7
+        # 7. Replace sentence at index with first part
+        # 8. Insert second sentence at position index + 1
 
-        # No sentences to merge: do nothing.
+        # No sentences to split; shouldn't be splitting here
         if len(self.sentences) == 0:
             raise ValueError("Split cannot be performed on an empty sentence list.")
 
+        if len(sub.strip()) == 0:
+            raise ValueError("Split cannot be performed: substring has no " \
+                             "non white-space characters or empty.")
+
         # Index out of bounds
-        if index < 0 or index >= len(self.sentences):
+        if i < 0 or i >= len(self.sentences):
             raise IndexError("Index cannot be less than zero or larger " +
                              "than list")
 
-        # split_pos out of bounds
-        sentence = self.sentences[index]
 
-        if split_pos < 0 or split_pos > len(sentence):
-            raise IndexError("split_pos cannot be less than zero or larger " +
-                             "than sentence length")
+        sentence = self.sentences[i]
 
-        # Remove carriage return should it be present
-        # Text from web has shown a tendency to have carriage returns in them
-        # I'm not sure why, but it causes problems, so remove 'em
-        sentence = re.sub(r'[\r]', r'', sentence)
+        # Because of newline characters given as CRLF in HTML/Windows and LF in
+        # UNIX and JS normalizes CRLF to LF (I think), finding the substring i
+        # in the above sentence will likely fail any where you have a newline
+        # space in your text. Easiest just to find non-white space characters
+        sub = sub.strip()
 
         # Get first and second parts of sentence
-        first_part = sentence[:split_pos]
-        second_part = sentence[split_pos:]
+        start, end = ta.find_start_end(sub, sentence)
+        first_part = sentence[0:end]
+        second_part = sentence[end:]
 
         # DEBUG
         # white space characteres (i.e. not a valid sentence)
@@ -269,9 +344,8 @@ class LeGuinnCounter:
         secondOk = bool(len(second_part.strip()))
 
         if firstOk and secondOk:
-            self.sentences[index] = first_part
-            self.sentences.insert(index+1, second_part)
-
+            self.sentences[i] = first_part
+            self.sentences.insert(i+1, second_part)
 
 
     def generate_LGSentenceList(self, text, sentlist, max):
