@@ -30,6 +30,13 @@
                 <pre>{{input_text[start:end]}}</pre>
               {% endif %}
 
+                <!-- Place a separator between detected sentences. This will
+                be helpful to detect where a sentence was split in the middle
+                of a word, creating different word counts between original
+                and parsed texts.
+                -->
+                <pre> ❖ </pre>
+
             {% endfor %}
         </p>
 
@@ -72,7 +79,7 @@
 
 
         {% if wordcounts['original'] != wordcounts['parsed'] %}
-          <p><b>Warning:</b> The word counts of your original and parsed
+          <p><b>Warning:</b><br> The word counts of your original and parsed
           texts are different ({{wordcounts['original']}} vs.
           {{wordcounts['parsed']}} words, respectively).
           It's likely that the last part of the original
@@ -81,7 +88,12 @@
           mark was used at the end of the text (i.e. the last bit didn't form
           a 'valid' sentence). You can fix this by hitting your browser's
           back button and adding a terminating punctuation mark at the end of
-          your text. </p>
+          your text.
+         </p>
+         <p>Alternatively, if you used the Split feature below in the middle
+           of a word, the parsed text's wordcount will be one higher
+           than the original text's wordcount.
+         </p>
         {% endif %}
 
         <!--To use later!!-->
