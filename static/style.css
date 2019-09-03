@@ -116,4 +116,9 @@ textarea[name=split_textarea]{
   /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
   font-family: "Times New Roman", Times, serif;
   font-size: 0.95em;
+  cursor: pointer;
+}
+
+#output_area{
+  font-family: "Courier New", Courier, monospace;
 }

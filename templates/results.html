@@ -12,7 +12,7 @@
   {% if (sentences|length) != 0 %}
 
         <!--Build highlighted text with pre-tags -->
-        <h2>Parsed Text (long sentences highlighted)</h2>
+        <h2>Parsed Text (Long sentences highlighted; ❖  = sentence break)</h2>
         <p>
             {% for item in highlight_data %}
               {% set start = item[0] %}
@@ -50,7 +50,11 @@
             <th>#</th>
             <th>Sentence</th>
             <th># words</th>
-            <th>More than {{max}} words?</th>
+            {% if max > 1 %}
+              <th>More than {{max}} words?</th>
+            {% else %}
+              <th>More than {{max}} word?</th>
+            {% endif %}
           </tr>
 
           <!-- Highlight the rows where sentences exceed word max -->
@@ -62,7 +66,7 @@
             {% endif %}
 
               <td class='cell'> {{loop.index}}</td>
-              <td><pre>{{s['content']}}</pre></td>
+              <td><p>{{s['content']}}</p></td>
               <td class='cell'>{{s['wordcount']}}</td>
 
               <!-- Highlight the rows where sentences exceed word max -->
@@ -185,6 +189,7 @@
            {% endfor %}
 
            <select id ="sel_split" name="index">
+             <option disabled selected value> --Pick a sentence to split---</option>
              {% for i in range(sentences|length) %}
                <option value="{{sentences[i]['content']}}">
                  {{loop.index}}) {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
@@ -192,15 +197,19 @@
              {% endfor %}
            </select>
 
-           <p>2. Click or point where the sentence should be split.</p>
+           <p>2. Click or tap where the sentence should be split.</p>
            <!-- Print sentence in textarea--->
            <div>
-           <textarea id='sentencetextarea' name='split_textarea' readonly>Sentence goes here</textarea>
+           <textarea
+            id='sentencetextarea'
+            name='split_textarea'
+            placeholder="Selected sentence will go here..."
+            readonly></textarea>
            </div>
 
            <p>3. Confirm and split! </p>
 
-           <p>The following text will be split from offending sentence:<br>
+           <p>The selected sentence text will be split as follows:<br>
                 <pre id='output_area'></pre>
           </p>
 
@@ -210,10 +219,7 @@
           <input id="first_part" type="hidden" name="firstpart" value="">
           <input id="second_part" type="hidden" name="secondpart" value="">
 
-
-
-
-         <input name="submit_button" type="Submit" id='split' value="Split"></input>
+         <input name="submit_button" type="Submit" id='split' value="Split" disabled></input>
 
          <!---DEBUGGING-->
          <p><pre id="saved"></pre></p>
@@ -228,7 +234,6 @@
     {% endif %}
 
 
-<br>
 <br>
 <a href="http://localhost:5000/leguinncounter">Return to main page</a>
 
