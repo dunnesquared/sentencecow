@@ -2,8 +2,6 @@
 
 {% block content %}
 
-
-
   <h1>Welcome to Le Guin Sentence Word Counter!</h1>
 
   <p>This program extracts sentences from a text and counts the number of words
@@ -22,7 +20,6 @@
 
     <form id="lgcform" action="/leguinncounter" method="POST">
 
-
       <div>
 
         <!-- Display message if input text over word count; user should
@@ -31,11 +28,9 @@
         {% if is_over == True %}
           <textarea
             name="input_text"
-            placeholder="Write your story here..."
-            onfocus= "this.placeholder =''"
+            placeholder="Write your text here..."
             wrap="soft"
-            data-charmax="{{char_max}}"
-            oninput="refresh();">{{ input_text }}</textarea>
+            data-charmax="{{char_max}}">{{ input_text }}</textarea>
 
         <!-- Error -->
         <p class="over"> {{ msg }} </p>
@@ -43,11 +38,9 @@
       {% else %}
         <textarea
          name="input_text"
-         placeholder="Write your story here..."
-         onfocus= "this.placeholder =''"
+         placeholder="Write your text here..."
          wrap="soft"
-         data-charmax="{{char_max}}"
-         oninput="refresh();"></textarea>
+         data-charmax="{{char_max}}"></textarea>
       {% endif %}
 
       <!--Word and chatacter count table-->
@@ -74,26 +67,18 @@
        type="number"
        min=1
        max="{{max}}"
-       value="7"
-       oninput="enableSubmit();"></input>
-
+       value="7"></input>
 
      <div id="button-container">
       <input id='count' name='submit_button' type="Submit", value="Count" disabled></input>
-      <button id='reset_button' type="button" value="Reset" onclick="resetAll();">Reset</button>
+      <button id='reset_button' type="button" value="Reset">Reset</button>
     </div>
 
-
-
-
   </form>
-
-
 
   <!--To display exceptions-->
   <pre class='error'></pre>
 
   <script type="text/javascript" src="{{ url_for('static', filename='count.js') }}"></script>
-
 
 {% endblock %}

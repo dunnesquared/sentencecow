@@ -50,9 +50,9 @@ catch(err){
 // On loadig page...
 // Ensure that user can't submit an empty textarea to web script
 // Ensure that we count the words on the page
-let textarea = document.querySelector("textarea");
-textarea.addEventListener("load", enableSubmit());
-textarea.addEventListener("load", updateWordCount());
+// let textarea = document.querySelector("textarea");
+// textarea.addEventListener("load", enableSubmit());
+// textarea.addEventListener("load", updateWordCount());
 
 
 /**
@@ -276,6 +276,10 @@ function resetAll(){
   // Handle whatever reset didn't
   enableSubmit();
   updateWordCount();
+
+  // Put back placeholder text
+  const textarea = document.querySelector("textarea");
+  textarea.placeholder = "Write your text here..."
 }
 
 
@@ -305,4 +309,26 @@ function refresh(){
   // Only the last one matters (i.e. when the user stops typing.)
   clearTimeout(timeout);
   timeout = setTimeout(updateWordCount, 500); //500 milliseconds
+}
+
+// EVENT HANDLERS
+try{
+  // On loadig page...
+  // Ensure that user can't submit an empty textarea to web script
+  // Ensure that we count the words on the page
+  const textarea = document.querySelector("textarea");
+  textarea.addEventListener("DOMContentLoaded", enableSubmit);
+  textarea.addEventListener("DOMContentLoaded", updateWordCount);
+  textarea.addEventListener("input", refresh);
+  textarea.addEventListener("focus", function () {
+                            this.placeholder = this.placeholder ='';});
+
+  const maxBoxTextArea = document.getElementsByName("max")[0];
+  maxBoxTextArea.addEventListener("input", enableSubmit);
+
+  const resetButton = document.getElementById('reset_button');
+  resetButton.addEventListener("click", resetAll);
+
+}catch(err){
+  console.error(err.name + err.message);
 }
