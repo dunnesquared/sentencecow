@@ -22,20 +22,27 @@
 
     <form id="lgcform" action="/leguinncounter" method="POST">
 
-      <!-- Display message if input text over word count-->
-      <div>
-      {% if is_over == True %}
-        <textarea
-        name="input_text"
-        placeholder="Write your story here..."
-        onfocus= "this.placeholder =''"
-        wrap="soft"
-        data-charmax="{{char_max}}"
-        oninput="refresh();">{{ input_text }}</textarea>
 
+      <div>
+
+        <!-- Display message if input text over word count; user should
+          see text if it's over. This is not expected to happen, but will
+          if Javascript breaks or is turned off.-->
+        {% if is_over == True %}
+          <textarea
+            name="input_text"
+            placeholder="Write your story here..."
+            onfocus= "this.placeholder =''"
+            wrap="soft"
+            data-charmax="{{char_max}}"
+            oninput="refresh();">{{ input_text }}</textarea>
+
+        <!-- Error -->
         <p class="over"> {{ msg }} </p>
+
       {% else %}
-        <textarea name="input_text"
+        <textarea
+         name="input_text"
          placeholder="Write your story here..."
          onfocus= "this.placeholder =''"
          wrap="soft"
