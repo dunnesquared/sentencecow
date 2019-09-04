@@ -25,7 +25,7 @@
               <pre>{{whitespace}}</pre>
 
               {% if highlight == true %}
-                  <pre class="highlight">{{input_text[start:end]}}</pre>
+                  <pre class="highlight bold">{{input_text[start:end]}}</pre>
               {% else %}
                 <pre>{{input_text[start:end]}}</pre>
               {% endif %}
@@ -60,7 +60,8 @@
           <!-- Highlight the rows where sentences exceed word max -->
           {% for s in sentences %}
             {% if s['wordcount'] > max %}
-              <tr style="background-color: yellow">
+              <!--<tr style="background-color: yellow">-->
+              <tr class="highlight">
             {% else %}
               <tr>
             {% endif %}

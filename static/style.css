@@ -11,8 +11,11 @@ pre{
   font-family: "Helvetica Neue", "Arial", "sans-serif";
 }
 
-pre.highlight{
+.highlight{
   background-color: yellow;
+}
+
+.bold{
   font-weight: 900;
 }
 
