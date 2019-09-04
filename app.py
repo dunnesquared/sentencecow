@@ -18,7 +18,7 @@ Done:
 
 """
 
-from flask import Flask
+from flask import Flask, make_response
 from flask import render_template
 from flask import request
 
@@ -60,7 +60,12 @@ def bad_request(error):
     '''Return web page with description and stack trace of Bad Request Error.'''
     err = str(error) + "\n(Input possibly passed NoneType object)"
     stack_trace = tb.format_exc()
-    return render_template("error.html", err=err, stack_trace=stack_trace)
+
+    response = make_response(render_template("error.html",
+                                             err = err,
+                                            stack_trace = stack_trace))
+    response.headers['Content-Security-Policy'] = "default-src 'self'"
+    return response
 
 
 @app.route("/leguinncounter", methods=['POST', 'GET'])
@@ -72,8 +77,17 @@ def index():
 
     try:
         if request.method == 'GET':
-            # Render main page of web app
-            return render_template("form.html", max=WORD_MAX, char_max=CHAR_MAX)
+            # Need a response object to add meta security policy tag in the
+            # header of the returned page
+            response = make_response(render_template("form.html",
+                                                      max=WORD_MAX,
+                                                      char_max=CHAR_MAX))
+            # Set security policy to minimize chances of XSS attack
+            # Policy: only trust resources (scripts, stylsheets etc) from
+            # this site (default-src)
+            response.headers['Content-Security-Policy'] = "default-src 'self'"
+            return response
+
 
         elif request.method == 'POST':
 
@@ -237,7 +251,15 @@ def index():
             else:
                 err = "submit_button neither Count, Merge nor Split!"
                 stack_trace = "Not an exception!"
-                return render_template("error.html", err=err, stack_trace=stack_trace)
+
+                # Add security policy
+                response = make_response(render_template("error.html",
+                                                        err=err,
+                                                        stack_trace=stack_trace))
+                response.headers['Content-Security-Policy'] = "default-src 'self'"
+                return response
+
+                # return render_template("error.html", err=err, stack_trace=stack_trace)
 
 
             # Get number of words in original and parsed texts
@@ -249,15 +271,16 @@ def index():
                           'parsed': sum(sentence['wordcount'] for sentence in sentences)
                          }
 
-            # DEBUG statement
-            print(f"******WORDCOUNTS = {wordcounts}*********")
+            # Add security policy
+            response = make_response(render_template("results.html",
+                                        input_text=input_text,
+                                        sentences = sentences,
+                                        max = max,
+                                        highlight_data = highlight_data,
+                                        wordcounts = wordcounts))
 
-            return render_template("results.html",
-                                    input_text=input_text,
-                                    sentences = sentences,
-                                    max = max,
-                                    highlight_data = highlight_data,
-                                    wordcounts = wordcounts)
+            response.headers['Content-Security-Policy'] = "default-src 'self'"
+            return response
 
         else:
             #server will return a 405 error code if other methods specified
@@ -265,12 +288,20 @@ def index():
             #Head request exectutes this conditional, even though the error
             #page is technically not returned (weird?)
             err = "Not a GET or POST request; HEAD request likely made: " + request.method
-            return render_template("error.html", err=err)
+            response = make_response(render_template("error.html", err=err))
+            response.headers['Content-Security-Policy'] = "default-src 'self'"
+            return response
+
 
     except (ta.NotInTextError, ValueError, TypeError, IndexError, MemoryError) as e:
         err = str(e)
         stack_trace = tb.format_exc()
-        return render_template("error.html", err=err, stack_trace=stack_trace)
+
+        response = make_response(render_template("error.html",
+                                                  err=err,
+                                                  stack_trace = stack_trace))
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        return response
 
 
 if __name__ == "__main__":
