@@ -7,7 +7,7 @@ To Do:
     * Clean up main
     * add attributes to module doc
     * design flask app/jinja pages
-    * test LeGuinnSentence, generate_LGSentenceList
+    * test LeGuinSentence, generate_LGSentenceList
 
 Done:
     * implement for loop in sentences_more_than as while loop to get index
@@ -25,7 +25,7 @@ import textwrap as tw
 import re
 
 
-class LeGuinnSentence:
+class LeGuinSentence:
     """Contains contents of sentence in text as well relevant meta-data for
     this application.
     """
@@ -48,7 +48,7 @@ class LeGuinnSentence:
                 '''
 
 
-class LeGuinnCounter:
+class LeGuinCounter:
     """Checks that sentences in a text are less than X number of words.
     """
 
@@ -389,11 +389,11 @@ class LeGuinnCounter:
             isOver = self.more_than(s, max)
 
             # Old code No strip
-            # lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
+            # lg_sent = LeGuinSentence(s, start=start, end=end, isOver=isOver)
 
             # New code - sentences stripped
             s = s.strip()
-            lg_sent = LeGuinnSentence(s, start=start, end=end, isOver=isOver)
+            lg_sent = LeGuinSentence(s, start=start, end=end, isOver=isOver)
 
             lg_sentlist.append(lg_sent)
 
@@ -410,16 +410,16 @@ class LeGuinnCounter:
 # -------------------------PRIVATE--------------------------------------------
 
     def __whitespace_before(self, lg_sentlist, text):
-        '''Return list of LeGuinnSentences such that any white-space characters
+        '''Return list of LeGuinSentences such that any white-space characters
         before each sentence are saved
 
         Args:
-            lg_sentlist (LeGuinnSentence []): A complete list of sentences
+            lg_sentlist (LeGuinSentence []): A complete list of sentences
                                               in a text
             text (str): text from which whitespace characters will be copied
 
         Return:
-            lg_sentlist (LeGuinnSentence []): An updated list with white-space
+            lg_sentlist (LeGuinSentence []): An updated list with white-space
                                               preceding a sentence saved
         '''
 
@@ -506,7 +506,7 @@ if __name__ == "__main__":
     We're having so much trouble getting this program finished. Bye for now!!
     '''
 
-    lg_counter = LeGuinnCounter(tw.dedent(text))
+    lg_counter = LeGuinCounter(tw.dedent(text))
     print(lg_counter.sentences)
 
     print("#####")

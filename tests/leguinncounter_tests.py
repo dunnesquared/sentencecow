@@ -1,5 +1,5 @@
 from nose.tools import *
-from leguinncounter import LeGuinnCounter
+from LeGuincounter import LeGuinCounter
 from random import randint
 
 def test_init():
@@ -14,9 +14,9 @@ def test_init():
 
     # Returns expected object
     text = "Blah! Blah, blah."
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     expected = True
-    assert_equal(isinstance(lg, LeGuinnCounter), expected)
+    assert_equal(isinstance(lg, LeGuinCounter), expected)
 
     # Check contents of attribute text
     expected = "Blah! Blah, blah."
@@ -28,18 +28,18 @@ def test_init():
 
     # Pass invalid Argument
     text = None
-    assert_raises(TypeError, LeGuinnCounter, text)
+    assert_raises(TypeError, LeGuinCounter, text)
 
     # Pass empty string ""
     text = ""
     expected = ("", [])
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     assert_equal((lg.text, lg.sentences), expected)
 
     # Pass empty string  "   \n\t  \r\n  "
     text = "   \n\t  \r\n  "
     expected = expected = ("   \n\t  \r\n  ", [])
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     assert_equal((lg.text, lg.sentences), expected)
 
 
@@ -52,7 +52,7 @@ def test_parse():
 
     # Pass valid argument
     text = "Blah! Blah, blah."
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     lg.parse(text)
     expected = ["Blah!", " Blah, blah."]
     assert_equal(lg.sentences, expected)
@@ -73,7 +73,7 @@ def test_count_words():
 
     # invalid input
     text = "Blah! Blah, blah."
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     assert_raises(TypeError, lg.count_words, 7)
 
     # empty string
@@ -117,7 +117,7 @@ def test_morethan():
 
     # valid sentence, invalid max = less than 1
     text = "My name is Alex. What's yours?"
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     max = 0
     assert_raises(ValueError, lg.more_than, text, max)
 
@@ -161,7 +161,7 @@ def test_sentence_morethan():
     '''
 
     # bad max value
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     max = 0
     assert_raises(ValueError, lg.sentences_more_than, max)
 
@@ -196,7 +196,7 @@ def test_mergenext():
 
     # Nothing to merge
     text = ""
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     before = len(lg.sentences)
     val = 0
     assert_raises(ValueError, lg.merge_next, val)
@@ -264,7 +264,7 @@ def test_mergenext():
 #     text = "This is a sentence with a footnote.[1] Crazy!"
 #     split_pos = 38
 #     i = 0
-#     lg = LeGuinnCounter(text)
+#     lg = LeGuinCounter(text)
 #     lg.split_sentence(i, split_pos)
 #
 #
@@ -444,7 +444,7 @@ def test_split_sentence():
     text = "This is a sentence with a footnote.[1] Crazy!"
     i = 0
     sub = "This is a sentence with a footnote.[1]"
-    lg = LeGuinnCounter(text)
+    lg = LeGuinCounter(text)
     lg.split_sentence(i, sub)
 
     # Check first sentence
