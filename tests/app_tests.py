@@ -1,13 +1,13 @@
 from nose.tools import *
 from app import *
 from flask import request
-from leguinncounter import LeGuinnCounter
+from leguincounter import LeGuinCounter
 
 app.config['TESTING'] = True
 web = app.test_client()
 
 # !!!Change this to correct web server name in your app!!!
-resource_name = '/leguinncounter'
+resource_name = '/leguincounter'
 
 '''
 What to test for:
@@ -134,7 +134,7 @@ def test_results():
     input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
     max = 7
     index = 1
-    sentences = LeGuinnCounter(input_text).sentences
+    sentences = LeGuinCounter(input_text).sentences
     data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
     expected = b"He was nice. If you met him, you would like him too. (# words: 12)"
     rv = web.post(resource_name, follow_redirects=True, data=data)
@@ -152,7 +152,7 @@ def test_results():
     # Merge with no sentences
     input_text = ''
     index = 0
-    sentences = LeGuinnCounter(input_text).sentences
+    sentences = LeGuinCounter(input_text).sentences
     data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
     expected = b"Merge cannot be performed on an empty sentence list."
     rv = web.post(resource_name, follow_redirects=True, data=data)
@@ -162,7 +162,7 @@ def test_results():
     input_text = "Once upon a time, there was a dog called Tutu."
     max = 7
     index = 0
-    sentences = LeGuinnCounter(input_text).sentences
+    sentences = LeGuinCounter(input_text).sentences
     data = {"input_text" : input_text, 'max' : max, 'index': index, 'sent_list[]': sentences, 'submit_button': button}
     expected = b"Once upon a time, there was a dog called Tutu. (# words: 10)"
 
@@ -175,7 +175,7 @@ def test_results():
     #Initial state
     def setup():
         input_text = "Once upon a time, there was a dog called Tutu. He was nice. If you met him, you would like him too."
-        max = 7; index = 0; sentences = LeGuinnCounter(input_text).sentences
+        max = 7; index = 0; sentences = LeGuinCounter(input_text).sentences
         return {
                 "input_text" : input_text,
                 'max' : max,
@@ -264,13 +264,13 @@ def test_results():
 
     data = setup()
     data['input_text'] = data['input_text'][:-1] # take away period at end
-    data['sent_list[]'] = LeGuinnCounter(data['input_text']).sentences
+    data['sent_list[]'] = LeGuinCounter(data['input_text']).sentences
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'13 words', rv.data)
 
     data = setup()
     data['input_text'] = ""# take away period at end
-    data['sent_list[]'] = LeGuinnCounter(data['input_text']).sentences
+    data['sent_list[]'] = LeGuinCounter(data['input_text']).sentences
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'Nothing to process', rv.data)
 
@@ -329,7 +329,7 @@ def test_split():
         max = 7
         index = 1
         sub = 'He was nice.[1]'
-        sentences = LeGuinnCounter(input_text).sentences
+        sentences = LeGuinCounter(input_text).sentences
         return {
                 "input_text" : input_text,
                 'max' : max,
@@ -363,7 +363,7 @@ def test_split():
     data['sentindex'] = -20
     rv = web.post(resource_name, follow_redirects=True, data=data)
     assert_in(b'IndexError', rv.data)
-    
+
     data = setup()
     data['sent_list[]'] = []
     rv = web.post(resource_name, follow_redirects=True, data=data)
@@ -377,7 +377,7 @@ def test_split():
 #         max = 7
 #         index = 0
 #         split_pos = 16
-#         sentences = LeGuinnCounter(input_text).sentences
+#         sentences = LeGuinCounter(input_text).sentences
 #         return {
 #                 "input_text" : input_text,
 #                 'max' : max,

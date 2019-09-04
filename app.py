@@ -9,7 +9,7 @@ To Do:
     * handle exceptions from model modules/classes
     * need to send sentences when sending over whole lg object
     * results.html: clean up code
-    * redesign LeGuinnCounter class to better handle merging (class-leve methods)
+    * redesign LeGuinCounter class to better handle merging (class-leve methods)
     * the indent in first paragraph screwing up the highlighting
 
 Done:
@@ -22,7 +22,7 @@ from flask import Flask, make_response
 from flask import render_template
 from flask import request
 
-from leguinncounter import LeGuinnCounter
+from leguincounter import LeGuinCounter
 from textanalysis import textanalysis as ta
 
 import traceback as tb
@@ -68,7 +68,7 @@ def bad_request(error):
     return response
 
 
-@app.route("/leguinncounter", methods=['POST', 'GET'])
+@app.route("/leguincounter", methods=['POST', 'GET'])
 def index():
     '''Return web pages that allow users to see whether their texts satisfy
        the criterion that their sentences have fewer or the same user-set
@@ -100,7 +100,7 @@ def index():
                 sent_list = request.form.getlist('sent_list[]')
                 index = request.form['index']
 
-                # LeGuinnCounter expects integers, not strings for these values
+                # LeGuinCounter expects integers, not strings for these values
                 try:
                     max = int(max)
                 except ValueError as e:
@@ -115,9 +115,9 @@ def index():
                 input_text = input_text.rstrip()
 
                 # Initialize domain object
-                lg = LeGuinnCounter(input_text)
+                lg = LeGuinCounter(input_text)
 
-                # We can't use sentence list generated when we create a LeGuinn-
+                # We can't use sentence list generated when we create a LeGuin-
                 # Counter object: regardless, how many times we merge sentences
                 # that parsing will always be the same (and so undo the parsing).
                 # Thus, it's important we use the sentences from our last merge.
@@ -156,7 +156,7 @@ def index():
                                             max=WORD_MAX,
                                             is_over=True)
 
-                # LeGuinnCounter expects integers, not strings for these values
+                # LeGuinCounter expects integers, not strings for these values
                 try:
                     max = int(request.form['max'])
                 except ValueError as e:
@@ -169,7 +169,7 @@ def index():
                 input_text = input_text.rstrip()
 
                 # Initialize domain object
-                lg = LeGuinnCounter(input_text)
+                lg = LeGuinCounter(input_text)
 
                 # Get list of LG_sentences so we can do highlighing more easily
                 lg_sentlist = lg.generate_LGSentenceList(input_text, lg.sentences, max)
@@ -205,7 +205,7 @@ def index():
                 max = request.form['max']
                 sent_list = request.form.getlist('sent_list[]')
 
-                # LeGuinnCounter expects integers, not strings for these values
+                # LeGuinCounter expects integers, not strings for these values
                 try:
                     max = int(max)
                 except ValueError as e:
@@ -221,9 +221,9 @@ def index():
                 input_text = input_text.rstrip()
 
                 # Initialize domain object
-                lg = LeGuinnCounter(input_text)
+                lg = LeGuinCounter(input_text)
 
-                # We can't use sentence list generated when we create a LeGuinn-
+                # We can't use sentence list generated when we create a LeGuin-
                 # Counter object: regardless, how many times we merge sentences
                 # that parsing will always be the same (and so undo the parsing).
                 # Thus, it's important we use the sentences from our last merge.
