@@ -1,5 +1,5 @@
 from nose.tools import *
-from LeGuincounter import LeGuinCounter
+from leguincounter import LeGuinCounter
 from random import randint
 
 def test_init():
