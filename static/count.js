@@ -329,6 +329,25 @@ try{
   const resetButton = document.getElementById('reset_button');
   resetButton.addEventListener("click", resetAll);
 
+  // Need this code to handle to refresh the word counts in the event
+  // the user hits the Back button from the Results page
+  window.addEventListener('pageshow', function(event){
+    // Page loading from cache
+    if (event.persisted){
+      console.log("Page was loaded from cache");
+    }else{
+      // I expected the page to be cached, but it's not. As soon as
+      // you go back to the original form page, it makes a GET request.The
+      // text inputted by the user is clearly cached though. Oh well//
+      console.log("Page not loaded from cache")
+
+      // Refresh counts and check submit button again!
+      enableSubmit();
+      updateWordCount();
+    }
+  });
+
+
 }catch(err){
   console.error(err.name + err.message);
 }
