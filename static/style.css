@@ -105,6 +105,12 @@ tr{
 
 .cell {
   text-align: center;
+  padding: 0.2em;
+}
+
+.cell-content{
+  padding: 0.2em;
+  padding-left: 0.5em;
 }
 
 .result-count{

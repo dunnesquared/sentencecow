@@ -67,7 +67,7 @@
             {% endif %}
 
               <td class='cell'> {{loop.index}}</td>
-              <td><p>{{s['content']}}</p></td>
+              <td class='cell-content'><span>{{s['content']}}</span></td>
               <td class='cell'>{{s['wordcount']}}</td>
 
               <!-- Highlight the rows where sentences exceed word max -->
@@ -107,11 +107,14 @@
         <h1>Not quite right?</h1>
 
         <div><h2>Divided sentence</h2></div>
-         Sometimes detected sentences are shorter than they actually are,
-           especially when quotes and abbreviations are involved. To combine to
-           two consecutive too-short sentences, click 'Merge' on the sentence
-           you want to be joined with the one following it.
-         <p></p>
+          The program sometimes detects the end of a sentence before it
+          should, resulting in two fragments. Often this happens when the
+          program encounters an abbreviation it's unfamiliar with or a
+          dialoge attribution it doesn't know how to handle.
+          <p>
+          To join the two fragments to form a full sentence, pick the first
+          one in the pair and click 'Merge'.
+         </p>
 
 
         <form action="leguincounter" method="POST">
@@ -150,18 +153,17 @@
         <p></p>
         <p></p>
           <div><h2>Multiple sentences in one</h2></div>
-          Occasionally, the program will combine two complete sentences when
-            it shouldn't. This can happen when there is no space right after a
-            terminating punctuation mark, as with footnote references. e.g.
-          <i>The full moon is an ecclesiastical full moon determined by reference
-             to a conventional cycle.[1]</i> (Wikipedia: "Computus")
+          Occasionally, the program will combine sentences when
+            it shouldn't. This can happen when there is no space at
+            the end of a sentence such as in cited text. E.g. <i>The
+            moon is made of green cheese and always will be.[1]</i>
 
-          <p>To fix this, follow the steps below to separate the sentences.
+          <p>Follow the steps below to separate such sentences.
           Note that you can only divide a sentence into at most two parts.
-          If you need to do more splits, just repeat the process.
+          If you need to do more splits, just repeat.
         </p>
 
-          <p>1. Choose the offending sentence from the drop-down list.</p>
+          <p>1. Choose the offending text.</p>
 
          <!-- Select sentence
 
@@ -198,7 +200,7 @@
              {% endfor %}
            </select>
 
-           <p>2. Click or tap where the sentence should be split.</p>
+           <p>2. Click or tap where the text should be split.</p>
            <!-- Print sentence in textarea--->
            <div>
            <textarea
@@ -210,7 +212,7 @@
 
            <p>3. Confirm and split! </p>
 
-           <p>The selected sentence text will be split as follows:<br>
+           <p>The selected text will be split as follows:<br>
                 <pre id='output_area'></pre>
           </p>
 
