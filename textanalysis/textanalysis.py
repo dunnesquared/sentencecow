@@ -463,10 +463,31 @@ def _get_first_punctuation_mark(text, start):
     match = re.search(REGEX_QUOTE, text[start:])
     pos_quote = start + match.start() if match else -1
 
-    # Abbreviations (e.g. Mr.) give false poisitives. Ignore 'em!!
+    # Abbreviations (e.g. Mr.) give false positives. Generally, we want to
+    # avoid them being detected as the end-of-sentence, and so truncating
+    # a sentence prematurely (e.g. Hello, Mr. Darcy is detected as two
+    # sentences 'Hello, Mr.' and 'Darcy.')
+    # Unfortunately, abbreviations can legitimately be at the end of a
+    # sentence (e.g. Welcome to Fl.), and there is not easy way to know whether
+    # to skip the abbreviation or not. This code only provides a best guess;
+    # users will have to fix any errors afterword that may occur.
+    # e.g. 'Welcome the Fl. It's the best.' won't be broken into two sentences.
+
+    # Initialize variable that will hold the index num right after period
+    # after an abbreviation.
     new_start = start
+
     while True:
-        if _is_abbreviation(text, new_start, pos_period):
+
+        # Check to see whether only blank spaces after text; should mean
+        # there is no more meaningful text to process
+        not_blank = bool(text[pos_period+1:].strip())
+
+        # Abbreviations at the very end of the text should not be skipped
+        # and be recognized as the end of a sentence. Unfortunately, I could
+        # not think of a way to make my program smart enough to skip
+        # abbreviations in the middle of a sentence, but not at the end of one!
+        if _is_abbreviation(text, new_start, pos_period) and not_blank:
             new_start = pos_period + 1
             pos_period = text.find('. ', new_start, end_of_text+1)
         else:
