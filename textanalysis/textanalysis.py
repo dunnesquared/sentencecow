@@ -224,7 +224,8 @@ def get_sentences(text):
     #i, start, sentence, sent_list = 0, 0, "", []
     i, sentence, sent_list = 0, "", []
 
-    while start < len(text):
+    # Replace while start < len(text): it never became false
+    while start < (len(text)-1):
 
         i = _get_first_punctuation_mark(text, start)
 
