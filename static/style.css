@@ -131,3 +131,7 @@ textarea[name=split_textarea]{
 #output_area{
   font-family: "Courier New", Courier, monospace;
 }
+
+.warning{
+  color: crimson; 
+}
