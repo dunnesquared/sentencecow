@@ -92,9 +92,9 @@ DQUOTES = (H_DQUOTE + LBIG_DQUOTE + RBIG_DQUOTE + FW_DQUOTE + LPRIME_DQUOTE
 SQUOTES = H_SQUOTE + L_SQUOTE + R_SQUOTE + LH_SQUOTE + RH_SQUOTE
 
 # End-of-sentence patterns to help determine the end of a sentence
-REGEX_PERIOD = '[\.' + LEADERS + ']\s'
-REGEX_QEXMARK = '[\?!' + QEX  +  ']\s'
-REGEX_QUOTE = '[\.\?!—' + LEADERS + QEX  + ']"\s'
+REGEX_PERIOD = r'[\.' + LEADERS + ']\s'
+REGEX_QEXMARK = r'[\?!' + QEX  +  ']\s'
+REGEX_QUOTE = r'[\.\?!—' + LEADERS + QEX  + ']"\s'
 
 # These will be replaced by a simpler, straight single/double quotes: ' / "
 REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
@@ -169,7 +169,7 @@ def _get_dir():
 
 # Common abbreviations found in English language
 # Casting them as a set will allow us perform an intersection with other data
-abbreviations = set(_load_abbreviations())
+ABBREVIATIONS = set(_load_abbreviations())
 #==============================================================================
 
 class NotInTextError(Exception):
@@ -323,10 +323,10 @@ def find_start_end(substring, text, start_search=0):
     print("==================================================")
     print("")
 
-    '''NEW CODE'''
+    # NEW CODE
     # Don't bother to find empty substrings in possibly empty texts
     print(f"\nDEBUG: PRE-STRIP, substring = {repr(substring)}")
-    sublen  = len(substring.strip())
+    sublen = len(substring.strip())
     textlen = len(text.strip())
 
     if sublen == 0 or textlen == 0:
@@ -400,7 +400,7 @@ def offset(text):
         index (int): index of first non-white-space character; -1 if none found
     '''
     index = 0
-    match = re.search('[^\s]', text, re.IGNORECASE)
+    match = re.search(r'[^\s]', text, re.IGNORECASE)
     index = match.start() if match else -1
 
     return index
@@ -527,8 +527,6 @@ def _is_abbreviation(text, start, index):
         False (bool): No abbreviation found.
     '''
 
-    global abbreviations # Remember this is not a list, but a set...
-
     # Focus on the part of text that may contain an abbreviation
     part = text[start:index+1]
 
@@ -542,7 +540,8 @@ def _is_abbreviation(text, start, index):
     # Disjoint means two sets share nothing in common (essentially their
     # intersection is the null set). So, if the two sets are not disjoint,
     # then you've found an abbreviation; otherwise you (maybe) haven't.
-    return True if not sent_words.isdisjoint(abbreviations) else False
+    disjoint = sent_words.isdisjoint(ABBREVIATIONS)
+    return not disjoint
 
 
     # OLD CODE!!
