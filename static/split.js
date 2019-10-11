@@ -166,19 +166,19 @@
   }
 
 
-  // Save index, full sentence.
-  function printSavedValues(){
-  	const index = document.getElementById('sent_index').value;
-    const first = document.getElementById('first_part').value;
-    const second = document.getElementById('second_part').value;
-    const splitPos = document.getElementById('split_pos').value;
-
-    const savedValues = `index = ${index}\nfirst = ${first}\nsecond = ${second}\nsplitPos = ${splitPos}`
-
-    const savedValTextArea = document.getElementById('saved');
-    savedValTextArea.innerHTML = savedValues;
-
-  }
+  // // Save index, full sentence.
+  // function printSavedValues(){
+  // 	const index = document.getElementById('sent_index').value;
+  //   const first = document.getElementById('first_part').value;
+  //   const second = document.getElementById('second_part').value;
+  //   const splitPos = document.getElementById('split_pos').value;
+  //
+  //   const savedValues = `index = ${index}\nfirst = ${first}\nsecond = ${second}\nsplitPos = ${splitPos}`
+  //
+  //   const savedValTextArea = document.getElementById('saved');
+  //   savedValTextArea.innerHTML = savedValues;
+  //
+  // }
 
   /**
   * Only allow split only if textarea is not empty
@@ -242,5 +242,5 @@
   }catch(err){
     console.error(err.name + err.message);
   }
-  
+
 }
