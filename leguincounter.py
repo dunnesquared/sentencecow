@@ -20,9 +20,10 @@ Notes:
 
 """
 
-from textanalysis import textanalysis as ta
 import textwrap as tw
-import re
+from textanalysis import textanalysis as ta
+
+
 
 
 class LeGuinSentence:
@@ -30,11 +31,11 @@ class LeGuinSentence:
     this application.
     """
 
-    def __init__(self, content="", start="0", end="0", isOver=False):
+    def __init__(self, content="", start="0", end="0", is_over=False):
         self.content = content
         self.start = start
         self.end = end
-        self.isOver = isOver
+        self.is_over = is_over
         self.whitespace = ""
 
     def __str__(self):
@@ -44,7 +45,7 @@ class LeGuinSentence:
                     content: {self.content}
                     start: {self.start}
                     end : {self.end}
-                    isOver: {self.isOver}
+                    is_over: {self.is_over}
                 '''
 
 
@@ -91,13 +92,13 @@ class LeGuinCounter:
         return len(ta.get_words(sentence))
 
 
-    def more_than(self, sentence, max = 20):
+    def more_than(self, sentence, word_max=20):
         '''Returns whether sentence has more than max words
 
         Args:
             sentence (str): sentence whose words are to be counted
-            max (int): max number of words allowed per sentence. If no max,
-                       is specified the default is 20 words.
+            word_max (int): max number of words allowed per sentence.
+                            If no max, is specified the default is 20 words.
 
         Raises:
             ValueError: max is a non-positive integer (i.e. less than 1)
@@ -107,28 +108,28 @@ class LeGuinCounter:
             False (bool): sentence has fewer or the same max words
         '''
 
-        if max < 1:
+        if word_max < 1:
             raise ValueError("Max must be a number >= 1.")
 
         num_words = self.count_words(sentence)
 
-        if num_words > max:
+        if num_words > word_max:
             return True
 
         return False
 
 
-    def sentences_more_than(self, max = 20):
+    def sentences_more_than(self, word_max=20):
         '''Returns list of maps. Each map contains the sentence that has more
         than the max number of words, where the sentence in the text starts;
         where it ends. If all sentences have the same number or few than max,
         empty list returned
 
         Args:
-            max (int): max number of words allowed per sentence
+            word_max (int): max number of words allowed per sentence
 
         Raises:
-            ValueError: max is a non-positive integer (i.e. less than 1)
+            ValueError: word_max is a non-positive integer (i.e. less than 1)
 
         Returns:
             long_sentences (list): a list of maps. Each item has three entries
@@ -142,14 +143,14 @@ class LeGuinCounter:
         start_pos = 0
 
         for sentence in self.sentences:
-            if self.more_than(sentence, max):
+            if self.more_than(sentence, word_max):
                 start, end = ta.find_start_end(sentence, self.text, start_pos)
                 item = {
-                        'sentence':sentence,
-                        'start': start,
-                        'end': end,
-                        'wordcount': self.count_words(sentence)
-                        }
+                    'sentence':sentence,
+                    'start': start,
+                    'end': end,
+                    'wordcount': self.count_words(sentence)
+                    }
                 long_sentences.append(item)
                 # Do not start searching for positions at beginning of text;
                 # Start from where the last sentence ended:
@@ -190,13 +191,13 @@ class LeGuinCounter:
         if index != len(self.sentences) - 1:
             # Merge sentences
             curr = self.sentences[index]
-            next = self.sentences[index + 1]
+            next_sentence = self.sentences[index + 1]
 
             # OLD CODE
             # self.sentences[index] = " ".join([curr, next])
 
             # NEW TEST CODE
-            self.sentences[index] = curr + next
+            self.sentences[index] = curr + next_sentence
 
             # No need for that second sentence anymore
             self.sentences.pop(index + 1)
@@ -328,7 +329,7 @@ class LeGuinCounter:
         sub = sub.strip()
 
         # Get first and second parts of sentence
-        start, end = ta.find_start_end(sub, sentence)
+        _, end = ta.find_start_end(sub, sentence)
         first_part = sentence[0:end]
         second_part = sentence[end:]
 
@@ -339,21 +340,21 @@ class LeGuinCounter:
         print("second_part:", repr(second_part))
 
         # No point in modifying sentence list if one of the parts is just
-        firstOk = bool(len(first_part.strip()))
-        secondOk = bool(len(second_part.strip()))
+        first_ok = bool(len(first_part.strip()))
+        second_ok = bool(len(second_part.strip()))
 
-        if firstOk and secondOk:
+        if first_ok and second_ok:
             self.sentences[i] = first_part
             self.sentences.insert(i+1, second_part)
 
 
-    def generate_LGSentenceList(self, text, sentlist, max):
+    def generate_LGSentenceList(self, text, sentlist, word_max):
         '''Return list of LGSentences given a list of string sentences
 
         Args:
             text (str): text of strings
             sentlist (list): list of sentences parsed from text
-            max (int): Max number of words per sentence
+            word_max (int): Max number of words per sentence
 
         Returns:
             lg_sentlist (LGSentences): list of LGSentences
@@ -374,9 +375,6 @@ class LeGuinCounter:
 
         for s in sentlist:
 
-            print(f"\nDEBUG: start_pos = {start_pos}")
-            print("\nDEBUG: leguincounter:generate_LGSentenceList, start, end = {}; sentence = {}\n".format(ta.find_start_end(s, text, start_pos), s))
-
             start, end = ta.find_start_end(s, text, start_pos)
 
             #New code - modeify start such that you get first position of non-white space character
@@ -386,14 +384,14 @@ class LeGuinCounter:
 
             print(f"DEBUG: leguincounter:generate_LGSentenceList, slice = {text[start:end]}\n")
 
-            isOver = self.more_than(s, max)
+            is_over = self.more_than(s, word_max)
 
             # Old code No strip
             # lg_sent = LeGuinSentence(s, start=start, end=end, isOver=isOver)
 
             # New code - sentences stripped
             s = s.strip()
-            lg_sent = LeGuinSentence(s, start=start, end=end, isOver=isOver)
+            lg_sent = LeGuinSentence(s, start=start, end=end, is_over=is_over)
 
             lg_sentlist.append(lg_sent)
 
@@ -452,7 +450,6 @@ class LeGuinCounter:
                 # would in the console. Adding an extra newline character
                 # seems to fix this. (Code should probably not be in the
                 # in the domain layer)
-                print(f"DEBUG: whitepace characters before sentence {i} = {repr(lg_sentlist[i].whitespace)}, length = {len(lg_sentlist[i].whitespace)}")
 
                 # OLD CODE
                 # if lg_sentlist[i].whitespace.count('\n') == 1:
@@ -471,9 +468,6 @@ class LeGuinCounter:
             #NEW
             expected_start = lg_sentlist[i].end
 
-
-            print(f"DEBUG: whitepace characters for sentence {i} = {repr(lg_sentlist[i].whitespace)}")
-            print(f"DEBUG: content of sentence {i} = {lg_sentlist[i].content}")
 
         print(f"*******END __whitespace before*********")
         print(f"==============================================")
@@ -501,43 +495,4 @@ def modify_text(text, start, stop):
 
 
 if __name__ == "__main__":
-    text = '''
-    This is a sample text. Do you like it? I hope so.
-    We're having so much trouble getting this program finished. Bye for now!!
-    '''
-
-    lg_counter = LeGuinCounter(tw.dedent(text))
-    print(lg_counter.sentences)
-
-    print("#####")
-    lg_sentlist = lg_counter.generate_LGSentenceList(text, lg_counter.sentences, 4)
-    for s in lg_sentlist:
-        print(s)
-    print("#####")
-
-    sentences = lg_counter.sentences
-
-    print(lg_counter.more_than(sentences[0],3))
-
-    max = 4
-    long_sentences = lg_counter.sentences_more_than(max)
-
-    for item in long_sentences:
-        print(item)
-
-    # modify text -> to be implemented in JS
-    for item in long_sentences:
-        text = modify_text(text, item['start'], item['end'])
-
-    print("")
-    print(tw.dedent(text))
-    print("")
-
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
-    lg_counter.merge_next(0)
+    pass

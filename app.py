@@ -133,7 +133,7 @@ def index():
 
                 # Create a tuples list that you can send to the template; also
                 # want to decouple the domain stuff from the controller/ui stuff
-                highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
+                highlight_data = [ (l.start, l.end, l.is_over, l.whitespace) for l in lg_sentlist]
 
                 # So we can send back sentence list to user
                 # sentences = lg.sentences
@@ -176,7 +176,7 @@ def index():
 
                 # Create a tuples list that you can send to the template; also
                 # want to decouple the domain stuff from the controller/ui stuff
-                highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
+                highlight_data = [ (l.start, l.end, l.is_over, l.whitespace) for l in lg_sentlist]
 
                 # So we can send back sentence list to user
                 # sentences = lg.sentences
@@ -240,7 +240,7 @@ def index():
 
                 # Create a tuples list that you can send to the template; also
                 # want to decouple the domain stuff from the controller/ui stuff
-                highlight_data = [ (l.start, l.end, l.isOver, l.whitespace) for l in lg_sentlist]
+                highlight_data = [ (l.start, l.end, l.is_over, l.whitespace) for l in lg_sentlist]
 
                 # So we can send back sentence list to user
                 # sentences = lg.sentences
