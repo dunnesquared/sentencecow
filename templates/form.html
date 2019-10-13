@@ -73,10 +73,10 @@
        type="number"
        min=1
        max="{{max}}"
-       value="7"></input>
+       value="7"/>
 
      <div id="button-container">
-      <input id='count' name='submit_button' type="Submit", value="Count" disabled></input>
+      <input id='count' name='submit_button' type="Submit" value="Count" disabled/>
       <button id='reset_button' type="button" value="Reset">Reset</button>
     </div>
 
@@ -85,6 +85,6 @@
   <!--To display exceptions-->
   <pre class='error'></pre>
 
-  <script type="text/javascript" src="{{ url_for('static', filename='count.js') }}"></script>
+  <script src="{{ url_for('static', filename='count.js') }}"></script>
 
 {% endblock %}
