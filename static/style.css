@@ -5,6 +5,10 @@ body{
   background-color: rgb(255,240,210);
 }
 
+h1{
+  width: 90%;
+}
+
 pre{
   display: inline;
   white-space: pre-wrap;
@@ -22,7 +26,7 @@ pre{
 textarea[name=input_text]{
   resize: none;
   height: 15em; /* Each em = 1 char-size; equiv to 15 rows*/
-  width: 95%; /* Take only 95% width of screen*/
+  width: 90%; /* Take only 90% width of screen*/
   outline: none;
   /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
   font-family: "Times New Roman", Times, serif;
@@ -36,11 +40,11 @@ pre.error{
 }
 
 select{
-  width: 95%;
+  width: 90%;
 }
 
 p{
-  width:95%;
+  width:90%;
 }
 
 p.over{
@@ -90,7 +94,7 @@ tr{
 
 #sent-table{
  border: 1px solid black;
- width: 100%;
+ width: 90%;
  border-collapse: collapse;
 }
 
@@ -120,7 +124,7 @@ tr{
 textarea[name=split_textarea]{
   resize: none;
   height: 5em; /* Each em = 1 char-size; equiv to 15 rows*/
-  width: 95%; /* Take only 95% width of screen*/
+  width: 90%; /* Take only 90% width of screen*/
   outline: none;
   /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
   font-family: "Times New Roman", Times, serif;
@@ -133,5 +137,5 @@ textarea[name=split_textarea]{
 }
 
 .warning{
-  color: crimson; 
+  color: crimson;
 }
