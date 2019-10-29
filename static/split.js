@@ -1,4 +1,13 @@
-{ // Use ECMA6 block scope to prevent namespace conflicts with other JS files
+// WARNING: The code in this script file is NOT backwards-compatible with
+// older browsers that do not support ES6/ECMAScript 2015. As such, this
+// JS features for this program will likely not work in
+    // Safari: version < 10
+    // Chrome: version < 51
+    // Firefox: version < 54
+// Source: https://www.w3schools.com/js/js_versions.asp
+
+
+{ // Use EC6 block scope to prevent namespace conflicts with other JS files
   // possible loading in same page
 
   /**

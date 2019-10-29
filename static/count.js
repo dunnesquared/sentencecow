@@ -1,10 +1,19 @@
-{ // Use ECMA6 block scope to prevent namespace conflicts with other JS files
+// WARNING: The code in this script file is NOT backwards-compatible with
+// older browsers that do not support ES6/ECMAScript 2015. As such, this
+// JS features for this program will likely not work in
+    // Safari: version < 10
+    // Chrome: version < 51
+    // Firefox: version < 54
+// Source: https://www.w3schools.com/js/js_versions.asp
+
+
+{ // Use ES6 block scope to prevent namespace conflicts with other JS files
   // possible loading in same page
 
   // N.B. The following globals were originally declared as consts. However,
   // Safari seems to have trouble accessing these variables if that's the case.
   // Changed declaration to var for compatibility.
-  
+
   // Max number of words allowed in textarea
   // Fetch from html file--originally from app.py: the one place to set max val
   var WORD_MAX = parseInt(document.getElementsByName('max')[0].max);
