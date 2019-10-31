@@ -1,39 +1,83 @@
 # -*- coding: utf-8 -*-
-"""A module for extracting sentences from text and more :-p!
+"""Support to extract sentences from a text.
 
-This module provides the following functions
+This module provides functions to extract sentences from a text. Any string of
+alphanumeric characters that ends with a terminating punctuation mark such as a
+period, exclamation or question mark followed by a whitespace character is
+considered to be a sentence, regardless of its grammatical correctness.
+Analyzed texts are assumed to be in English; all functions were written and
+tested with that assumption. Where decisions had to be made to respect American
+or British English conventions, the former was chosen.
 
-1. get_sentences - extract sentences from a text, *as best as possible*
-2. get_words - extract words from a text, minus punctuation marks
-3. find_start_last - find the start and end indices of a substring in a text
+The solutions to sentence extraction presented in this module rely heavily
+on regular expressions but not on NLP or machine-learning algorithms. Perhaps
+because of this, the function 'get_sentences' does not always return sentences
+a reader would consider 'complete' when looking upon them. There are
+three situations where this may occur:
 
-Functions designed and tested for English texts only, using mostly
-American conventions. The solutions to these problems do not rely on any
-NLP/machine-learning algorithms. As such, they're a bit wonky.
-E.g. Sentences with dialogue attribution show the most errors; unaccounted for
-abbreviations will show up as false end-of-sentences. But it works for a lot of
-other cases too :-).
+1) In sentences containing dialogue
 
-This is a 'homemade' module made for learning/enjoyment purposes: do not use
-in production code.
+"This is ridiculous! What do you mean there's no pizza left?" Marcus asked.
 
-To Do:
-    * Fix offset handling issue
-    * READ REGEX tutorial
-    * Need to be able to handle \n\t\r at end of sentences; removing them
-     in _clean_text screwing presentation in upper layers
-    * Handle curly quotes via regex instead cleaning the text of them
-    * Be able handle sentences ending with quote then new line:  ."\n
-    * check documentation in interpreter
-    * use pyreverse to generate uml doc
-    * determine big-Oh performance for each function
+Normally, readers would consider this to be a single, complete sentence while
+acknowledging the sentences nested inside. The function 'get_sentences'
+doesn't make any such distinction and returns the list
 
-Last Done:
-    * Fix bug with where a substring of an abbreviation gets flagged as the
-      full abbreviation (e.g. U.S. in U.S.S.R)
+[   '"This is ridiculous!',
+    'What do you mean there's no pizza left?',
+    '" Marcus asked.'
+]
 
+2) In sentences that end with a terminating punctuation mark but with no
+   whitespace character afterward.
 
+As mentioned above, a whitespace after a terminating punctuation mark is
+required for the module to detect a sentence. A citation symbol or
+number immediately after a terminating will prevent this.
+
+For example, in the invented paragraph below, 'get_sentences' should return
+two sentences; it will only return one: the whole paragraph.
+
+e.g. The moon is made of green cheese.[6] Scientists discovered this fact in
+10 BCE.
+
+Return value of 'get_sentences':
+
+['The moon is made of green cheese.[6] Scientists discovered this fact in
+10 BCE.']
+
+3) In sentences that contain 'unfamiliar' abbreviations ending with a period.
+
+As might be suspected, abbreviations such as 'Mr.' or 'U.S.S.R.' might cause
+end of sentences to be detected when they shouldn't be. To avoid this,
+the module uses a list of abbreviations in the file "abbreviations.txt": any
+abbreviation in this file will not be treated as an end of sentence and
+ignored as such.
+
+For example, the honorific 'Dr.' is included in 'abbreviations.txt'.
+Consequently, the sentence
+
+Dr. Dunne does dissections diligently.
+
+will be parsed as a single sentence,
+
+['Dr. Dunne does dissections diligently.']
+
+whereas the abbreviation 'Bx.', which is not in the abbreviations file, will
+result in a sentence being detected prematurely; two 'sentences' are returned.
+
+Bx. Barry borrows bananas.
+
+will be parsed as
+
+['Bx.', 'Barry borrows bananas.']
+
+N.B. The file 'abbreviations.txt' is the product of a separate web-scraping
+script 'abbrevscrape.py'. Should you wish to generate the abbreviations file
+yourself, its online repository can be found at
+https://github.com/dunnesquared/abbrevscrape.
 """
+
 
 import os   # getcwd, path.join, path.dirname, path.realpath
 import sys # getsizeof
