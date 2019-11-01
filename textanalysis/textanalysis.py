@@ -536,8 +536,7 @@ def _get_first_punctuation_mark(text, start):
     pos_list = [pos_period, pos_exqmark, pos_quote]
 
     # Negative values will always be the smaller index; get rid of them!!
-    while -1 in pos_list:
-        pos_list.remove(-1)
+    pos_list = list(filter(lambda x: x != -1, pos_list))
 
     # Return position of the punctuation mark at the end of the current
     # sentence assuming there's a mark in the first place!
