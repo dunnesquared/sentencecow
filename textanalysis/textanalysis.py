@@ -526,7 +526,9 @@ def _get_first_punctuation_mark(text, start):
     # Check to see whether first non-whitespace character after end of a
     # quotation is lowercase. If it is, don't treat the end of the
     # quotation as the end of the sentence
-    pos_quote = _ignore_quote(pos_quote, text)
+
+    if pos_quote != -1: # quote found
+        pos_quote = _ignore_quote(pos_quote, text)
 
     # Get position of the punctuation mark at the end of the current
     # sentence
@@ -595,10 +597,6 @@ def _ignore_quote(pos, text):
         -1 (int): if quote is not the end of the sentence.
         pos (int): if quote is the end of the sentence.
     """
-
-    # Just in case a no-quote found index accidentally passed
-    if pos == -1:
-        return pos
 
     # Don't want to look at something outside the bounds of text
     if (pos + 3) < len(text):
