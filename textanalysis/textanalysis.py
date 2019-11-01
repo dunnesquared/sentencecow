@@ -13,7 +13,7 @@ The solutions to sentence extraction presented in this module rely heavily
 on regular expressions but not on NLP or machine-learning algorithms. Perhaps
 because of this, the function 'get_sentences' does not always return sentences
 a reader would consider 'complete' when looking upon them. There are
-three situations where this may occur:
+several situations where this may occur:
 
 1) In sentences containing dialogue
 
@@ -72,10 +72,37 @@ will be parsed as
 
 ['Bx.', 'Barry borrows bananas.']
 
-N.B. The file 'abbreviations.txt' is the product of a separate web-scraping
+4) In sentences that end with a 'familiar' abbreviation.
+
+Unfortunately, the fix for the abbreviation above creates a new problem with
+sentences that end in an abbreviation. For example, if the abbreviation 'Fl.'
+is in 'abbreviations.txt', then the following text
+
+Welcome the Fl. It's the best.
+
+won't be broken into two sentences, but will be parsed as one: the
+period in 'Fl.' is not seen as the terminating punctuation mark, but is rather
+skipped because the parsing algorithm tells it too!
+
+The only exception to this is if the abbreviation is at the very of the end of
+the text: it should be processed then as expected.
+
+5) Sentences containing grawlixes.
+
+E.g. The text
+
+This #$@&%*! module doesn't do what it's supposed to!
+
+would be parsed by get_sentences as
+
+['This #$@&%*!', 'module doesn't do what it's supposed to!']
+
+Note:
+The file 'abbreviations.txt' is the product of a separate web-scraping
 script 'abbrevscrape.py'. Should you wish to generate the abbreviations file
 yourself, its online repository can be found at
 https://github.com/dunnesquared/abbrevscrape.
+
 """
 
 
@@ -85,7 +112,7 @@ import re   # sub
 import textwrap  # dedent
 import string # punctuation
 
-#==============================GLOBAL CONSTANTS=================================
+#==============================GLOBAL CONSTANTS================================
 
 # Arbitrary text size set to avoid program from gobbling up too much memory
 # Set to what you will...
@@ -148,7 +175,7 @@ REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
 REGEX_ALLSYMOBLS = (r'[' + string.punctuation + LEADERS + QEX + DQUOTES
                     + SQUOTES +']')
 
-#===================INITIALIZING ABBREVIATIONS SET==============================
+#===================INITIALIZING ABBREVIATIONS SET=============================
 
 def _get_dir():
     """Returns absolute path of the directory where module exists
@@ -214,7 +241,7 @@ def _load_abbreviations():
 # Casting them as a set will allow efficient intersection with other data
 ABBREVIATIONS = set(_load_abbreviations())
 
-#==============================CLASSES==========================================
+#==============================CLASSES=========================================
 
 class NotInTextError(Exception):
     """String not found in text.
@@ -224,12 +251,12 @@ class NotInTextError(Exception):
     """
 
     def __init__(self, message):
-        """Init parent class and this class with developer errpr message"""
+        """Init parent class and this class with developer error message."""
         super().__init__(message)
         self.message = message
 
 
-#==============================PUBLIC FUNCTIONS=================================
+#==============================PUBLIC FUNCTIONS================================
 
 def get_sentences(text):
     """Returns a list of sentences from a text.
@@ -252,7 +279,7 @@ def get_sentences(text):
     print("=================================================")
     print("")
 
-    # Check to see whether text is less than defined memory maximum
+    # Check to see whether text is less than defined, yet arbitrary memory max
     _too_big(text)
 
     # Prepare text for parsing
@@ -309,10 +336,10 @@ def get_words(sentence):
     apostrophes are kept, but em dashes are not.
 
     Args:
-        sentence (str): Sentence from which words are to be extracted
+        sentence (str): Sentence from which words are to be extracted.
 
     Returns:
-        words (list): Sequence of words from the given sentence
+        words (list): Sequence of words from the given sentence.
      """
 
     # Remove all symbols and punctuation from sentence
@@ -342,17 +369,17 @@ def find_start_end(substring, text, start_search=0):
     """Returns start and end indices of a substring within a given text.
 
     Args:
-        substring (str): Substring to search within another string
-        text (str): The string that will be searched for the substring indices
-        start_search (int): The index where the search in text should begin
+        substring (str): Substring to search within another string.
+        text (str): The string that will be searched for the substring indices.
+        start_search (int): The index where the search in text should begin.
 
     Raises:
-        ValueError: Arguments substring and text are empty strings
+        ValueError: Arguments substring and text are empty strings.
 
     Returns:
-        -1 (int): If substring not in text being searched
+        -1 (int): If substring not in text being searched.
         (start_pos, end_pos): An integer tuple representing the start and end
-                              indices of the substring in the searched string
+                              indices of the substring in the searched string.
     """
 
     print("***********DEBUGGING FIND_START_END***************")
@@ -411,10 +438,10 @@ def offset(text):
     """Returns index of first non-whitespace character.
 
     Args:
-        text (str): string to be analyzed for whitespaces
+        text (str): string to be analyzed for whitespaces.
 
     Returns:
-        index (int): index of first non-whitespace character; -1 if none found
+        index (int): index of first non-whitespace character; -1 if none found.
     """
 
     index = 0 # Assume first character is not a whitespace
@@ -429,83 +456,84 @@ def offset(text):
     return index
 
 
-# +++++++++++++++++++++++++++++PRIVATE FUNCTIONS++++++++++++++++++++++++++++++++++++++
-# Private module helper functions
+# =============================PRIVATE FUNCTIONS===============================
 
 def _clean_text(text):
-    '''Returns text that is ready for sentence-parsing
+    """Returns text that is ready for sentence-parsing.
 
     Args:
-        text (str): unedited text to be parsed
+        text (str): unedited text to be parsed.
 
     Returns:
-        text (str): edited text ready for parsing
-    '''
+        text (str): edited text ready for parsing.
+    """
 
     # No need to continue cleaning if dealing with an empty string
     if text:
+
         # Parsing only works for straight quotes
-        # OLD CODE # text = re.sub(r'[\“\”]', '"', text)
         text = re.sub(REGEX_DQUOTE, '"', text)
 
-        # Add a space at the end so last sentence won't be forgotten
+        # Add a space at the end of text to make sure last sentence in text is
+        # added to sentence list
         text = text + " "
 
     return text
 
 
 def _get_first_punctuation_mark(text, start):
-    '''Return index of the punctuation mark that marks the end of a sentence
+    """Returns index of the first terminating punctuation mark encountered after
+       start position.
+
+    To illustrate the principles implemented in this function, examine the
+    following text:
+
+            Hello, Mr. Darcy! Would you like a cup of tea?
+
+     There are three terminating punctuation marks in this text: one period,
+     one exclamation mark and one question mark. Assuming a parsing algorithm
+     begins scanning at index 0, which terminating punctuation mark should it
+     pick as the end of the first sentence of the text? The exclamation mark,
+     of course.
+
+     This is what this function does.
 
     Args:
-        text (str): text being parsed
-        start (int): index where to start search in text
-
+        text (str):  text being parsed.
+        start (int): index where to start search in text.
 
     Returns:
-        index (int): index of first end-of sentence punctuation mark; -1
+        index (int): index of first terminating punctuation mark found; -1
                      if no punctuation mark found
-    '''
+    """
 
     end_of_text = len(text)
 
     # Search text for first occurence of the following punctuation marks:
+
     # Period
     pos_period = 0
-    # OLD CODE # match = re.search('[\.]\s', text[start:])
     match = re.search(REGEX_PERIOD, text[start:])
     pos_period = start + match.start() if match else -1
 
     # Exclamation or question mark
     pos_exqmark = 0
-    # OLD CODE # match = re.search('[\?!]\s', text[start:])
     match = re.search(REGEX_QEXMARK, text[start:])
     pos_exqmark = start + match.start() if match else -1
 
     # Period, question, exclamation, em-dash followed by a quotation mark
     pos_quote = 0
-    # OLD CODE # match = re.search('[\.\?!—]"\s', text[start:])
     match = re.search(REGEX_QUOTE, text[start:])
     pos_quote = start + match.start() if match else -1
 
-    # Abbreviations (e.g. Mr.) give false positives. Generally, we want to
-    # avoid them being detected as the end-of-sentence, and so truncating
-    # a sentence prematurely (e.g. Hello, Mr. Darcy is detected as two
-    # sentences 'Hello, Mr.' and 'Darcy.')
-    # Unfortunately, abbreviations can legitimately be at the end of a
-    # sentence (e.g. Welcome to Fl.), and there is not easy way to know whether
-    # to skip the abbreviation or not. This code only provides a best guess;
-    # users will have to fix any errors afterword that may occur.
-    # e.g. 'Welcome the Fl. It's the best.' won't be broken into two sentences.
-
-    # Initialize variable that will hold the index num right after period
-    # after an abbreviation.
+    # Handle abbreviations
+    # Variable will hold the index num right after the period of an
+    # abbreviation that should be 'skipped'
     new_start = start
 
     while True:
 
-        # Check to see whether only blank spaces after text; should mean
-        # there is no more meaningful text to process
+        # See whether there's any meaningful text to parse after a period
         not_blank = bool(text[pos_period+1:].strip())
 
         # Abbreviations at the very end of the text should not be skipped
@@ -518,13 +546,14 @@ def _get_first_punctuation_mark(text, start):
         else:
             break
 
-    # Check to see whether first non-space character after end of a
-    # quotation or not is lowercase. If it is, don't treat the end of the
+    # Check to see whether first non-whitespace character after end of a
+    # quotation is lowercase. If it is, don't treat the end of the
     # quotation as the end of the sentence
     pos_quote = _ignore_quote(pos_quote, text)
 
     # Get position of the punctuation mark at the end of the current
     # sentence
+
     pos_list = [pos_period, pos_exqmark, pos_quote]
 
     # Negative values will always be the smaller index; get rid of them!!
@@ -532,80 +561,71 @@ def _get_first_punctuation_mark(text, start):
         pos_list.remove(-1)
 
     # Return position of the punctuation mark at the end of the current
-    # sentence assuming there's a mark in the firs place!
+    # sentence assuming there's a mark in the first place!
     index = min(pos_list) if pos_list else -1
 
     return index
 
 
-def _is_abbreviation(text, start, index):
-    '''Returns True if abbreviation found; False otherwise.
+def _is_abbreviation(text, start, end):
+    """Returns True if abbreviation found; False otherwise.
+
+    An abbreviation is only considered found if exists in the file
+    "abbreviations.txt" accompanying this module.
 
     Args:
-        text (str): String being scanned for abbreviation
-        start (int): Index where to start search in text
-        index (int): Index where to end search in text
+        text (str): String being scanned for abbreviation.
+        start (int): Index where to start search in text.
+        end (int): Index where to end search in text.
 
     Returns:
         True (bool):  abbreviation found.
         False (bool): No abbreviation found.
-    '''
+    """
 
-    # Focus on the part of text that may contain an abbreviation
-    part = text[start:index+1]
+    # Focus only on the part of text that may contain an abbreviation
+    part = text[start:end+1]
 
     # See whether any of the abbreviations are in that part.
+
     # Need words of sentence since we want to check for a whole abbreviation
     # not a substring of it
-    # E.g. "Back in the U.S.S.R." the abbreviation U.S. should not return
-    # True!
+    # E.g. In the text "Back in the U.S.S.R." we don't want the abbreviation
+    # 'U.S.' cause this function to return True!
     sent_words = set(part.split())
 
     # Disjoint means two sets share nothing in common (essentially their
-    # intersection is the null set). So, if the two sets are not disjoint,
+    # intersection is the null set). So, if the two sets are NOT disjoint,
     # then you've found an abbreviation; otherwise you (maybe) haven't.
     disjoint = sent_words.isdisjoint(ABBREVIATIONS)
+
     return not disjoint
 
 
-    # OLD CODE!!
-    # See whether any of the abbreviations are in that part.
-    # Need words of sentence since we want to check for a whole abbreviation
-    # not a substring of it
-    # E.g. "Back in the U.S.S.R." the abbreviation U.S. should not return
-    # True!
-    # word_list = part.split()
-    # for abbreviation in abbreviations:
-    #     if abbreviation in word_list:
-    #         return True  # Abbreviation found!!
-    #
-    # # Period is not part of the abbreviation. Period is at end of sentence
-    # return False
-
-
 def _ignore_quote(pos, text):
-    '''Check whether quote is truly end of a sentence.
+    """Check whether quote is truly end of a sentence.
 
-    The end of quotation may not be the end of the sentence. This function
-    does a 'stupid' test to find out: if the next significant character is
-    lower case, then you don't have a full-sentence. As such, ignore the end
-    of the quote (i.e. set its position to -1)
+    The end of a quotation may not be the end of the sentence. This function
+    does a 'weak' test to find out: if the next non-whitespace character is
+    lower case, then you don't have a full-sentence. As such, the quote
+    does not mark the end of a sentence; set its position to -1.
 
     Args:
-        pos (int): Relevant index near where quote detected
-        text (str): Text being parsed
+        pos (int): Relevant index near where quote detected.
+        text (str): Text being parsed.
 
     Returns:
-        -1 (int): if quote is not the end of the sentence
-        pos (int): if quote is the end of the sentence
-    '''
+        -1 (int): if quote is not the end of the sentence.
+        pos (int): if quote is the end of the sentence.
+    """
 
+    # Just in case a no-quote found index accidentally passed
     if pos == -1:
         return pos
 
     # Don't want to look at something outside the bounds of text
     if (pos + 3) < len(text):
-        # The 'stupid' criterion...
+        # The 'weak' criterion...
         if text[pos + 3].islower():
             return -1
 
@@ -614,21 +634,20 @@ def _ignore_quote(pos, text):
 
 
 def _too_big(text):
-    '''Determine whether text string is larger than programmed-placed size
-       limit.
+    """Determine whether text string is larger than arbitrary size limit
 
     Args:
-        text (str): input text to be parsed
-        MAX_TEXTSIZE (int, global): max number of bytes allowed
+        text (str): input text to be parsed.
 
     Raises:
-        MemoryError: 'text' memory size > MAX_TEXTSIZE
+        MemoryError: 'text' memory size > MAX_TEXTSIZE.
 
     Returns:
-        False (bool): 'text' is <= MAX_TEXTSIZE
-    '''
+        False (bool): 'text' is <= MAX_TEXTSIZE.
+    """
 
     if sys.getsizeof(text) > MAX_TEXTSIZE:
+
         # Give reading in kilobytes rather than bytes
         max_mb = MAX_TEXTSIZE / 1000
         text_mb = sys.getsizeof(text) / 2**10
@@ -644,14 +663,17 @@ def _too_big(text):
     return False
 
 
-# ++++++++++++++++++++++++++++++++=MAIN++++++++++++++++++++++++++++++++++++++
+# ==================================MAIN=======================================
 if __name__ == "__main__":
+
+    # Examples to help developers get a quick idea of what the public api can
+    # do
 
     print("\ntextanalysis - module for extracting sentences from text " +
           "and more!")
 
-    print("\nExamples:")
-    print("=========")
+    print("\nQuickstart Tutorial Examples:")
+    print("====================")
 
     print("\nget_sentences:")
     print("--------------")
@@ -667,7 +689,7 @@ if __name__ == "__main__":
     print("\nget_words:")
     print("----------")
     print("Scans input string for words; returns list of words " +
-          "without certain punctuation marks")
+          "without certain punctuation marks.")
     print("\n>>> text = \"Dog-lovers, like me, hate cats—false!\"")
     print(">>> words = get_words(text)")
     print(">>> words")
@@ -681,4 +703,13 @@ if __name__ == "__main__":
     print("\n>>> text = \"Your pizza is delicious.\"")
     print(">>> find_start_end(\"pizza\", text, start_search=0)")
     print("(5, 9)")
+    print("")
+
+    print("\noffset:")
+    print("-------")
+    print("Returns index of first non-whitespace character.")
+
+    print("\n>>> text = \"    There are four spaces before this sentence.\"")
+    print(">>> offset(text)")
+    print("4")
     print("")
