@@ -164,9 +164,9 @@ DQUOTES = (H_DQUOTE + LBIG_DQUOTE + RBIG_DQUOTE + FW_DQUOTE + LPRIME_DQUOTE
 SQUOTES = H_SQUOTE + L_SQUOTE + R_SQUOTE + LH_SQUOTE + RH_SQUOTE
 
 # End-of-sentence patterns to help determine the end of a sentence
-REGEX_PERIOD = r'[\.' + LEADERS + ']\s'
-REGEX_QEXMARK = r'[\?!' + QEX  +  ']\s'
-REGEX_QUOTE = r'[\.\?!—' + LEADERS + QEX  + ']"\s'
+REGEX_PERIOD = r'[\.' + LEADERS + r']\s'
+REGEX_QEXMARK = r'[\?!' + QEX  +  r']\s'
+REGEX_QUOTE = r'[\.\?!—' + LEADERS + QEX  + r']"\s'
 
 # These will be replaced by a simpler, straight single/double quotes: ' / "
 REGEX_DQUOTE = r'[\“\”' + DQUOTES  +  ']'
