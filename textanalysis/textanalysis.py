@@ -275,10 +275,6 @@ def get_sentences(text):
         sent_list (list): A sequence of sentences extracted from argument.
     """
 
-    print("***********DEBUGGING GET_SENTENCES***************")
-    print("=================================================")
-    print("")
-
     # Check to see whether text is less than defined, yet arbitrary memory max
     _too_big(text)
 
@@ -314,10 +310,6 @@ def get_sentences(text):
 
         # Extract sentence and clean it up a bit
         sentence = text[start:(pos_lastchar + 1)]
-
-        print(f"sentence, before dedent/strip = {repr(sentence)} ")
-
-        print(f"sentence, after dedent/strip = {repr(sentence)} ")
 
         # Add extracted sentence to list
         sent_list.append(sentence)
@@ -382,11 +374,6 @@ def find_start_end(substring, text, start_search=0):
                               indices of the substring in the searched string.
     """
 
-    print("***********DEBUGGING FIND_START_END***************")
-    print("==================================================")
-    print("")
-    print(f"\nDEBUG: PRE-STRIP, substring = {repr(substring)}")
-
     # Don't bother to find empty substrings in possibly empty texts
     sublen = len(substring.strip())
     textlen = len(text.strip())
@@ -396,22 +383,12 @@ def find_start_end(substring, text, start_search=0):
                          "empty string(s) passed to parameters 'substring' " +
                          "or 'text'.")
 
-    #DEBUG
-    print("\nBEFORE CLEANING/RE\n=====================")
-    print(f"DEBUG: find_start_end, text = {repr(text)}")
-    print(f"\nDEBUG: find_start_end, substring = {repr(substring)}")
-
     # Substrings came from cleaned text. You won't get matches unless you
     # make sure your text is cleaned too.
     text = _clean_text(text)
 
     # Clean the substring too of curly quotes
     substring = re.sub(r'[\“\”]', '"', substring)
-
-    #DEBUG
-    print("\nAFTER CLEANING/RE\n=====================")
-    print(f"\nDEBUG: find_start_end, text = {repr(text)}")
-    print(f"\nDEBUG: find_start_end substring, = {repr(substring)}\n")
 
     # Make sure our start position is something sensible
     if start_search < 0:
