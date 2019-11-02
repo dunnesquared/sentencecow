@@ -1,37 +1,47 @@
-"""A module containing class necessary to implement functionality that will
-check whether number of words in a sentence is below a certain threshold
+"""Module that supports sentence extraction, analysis and modification.
 
-To Do:
-    * Comment code properly
-    * pylint/pycode style code
-    * Clean up main
-    * add attributes to module doc
-    * design flask app/jinja pages
-    * test LeGuinSentence, generate_LGSentenceList
+This module provides classes to support the extraction, analysis and
+modification of sentences in a text. While it heavily uses and extends
+the functionality defined in module 'textanalysis', it adds unique features
+such as merging and splitting sentences. These last provide solutions to the
+cases where 'textanalysis' parses a text incorrectly (read module
+documentation for more details).
 
-Done:
-    * implement for loop in sentences_more_than as while loop to get index
-    * Figure out indent bug with triple quotes
-    * Write test code
+Two classes provide the functionality of this module: LeGuinSentence
+and LeGuinCounter. Both classes were not developed in isolation of
+the needs of the presentation layer of the greater app to which it belongs,
+but with them strongly in mind. While separation of concerns is mostly achieved
+in these classes, there is some unwanted HTML UI accomodation in
+LeGuinCounter's sole private method. _whitespace_before. Any future
+improvements to this module should include shifting this code out of this class
+into the presentation layer.
 
-Notes:
-    * Merge sentences can't be done with long sentences (makes no sense);
-    user needs to see all the sentences and select which ones to merge
-
+The classes here get the job done, but their design could've been a lot better
+with more forethought. Improve it as you will, but be warned: some of this
+code is delicate and the result of extensive testing and debugging. Proceed
+cautiously...
 """
 
-import textwrap as tw
+
 from textanalysis import textanalysis as ta
 
 
-
-
 class LeGuinSentence:
-    """Contains contents of sentence in text as well relevant meta-data for
-    this application.
+    """A class used to store metadata about a sentence within a text.
+
+    Metadata can be useful for various applications. One application is to
+    support the highlighting of a sentence in a text.
+
+    Attributes:
+        content (str): the content of the sentence itself.
+        start (int): index where sentence starts in a text.
+        end (int): index where sentence ends in a text.
+        is_over (bool): whether sentence is over defined word max
+        whitespace (str): leadning whitespace before a sentence
     """
 
     def __init__(self, content="", start="0", end="0", is_over=False):
+        """Inits LeGuinSentence class."""
         self.content = content
         self.start = start
         self.end = end
@@ -39,7 +49,7 @@ class LeGuinSentence:
         self.whitespace = ""
 
     def __str__(self):
-        '''Print vitals'''
+        """Prints values of a LeGuinnSentence class object."""
 
         return f'''
                     content: {self.content}
@@ -50,27 +60,32 @@ class LeGuinSentence:
 
 
 class LeGuinCounter:
-    """Checks that sentences in a text are less than X number of words.
+    """A class that extracts, analyzes and modifies sentences in a text.
+
+    Attributes:
+        text (str): original text
+        sentences (list <str>): list of sentences from parsed text. Note that
+                                sentences include any leading whitespace
+                                attached to them.
     """
 
     def __init__(self, text):
-        '''Save original text and sentence-parsing of it
+        """Inits LeGuinCounter indirectly via parse method.
 
-        Attributes:
-            sentences (list): list of sentences from parsed text
-        '''
+        Args:
+            text (str): original text
+        """
         self.parse(text)
 
-
     def parse(self, text):
-        '''Return sentences in text; saves text for future processing
+        """Parse sentences from a text and store in list.
 
-        Attributes:
+        Args:
             text (str): text to be parsed
 
         Returns:
-            sentences (list): list of sentences from parsed text
-        '''
+            sentences (list <str>): list of sentences from parsed text
+        """
 
         # Save text for future processing
         self.text = text
@@ -78,35 +93,32 @@ class LeGuinCounter:
 
         return self.sentences
 
-
     def count_words(self, sentence):
-        '''Count the number of words in a sentence
+        """Counts the number of words in a sentence
 
         Args:
-            text (str): string in which words are to be counted
+            sentence (str): string in which words are to be counted.
 
         Returns:
-            (int): number of words in text
-        '''
+            (int): number of words in text,
+        """
 
         return len(ta.get_words(sentence))
 
-
     def more_than(self, sentence, word_max=20):
-        '''Returns whether sentence has more than max words
+        """Returns whether sentence has more than max words.
 
         Args:
-            sentence (str): sentence whose words are to be counted
+            sentence (str): sentence whose words are to be counted.
             word_max (int): max number of words allowed per sentence.
                             If no max, is specified the default is 20 words.
 
         Raises:
-            ValueError: max is a non-positive integer (i.e. less than 1)
+            ValueError: max is a non-positive integer (i.e. less than 1).
 
         Returns:
-            True (bool): sentence has more than max words
-            False (bool): sentence has fewer or the same max words
-        '''
+            (bool): True if sentence has more than max words; False if not.
+        """
 
         if word_max < 1:
             raise ValueError("Max must be a number >= 1.")
@@ -118,205 +130,124 @@ class LeGuinCounter:
 
         return False
 
-
     def sentences_more_than(self, word_max=20):
-        '''Returns list of maps. Each map contains the sentence that has more
-        than the max number of words, where the sentence in the text starts;
-        where it ends. If all sentences have the same number or few than max,
-        empty list returned
+        """Gets information about sentences that have more than the
+        passed max number of words.
+
+        If all sentences are below or equal to the maximum, an empty list
+        is returned. Otherwise, the method returns a list of maps where
+        each entry contains a sentence that is over the defined maximum
+        amount of words, along with metadata about that sentence.
+
+        Each entry map contains the following data:
+            sentence (str): sentence that has more than max words.
+            start (int): index where the sentence starts in self.text.
+            end (int): index where the sentence ends in the self.text.
+            word_count (int): number of words in a sentence.
 
         Args:
-            word_max (int): max number of words allowed per sentence
+            word_max (int): max number of words allowed per sentence.
 
         Raises:
-            ValueError: word_max is a non-positive integer (i.e. less than 1)
+            ValueError: word_max is a non-positive integer (i.e. less than 1).
 
         Returns:
-            long_sentences (list): a list of maps. Each item has three entries
-                sentence (str): sentence that has more than max words
-                start (int): index where the sentence starts in the text
-                end (int): index where the sentence ends in the text
-                index (int): index of sentence in sentence list
-        '''
+            long_sentences (list <map>): a list of maps of sentences over
+                                         the passed word maximum; empty if
+                                         sentences are not over.
+        """
 
         long_sentences = []
-        start_pos = 0
+
+        start_pos = 0 # Where to begin analysis of text
 
         for sentence in self.sentences:
+
             if self.more_than(sentence, word_max):
+
+                # Find where sentence starts and ends in a text
                 start, end = ta.find_start_end(sentence, self.text, start_pos)
+
                 item = {
                     'sentence':sentence,
                     'start': start,
                     'end': end,
                     'wordcount': self.count_words(sentence)
                     }
+
                 long_sentences.append(item)
+
                 # Do not start searching for positions at beginning of text;
                 # Start from where the last sentence ended:
-                # What happens if you have same sentence more than once?!
+                # what happens if you have same sentence more than once?!
+
                 start_pos = end + 1
 
         return long_sentences
 
-
     def merge_next(self, index):
-        '''Modifies list of sentences such that sentence referenced at index is
-        is merged with next sentence in list
+        """Modifies list of sentences such that sentence referenced at index is
+        is merged with next sentence in list.
 
         Args:
-            index (int): index of primary sentence
+            index (int): index of leading sentence in merge.
 
         Raises:
-            ValueError: trying to combine sentences when sentence list is empty
+            ValueError: trying to combine sentences when sentence list is
+                        empty.
 
             IndexError: index is less than zero or greater the number of
                         sentences in the sentence list.
-
-        Returns:
-            void: Modifies sentences list: new sentence takes place of sentence
-                  at index; sentence at index + 1 removed.
-        '''
+        """
 
         # No sentences to merge: do nothing.
         if len(self.sentences) == 0:
-            raise ValueError("Merge cannot be performed on an empty sentence list.")
+            raise ValueError("Merge cannot be performed on an empty " +
+                             "sentence list.")
 
         # Index out of bounds
         if index < 0 or index >= len(self.sentences):
             raise IndexError("Index cannot be less than zero or larger " +
                              "than list")
 
-        # Can't merge the last sentence with anything—don't do anything.
+        # Can't merge the last sentence with anything, so don't do anything.
         if index != len(self.sentences) - 1:
+
             # Merge sentences
             curr = self.sentences[index]
             next_sentence = self.sentences[index + 1]
-
-            # OLD CODE
-            # self.sentences[index] = " ".join([curr, next])
-
-            # NEW TEST CODE
             self.sentences[index] = curr + next_sentence
 
             # No need for that second sentence anymore
             self.sentences.pop(index + 1)
 
-    # DEPRECATED
-    # def split_sentence(self, index, split_pos):
-    #     '''Cuts a sentnece at specified position; add new sentence to
-    #     sentence list.
-    #
-    #     Args:
-    #         index (int): index of sentence being split in sentence list
-    #         split_pos (int): postion where sentence is to be cut
-    #
-    #     Raises:
-    #         ValueError: trying to split a sentence when sentence list is empty
-    #
-    #         IndexError: index is less than zero or greater the number of
-    #                     sentences in the sentence list; split_pos less than
-    #                     zero or greater than length of sentence
-    #
-    #     Return:
-    #         void: Modifies sentences list: first part of cut sentence
-    #         assigned to index; second part part inserted at index + 1
-    #     '''
-    #     # Algorithn
-    #     # 1. Check for errors
-    #     # 2. Get sentence at index; save first and second parts re split pos
-    #     # 3. Check to see whether first part is only white spaces
-    #         # Y - Do nothing, exit
-    #         # N - Go to step 5
-    #     # 4. Check to see whether second part is only white spaces
-    #         # Y - Do nothing, exit
-    #         # N - Go to step 5
-    #     # 5. Replace sentence at index with first part
-    #     # 6. Insert second sentence at position index + 1
-    #
-    #     # No sentences to merge: do nothing.
-    #     if len(self.sentences) == 0:
-    #         raise ValueError("Split cannot be performed on an empty sentence list.")
-    #
-    #     # Index out of bounds
-    #     if index < 0 or index >= len(self.sentences):
-    #         raise IndexError("Index cannot be less than zero or larger " +
-    #                          "than list")
-    #
-    #     # split_pos out of bounds
-    #     sentence = self.sentences[index]
-    #
-    #     if split_pos < 0 or split_pos > len(sentence):
-    #         raise IndexError("split_pos cannot be less than zero or larger " +
-    #                          "than sentence length")
-    #
-    #     # Remove carriage return should it be present
-    #     # Text from web has shown a tendency to have carriage returns in them
-    #     # I'm not sure why, but it causes problems, so remove 'em
-    #     sentence = re.sub(r'[\r]', r'', sentence)
-    #
-    #     # Get first and second parts of sentence
-    #     first_part = sentence[:split_pos]
-    #     second_part = sentence[split_pos:]
-    #
-    #     # DEBUG
-    #     # white space characteres (i.e. not a valid sentence)
-    #     print("sentence", repr(sentence))
-    #     print("first_part:", repr(first_part))
-    #     print("second_part:", repr(second_part))
-    #
-    #     # No point in modifying sentence list if one of the parts is just
-    #     firstOk = bool(len(first_part.strip()))
-    #     secondOk = bool(len(second_part.strip()))
-    #
-    #     if firstOk and secondOk:
-    #         self.sentences[index] = first_part
-    #         self.sentences.insert(index+1, second_part)
-
-
-
     def split_sentence(self, i, sub):
-        '''Cuts a sentence at end where substring sub ends; adds new sentences to
-        sentence list.
+        """Cuts a sentence at end where substring sub ends; adds new sentence
+        to sentence list.
 
         Args:
-            i (int): index of sentence in sentence list to be split
-            sub (str): substring to be matched in sentences[i]
+            i (int): index of sentence in sentence list to be split.
+            sub (str): substring to be matched in sentences[i].
 
         Raises:
-            ValueError: trying to split a sentence when sentence list is empty
+            ValueError: trying to split a sentence when sentence list is empty.
 
             IndexError: index is less than zero or greater the number of
-                        sentences in the sentence list
-
-        Return:
-            void: Modifies sentences list: first part of cut sentence
-            assigned to index; second part part inserted at index + 1
-        '''
-        # Algorithn
-        # 1. Check for errors
-        # 2. Strip substring: do not assume JS to have done it for you
-        # 3, Find start, end indices of substring in sentences[i]
-        # 4. Extract two substrings based on end index of from Step 3
-        # 5. Check to see whether first part is only white spaces
-            # Y - Do nothing, exit
-            # N - Go to step 7
-        # 6. Check to see whether second part is only white spaces
-            # Y - Do nothing, exit
-            # N - Go to step 7
-        # 7. Replace sentence at index with first part
-        # 8. Insert second sentence at position index + 1
+                        sentences in the sentence list.
+        """
 
         # No sentences to split; shouldn't be splitting here
         if len(self.sentences) == 0:
-            raise ValueError("Split cannot be performed on an empty sentence list.")
+            raise ValueError("Split cannot be performed on an empty " +
+                             "sentence list.")
 
         # Index out of bounds
         if i < 0 or i >= len(self.sentences):
             raise IndexError("Index cannot be less than zero or larger " +
                              "than list")
 
-        # Do nothing if the substring is emoty or has only whitespace characters
+        # Do nothing if the substring is empty or has only
+        # whitespace characters
         if len(sub.strip()) == 0:
             return
 
@@ -333,13 +264,7 @@ class LeGuinCounter:
         first_part = sentence[0:end]
         second_part = sentence[end:]
 
-        # DEBUG
-        # white space characteres (i.e. not a valid sentence)
-        print("sentence", repr(sentence))
-        print("first_part:", repr(first_part))
-        print("second_part:", repr(second_part))
-
-        # No point in modifying sentence list if one of the parts is just
+        # No point in modifying sentence list if one of the parts is empty.
         first_ok = bool(len(first_part.strip()))
         second_ok = bool(len(second_part.strip()))
 
@@ -347,151 +272,112 @@ class LeGuinCounter:
             self.sentences[i] = first_part
             self.sentences.insert(i+1, second_part)
 
-
     def generate_LGSentenceList(self, text, sentlist, word_max):
-        '''Return list of LGSentences given a list of string sentences
+        """Converts list of string sentences into a list of LeGuinSentence
+           objects.
 
         Args:
-            text (str): text of strings
-            sentlist (list): list of sentences parsed from text
+            text (str): text from sentences originally parsed.
+            sentlist (list <str>): list of sentences parsed from text
             word_max (int): Max number of words per sentence
 
         Returns:
-            lg_sentlist (LGSentences): list of LGSentences
-        '''
-
-        print("***********DEBUGGING GENERATE_LGSENTENCES***************")
-        print("=========================================================")
-        print("")
+            lg_sentlist (list <LGSentence>): list of LeGuinSentence objects.
+                                             [] returned if sentlist empty.
+        """
 
         # Empty list of sentences sent as argument
         if not sentlist:
             return []
 
         lg_sentlist = []
+
+        # Start scan at first non whitespace char
         start_pos = ta.offset(text)
 
-        print(f"\nDEBUG: start_pos = {start_pos}")
-
         for s in sentlist:
+            # Gather data about each sentence
 
+            # Find where sentence starts and ends in text
             start, end = ta.find_start_end(s, text, start_pos)
 
-            #New code - modeify start such that you get first position of non-white space character
+            # Sentences in sentlist include whitespace characters.
+            # Modify start such that you get first position of non-whitespace
+            # character
             start += ta.offset(s)
-            print(f"\nDEBUG: (start, end), offset accounted = {(start, end)}")
-
-
-            print(f"DEBUG: leguincounter:generate_LGSentenceList, slice = {text[start:end]}\n")
 
             is_over = self.more_than(s, word_max)
 
-            # Old code No strip
-            # lg_sent = LeGuinSentence(s, start=start, end=end, isOver=isOver)
-
-            # New code - sentences stripped
+            # Unlike class attribute, only non whitespace contents written to
+            # a LeGuinSentence object
             s = s.strip()
-            lg_sent = LeGuinSentence(s, start=start, end=end, is_over=is_over)
 
+            lg_sent = LeGuinSentence(s, start=start, end=end, is_over=is_over)
             lg_sentlist.append(lg_sent)
 
-            # OLD CODE
-            # start_pos = end + 1
-            #NEW fix
+            # Continue text analysis at end of just-processed sentence
             start_pos = end
 
-        # Copy white-space characters before a sentence
+        # Copy whitespace characters before each sentence
         lg_sentlist = self.__whitespace_before(lg_sentlist, text)
 
         return lg_sentlist
 
-# -------------------------PRIVATE--------------------------------------------
-
     def __whitespace_before(self, lg_sentlist, text):
-        '''Return list of LeGuinSentences such that any white-space characters
-        before each sentence are saved
+        """Returns list of LeGuinSentences such that any whitespace characters
+           before a sentence in a text are saved to its corresponding
+           LeGuinSentence object.
+
+           This functionality is necessary to support 'highlighting' of text
+           in presentation layer.
 
         Args:
-            lg_sentlist (LeGuinSentence []): A complete list of sentences
-                                              in a text
-            text (str): text from which whitespace characters will be copied
+            lg_sentlist (list <LeGuinSentence>): A list of sentences in text
+                                                 along with metadata.
 
-        Return:
-            lg_sentlist (LeGuinSentence []): An updated list with white-space
-                                              preceding a sentence saved
-        '''
+            text (str): text from which whitespace characters will be copied.
 
-        print(f"*******DEBUGGING __whitespace before*********")
-        print(f"==============================================")
+        Returns:
+            lg_sentlist (list <LeGuinSentence>): An updated list with
+                                                 leading whitespace characters
+                                                 of a sentence saved.
+        """
 
-        # The index where you think the a sentence starts at in the text
+        # Index where you expect a sentence shoud start in a text. Right now,
+        # at the beginngin (i.e. no offset)
         expected_start = 0
 
         for i in range(len(lg_sentlist)):
 
-            # See whether there is a gap between the first character in LGSent-
-            # ence and the next LGSentence. Gaps (should) imply whitespaces.
+            # See whether there is a gap between where a sentence actually
+            # starts in a text and where you expect it to.
+            # Gaps (should) imply whitespaces.
             highlight_start = lg_sentlist[i].start
             diff = highlight_start - expected_start
-
-            print(tw.dedent(f'''
-                expected_start = {expected_start}
-                sentlist[i].start/highlight_start = {highlight_start}
-                diff = {diff}
-                sentlist[i].end = {lg_sentlist[i].end}
-            '''))
 
             # If difference is more than just a space, copy the whitespace
             # string. We'll need it for highlighting the text in the presentat-
             # layer.
             if diff:
                 lg_sentlist[i].whitespace = text[expected_start:highlight_start]
-                # Bug in HTML rendering means newlines don't show up as they
-                # would in the console. Adding an extra newline character
-                # seems to fix this. (Code should probably not be in the
-                # in the domain layer)
 
-                # OLD CODE
-                # if lg_sentlist[i].whitespace.count('\n') == 1:
-                #     lg_sentlist[i].whitespace = re.sub(r'[\n]', r'\n\n',
-                #                                        lg_sentlist[i].whitespace)
+                # Bug(?) in HTML rendering means newlines don't show up as they
+                # would in the console. Adding an extra newline character
+                # seems to fix this. Admittedly, this code should probably not
+                # be in this class, but in a class that is more concerned with
+                # the UI.
 
                 # Add an extra newline so highlighted text renders properly
-                # This code should be in app.py (UI concern)
                 if '\n' in lg_sentlist[i].whitespace:
                     lg_sentlist[i].whitespace = '\n' + lg_sentlist[i].whitespace
 
-            #Reset exprected start
-            # OLD
-            # expected_start = lg_sentlist[i].end + 1
-
-            #NEW
+            # Reset expected start so next sentence can be processed
             expected_start = lg_sentlist[i].end
-
-
-        print(f"*******END __whitespace before*********")
-        print(f"==============================================")
 
         return lg_sentlist
 
 
-
-
-
-# ---------------------MAIN------------
-
-def modify_text(text, start, stop):
-    '''Modifies text between start and stop indices, inclusive. Returns string
-    object referencing modified text'''
-
-    before = text[0:start]
-    after = text[stop+1:len(text)+1]
-    mod = text[start:stop+1]
-
-    #Make the change! In this case, make text uppercase
-    mod = mod.upper()
-
-    return before + mod + after
+# ----------------------------------MAIN---------------------------------------
 
 
 if __name__ == "__main__":
