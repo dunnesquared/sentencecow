@@ -314,11 +314,11 @@ class LeGuinCounter:
             start_pos = end
 
         # Copy whitespace characters before each sentence
-        lg_sentlist = self.__whitespace_before(lg_sentlist, text)
+        lg_sentlist = self._whitespace_before(lg_sentlist, text)
 
         return lg_sentlist
 
-    def __whitespace_before(self, lg_sentlist, text):
+    def _whitespace_before(self, lg_sentlist, text):
         """Returns list of LeGuinSentences such that any whitespace characters
            before a sentence in a text are saved to its corresponding
            LeGuinSentence object.
@@ -373,7 +373,6 @@ class LeGuinCounter:
 
 
 # ----------------------------------MAIN---------------------------------------
-
 
 if __name__ == "__main__":
     pass
