@@ -255,7 +255,7 @@ class LeGuinCounter:
         sub = sub.strip()
 
         # Get first and second parts of sentence
-        _, end = ta.find_start_end(sub, sentence)
+        __, end = ta.find_start_end(sub, sentence)
         first_part = sentence[0:end]
         second_part = sentence[end:]
 
