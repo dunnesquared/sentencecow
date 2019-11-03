@@ -281,7 +281,7 @@ class LeGuinCounter:
                                              [] returned if sentlist empty.
         """
 
-        # Empty list of sentences sent as argument
+        # Empty list of sentences given as argument
         if not sentlist:
             return []
 
@@ -290,24 +290,24 @@ class LeGuinCounter:
         # Start scan at first non whitespace char
         start_pos = ta.offset(text)
 
-        for s in sentlist:
+        for sent in sentlist:
             # Gather data about each sentence
 
             # Find where sentence starts and ends in text
-            start, end = ta.find_start_end(s, text, start_pos)
+            start, end = ta.find_start_end(sent, text, start_pos)
 
             # Sentences in sentlist include whitespace characters.
             # Modify start such that you get first position of non-whitespace
             # character
-            start += ta.offset(s)
+            start += ta.offset(sent)
 
-            is_over = self.more_than(s, word_max)
+            is_over = self.more_than(sent, word_max)
 
             # Unlike class attribute, only non whitespace contents written to
             # a LeGuinSentence object
-            s = s.strip()
+            sent = sent.strip()
 
-            lg_sent = LeGuinSentence(s, start=start, end=end, is_over=is_over)
+            lg_sent = LeGuinSentence(sent, start=start, end=end, is_over=is_over)
             lg_sentlist.append(lg_sent)
 
             # Continue text analysis at end of just-processed sentence
