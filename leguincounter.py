@@ -71,28 +71,25 @@ class LeGuinCounter:
     """
 
     def __init__(self, text):
-        """Inits LeGuinCounter indirectly via parse method.
+        """Inits LeGuinCounter object.
+
+        Atrtibute 'sentences' initialized via parse method.
 
         Args:
             text (str): original text
         """
-        self.parse(text)
+        self.text = text
+        self.parse(self.text)
+
 
     def parse(self, text):
         """Parse sentences from a text and store in list.
 
         Args:
             text (str): text to be parsed
-
-        Returns:
-            sentences (list <str>): list of sentences from parsed text
         """
-
-        # Save text for future processing
-        self.text = text
         self.sentences = ta.get_sentences(text)
 
-        return self.sentences
 
     def count_words(self, sentence):
         """Counts the number of words in a sentence
