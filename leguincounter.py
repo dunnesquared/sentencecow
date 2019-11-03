@@ -54,7 +54,7 @@ class LeGuinSentence:
         self.whitespace = ""
 
     def __str__(self):
-        """Prints values of a LeGuinnSentence class object."""
+        """Prints attributes of a LeGuinnSentence object."""
 
         return f'''
                     content: {self.content}
@@ -274,7 +274,7 @@ class LeGuinCounter:
 
     def generate_LGSentenceList(self, text, sentlist, word_max):
         """Converts list of string sentences into a list of LeGuinSentence
-           objects.
+        objects.
 
         Args:
             text (str): text from sentences originally parsed.
@@ -325,8 +325,8 @@ class LeGuinCounter:
 
     def _whitespace_before(self, lg_sentlist, text):
         """Returns list of LeGuinSentences such that any whitespace characters
-           before a sentence in a text are saved to its corresponding
-           LeGuinSentence object.
+        before a sentence in a text are saved to its corresponding
+        LeGuinSentence object.
 
            This functionality is necessary to support 'highlighting' of text
            in presentation layer.
