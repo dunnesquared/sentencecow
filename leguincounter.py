@@ -20,6 +20,11 @@ The classes here get the job done, but their design could've been a lot better
 with more forethought. Improve it as you will, but be warned: some of this
 code is delicate and the result of extensive testing and debugging. Proceed
 cautiously...
+
+Suggested improvements to be made:
+- Decouple UI code in _whitespace_before from LeGuinCounter class
+- Use better name for 'i' in split_sentence
+- Refactor generate_LGSentenceList to use attributes, not method arguments
 """
 
 
