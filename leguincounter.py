@@ -56,6 +56,7 @@ class LeGuinSentence:
                     start: {self.start}
                     end : {self.end}
                     is_over: {self.is_over}
+                    whitespace: {repr(self.whitespace)}
                 '''
 
 
