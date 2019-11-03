@@ -10,6 +10,9 @@ h1{
 }
 
 pre{
+  /* Do not set display to inline-block: it will cause unwanted spacing in
+     parsed text.
+  */
   display: inline;
   white-space: pre-wrap;
   font-family: "Helvetica Neue", "Arial", "sans-serif";
