@@ -40,7 +40,7 @@ class LeGuinSentence:
         whitespace (str): leadning whitespace before a sentence
     """
 
-    def __init__(self, content="", start="0", end="0", is_over=False):
+    def __init__(self, content="", start=0, end=0, is_over=False):
         """Inits LeGuinSentence class."""
         self.content = content
         self.start = start
