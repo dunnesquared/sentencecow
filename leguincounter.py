@@ -123,10 +123,7 @@ class LeGuinCounter:
 
         num_words = self.count_words(sentence)
 
-        if num_words > word_max:
-            return True
-
-        return False
+        return num_words > word_max
 
     def sentences_more_than(self, word_max=20):
         """Gets information about sentences that have more than the
