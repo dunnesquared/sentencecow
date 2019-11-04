@@ -1,29 +1,26 @@
-"""APP.PY
+# -*- coding: utf-8 -*-
+"""Flask script that handles requests to parse sentences in a text and more.
 
-To Do:
+The following CGI script is the main server-side component that handles
+user requests to extract, analyze and modify sentences in a text.
 
-    * use different separator ("||")
-    * clean up code
-    * document
-    * bug - when trying to merge blank text
-    * handle exceptions from model modules/classes
-    * need to send sentences when sending over whole lg object
-    * results.html: clean up code
-    * redesign LeGuinCounter class to better handle merging (class-leve methods)
-    * the indent in first paragraph screwing up the highlighting
+This script facilitates interaction between the domain and the UI
+layers. The domain layer consists of the leguincounter and textanalysis
+modules; Jinja2 HTML templates and JavaScript handlers make up the UI layer.
 
-Done:
-    * show word count for every sentence
-    * add max to value returned by merge_list
+Domain-level objects are not passed to the UI templates to lower coupling
+between the two. Any needed data from the former are converted into standard
+Python objects such as lists, maps and tuples.
 
+Sessions are not used in this script to maintain state. Instead, for operations
+such as merging and splitting text, all initla data is re-POSTed along with any
+changes that need to be processed.
 """
 
 import traceback as tb
-
 from flask import Flask, make_response
 from flask import render_template
 from flask import request
-
 from leguincounter import LeGuinCounter
 from textanalysis import textanalysis as ta
 
@@ -36,43 +33,42 @@ CHAR_MAX = WORD_MAX * 10
 
 
 def _is_over(text, word_max, char_max):
-    '''Return whether 'text' contains more words or character
-       than given max allowed.
+    """Checks whether 'text' contains more words or characters than given
+    max allowed.
+
+    N.B. It may seem useless to pass maximums as arguments rather than directly
+    access them via the globals above. The reason for it was to make
+    testing of _is_over easier: changing the global maximums from the
+    test script for testing purpose was not possible.
 
     Args:
-        text (str): String in which words are to be counted
-        word_max (int): Maximum number of words allowed from user input
-        word_max (int): Maximum characters of words allowed from user input
+        text (str): String in which words are to be counted.
+        word_max (int): Maximum number of words allowed from user input.
+        word_max (int): Maximum characters of words allowed from user input.
 
-    Return:
-        True: number of words in text is greater than word_max or char_max
-        False: number of words in text is NOT greater than word_max or char_max
-
-    Note:
-        It may seem useless to pass maximums as arguments rather than directly
-        access them via the globals above. The reason for it was to make
-        testing of _is_over easier: changing the global maximums from the
-        test script for testing purpose was not possible.
-    '''
-
+    Returns:
+        True: number of words in text is greater than word_max or char_max.
+        False: number of words in text is NOT greater than word_max or
+               char_max.
+    """
     word_over = len(ta.get_words(text)) > word_max
+
     char_over = len(text) > char_max
 
     return word_over or char_over
 
 
 def _is_over_err_msg(input_text):
-    '''Return form page with an error message stating that input text has too
-    many words and/or characters
+    """Returns form page with an error message stating that input text has too
+    many words and/or characters.
 
     Args:
-        input_text (str): text entered by user
+        input_text (str): text entered by user.
 
     Return:
-        (template): data that will be used to render webpage on client-side
+        (template): data that will be used to render webpage on client-side.
 
-    '''
-
+    """
     msg = f'''Text exceeds {WORD_MAX} words or
                  {CHAR_MAX} characters:
                  {len(ta.get_words(input_text))} words;
@@ -85,16 +81,13 @@ def _is_over_err_msg(input_text):
 
 
 def _max_err_msg():
-    '''Return form page with an error message stating that max is not a
+    """Returns form page with an error message stating that max is not a
     natural number.
 
-    Args:
-        Nil
+    Returns:
+        (response): data that will be used to render webpage on client-side.
 
-    Return:
-        (response): data that will be used to render webpage on client-side
-
-    '''
+    """
     err = "Bad input: 'max' can only be a positive whole number."
     stack_trace = tb.format_exc()
     # Add security policy
@@ -106,16 +99,12 @@ def _max_err_msg():
 
 
 def _unknown_post_err_msg():
-    '''Return page with an error message stating that some other POST action
+    """Returns page with an error message stating that some other POST action
     besides Count, Merge or Split was requested.
 
-    Args:
-        Nil
-
-    Return:
-        (response): data that will be used to render webpage on client-side
-    '''
-
+    Returns:
+        (response): data that will be used to render webpage on client-side.
+    """
     err = "submit_button neither Count, Merge nor Split!"
     stack_trace = "Not an exception!"
 
@@ -128,32 +117,32 @@ def _unknown_post_err_msg():
 
 
 def _not_get_post_err_msg():
-    '''Return page with an error message stating that some other request
+    """Returns page with an error message stating that some other request
     besides GET or POST was made.
 
-    Args:
-        Nil
+    Returns:
+        (response): data that will be used to render webpage on client-side.
+    """
 
-    Return:
-        (response): data that will be used to render webpage on client-side
-    '''
+    err = ("Not a GET or POST request; HEAD request likely made: " +
+           request.method)
 
-    err = "Not a GET or POST request; HEAD request likely made: " + request.method
     response = make_response(render_template("error.html", err=err))
     response.headers['Content-Security-Policy'] = "default-src 'self'"
+
     return response
 
 
 def _misc_err_msg(exception):
-    '''Return page with an error message stating that cause of error due
-    to various other things that could've gone wront
+    """Returns page with an error message stating that cause of error was due
+    to various other things that could've gone wrong.
 
     Args:
-        e (*Exception): Exception obj of varying type
+        exception: Exception obj of varying type.
 
-    Return:
-        (template): data that will be used to render webpage on client-side
-    '''
+    Returns:
+        (template): data that will be used to render webpage on client-side.
+    """
     err = str(exception)
     stack_trace = tb.format_exc()
 
@@ -164,10 +153,20 @@ def _misc_err_msg(exception):
     return response
 
 
-
 @app.errorhandler(400)
 def bad_request(error):
-    '''Return web page with description and stack trace of Bad Request Error.'''
+    """Returns web page with description and stack trace of exception invoked
+    by an HTTP Bad Request Error (400)
+
+    Args:
+        Error (exceptions.BadRequest): Error raised by an HTTP Bad
+                                       Request Error (400).
+
+    Returns:
+        (template): data that will be used to render webpage on client-side.
+
+
+    """
     err = str(error) + "\n(Input possibly passed NoneType object)"
     stack_trace = tb.format_exc()
 
@@ -180,10 +179,29 @@ def bad_request(error):
 
 @app.route("/leguincounter", methods=['POST', 'GET'])
 def process_text():
-    '''Return web pages that allow users to see whether their texts satisfy
-       the criterion that their sentences have fewer or the same user-set
-       number of words.
-      '''
+    """Handles HTTP requests from client-side of app that allows users
+    to enter a text and get information about it.
+
+    Raises:
+        NotInTextError: A custom exception from the textanalysis module
+                        that is raised when a provided sentence cannot be
+                        matched with its equivalent in a text.
+
+        ValueError: if the user enters a non-integer value for word-max;
+                    also handles various exceptions raised lower down.
+
+        TypeError: handles various exceptions raised lower down.
+
+        IndexError: handles various exceptions raised lower down.
+
+        MemoryError: handles exceptions raised in textanalysis if text
+                     exceeds developer-defined memory constraint.
+
+    Returns:
+        response (flask.Response): object to data back to a specified
+                                   Jinja template that will then be used
+                                   for rendering on the client side.
+    """
 
     try:
         if request.method == 'GET':
@@ -200,18 +218,85 @@ def process_text():
 
         if request.method == 'POST':
 
-            # First parsing of text!
+            # Request to parse text made from form.html
             if request.form['submit_button'] == 'Count':
-                # Get everything we'll need to get the sentences from a text
-                # Check that word_max has been respected
+
+                # Get everything we'll need to parse the sentences from a text
                 input_text = request.form['input_text']
 
+                # Check that word_max has been respected
                 if _is_over(input_text, WORD_MAX, CHAR_MAX):
                     return _is_over_err_msg(input_text)
 
-                # LeGuinCounter expects integers, not strings for these values
+                # LeGuinCounter expects an integer
                 try:
                     word_max = int(request.form['max'])
+                except ValueError:
+                    return _max_err_msg()
+
+                # Trailing whitespaces are superfluous
+                input_text = input_text.rstrip()
+
+                # Parse text
+                lgcounter = LeGuinCounter(input_text)
+
+            # Request to merge a sentence with the one following it.
+            # Made from results.html
+            elif request.form['submit_button'] == 'Merge':
+
+                # Get everything we'll need to merge sentences
+                # and need to send data back to results.html
+                input_text = request.form['input_text']
+                word_max = request.form['max']
+                sent_list = request.form.getlist('sent_list[]')
+
+                # pos of first sentence in merge
+                index = int(request.form['index'])
+
+                # LeGuinCounter expects an integer
+                try:
+                    word_max = int(word_max)
+                except ValueError:
+                    return _max_err_msg()
+
+                # Trailing whitespaces are superfluous
+                input_text = input_text.rstrip()
+
+                # Parse text
+                lgcounter = LeGuinCounter(input_text)
+
+                # The parsing above generates a sentence list based on the
+                # original text sent via form.html. However, if users have made
+                # merges or splits since then, they will not appear: only the
+                # results of the first parsing will.
+
+                # To keep track of any previous merges/splits made on the text,
+                # a modified sent_list is passed with every POST request.
+                # This requires, however, overriding the LeGuinCounter's
+                # sent_list. Admittedly, not the best design, but it works.
+                lgcounter.sentences = sent_list
+
+                # Merge sentence at current index with the one following it
+                lgcounter.merge_next(index)
+
+            # Request to split a sentence in two parts
+            # Made from results.html
+            elif request.form['submit_button'] == 'Split':
+
+                # Position of sentence to be split in sent_list
+                index = int(request.form['sentindex'])
+
+                # First segment of split sentence
+                first_part = request.form['firstpart']
+
+                # The rest of the data that needs to be POSTed on every change
+                input_text = request.form['input_text']
+                word_max = request.form['max']
+                sent_list = request.form.getlist('sent_list[]')
+
+                # LeGuinCounter expects an integer
+                try:
+                    word_max = int(word_max)
                 except ValueError:
                     return _max_err_msg()
 
@@ -221,105 +306,35 @@ def process_text():
                 # Parse text
                 lgcounter = LeGuinCounter(input_text)
 
-
-            # User requests to merge a sentence with the one following it.
-            elif request.form['submit_button'] == 'Merge':
-
-                #Get everything we'll need to merge sentences and send data back
-                input_text = request.form['input_text']
-                word_max = request.form['max']
-                sent_list = request.form.getlist('sent_list[]')
-                index = int(request.form['index'])
-
-                # LeGuinCounter expects integers, not strings for these values
-                try:
-                    word_max = int(word_max)
-                except ValueError:
-                    return _max_err_msg()
-
-                # Trailing white spaces are suprefluous
-                input_text = input_text.rstrip()
-
-                # Initialize domain object
-                lgcounter = LeGuinCounter(input_text)
-
-                # We can't use sentence list generated when we create a LeGuin-
-                # Counter object: regardless, how many times we merge sentences
-                # that parsing will always be the same (and so undo the parsing).
-                # Thus, it's important we use the sentences from our last merge.
-                # and replace the sentences in our object with them. Not the best
-                # design; will fix in later iteration
+                # Read comments under 'Merge'
                 lgcounter.sentences = sent_list
 
-                # Merge sentence at current index with the one following it
-                lgcounter.merge_next(index)
-
-            elif request.form['submit_button'] == 'Split':
-                # Data pertaining to split the sentence
-                # split_pos = request.form['splitposition']
-                index = int(request.form['sentindex'])
-                first_part = request.form['firstpart']
-                #second_part = request.form['secondpart']
-
-                # DEBUG
-                # print("SPLIT POS = ", split_pos)
-                print("SENT INDEX = ", index)
-                print("FIRST PART = ", first_part)
-                #print("SECOND PART = ", second_part)
-
-                # The rest
-                #Get everything we'll need to merge sentences and send data back
-                input_text = request.form['input_text']
-                word_max = request.form['max']
-                sent_list = request.form.getlist('sent_list[]')
-
-                # LeGuinCounter expects integers, not strings for these values
-                try:
-                    word_max = int(word_max)
-                except ValueError:
-                    return _max_err_msg()
-
-                # Trailing white spaces are suprefluous
-                input_text = input_text.rstrip()
-
-                # Initialize domain object
-                lgcounter = LeGuinCounter(input_text)
-
-                # We can't use sentence list generated when we create a LeGuin-
-                # Counter object: regardless, how many times we merge sentences
-                # that parsing will always be the same (and so undo the parsing).
-                # Thus, it's important we use the sentences from our last merge.
-                # and replace the sentences in our object with them. Not the best
-                # design; will fix in later iteration
-                lgcounter.sentences = sent_list
-
-                # Merge sentence at current index with the one following it
-                #lg.split_sentence(index, split_pos)
+                # Divide sentence at 'index' in to two with first having to
+                # match the argument 'first_part'
                 lgcounter.split_sentence(index, first_part)
 
             else:
                 return _unknown_post_err_msg()
 
-
-            # Get list of LG_sentences so we can do highlighing more easily
+            # Get list of LeGuinSentence objects to facilitate the highlighting
+            # of parsed text in the UI layer
             lg_sentlist = lgcounter.generate_LGSentenceList(input_text,
                                                             lgcounter.sentences,
                                                             word_max)
 
-            # Create a tuples list that you can send to the template; also
-            # want to decouple the domain stuff from the controller/ui stuff
+            # Want to keep lgcounter classes, which are domain-level,
+            # decoupled from HTML/JS code which is UI level
             highlight_data = [(l.start, l.end, l.is_over, l.whitespace)
                               for l in lg_sentlist]
 
-            # So we can send back sentence list to user
-            # sentences = lg.sentences
+            # Useful when printing a table that describes each sentence
             sentences = [{'content': s, 'wordcount': lgcounter.count_words(s)}
                          for s in lgcounter.sentences]
 
             # Get number of words in original and parsed texts
             # If they're not equal, then it's likely the last part of the
             # original text got lobbed off because it was missing a terminating
-            # punctuation mark.
+            # punctuation mark or was split in the middle of a word.
             wordcounts = {
                 'original': len(ta.get_words(input_text)),
                 'parsed': sum(sentence['wordcount'] for sentence in sentences)
@@ -337,14 +352,16 @@ def process_text():
             return response
 
 
-        #server will return a 405 error code if other methods specified
-        #Note that head request will work as it only returns blank data
-        #Head request exectutes this conditional, even though the error
-        #page is technically not returned (weird?)
+        # Server will return a 405 error code if GET or POST not made.
+        # Note that HEAD request will work as it only returns blank data
+        # HEAD request executes this conditional, even though the error
+        # page is technically not returned (Why??)
         return _not_get_post_err_msg()
 
 
-    except (ta.NotInTextError, ValueError, TypeError, IndexError, MemoryError) as exception:
+    except (ta.NotInTextError, ValueError, TypeError, IndexError,
+            MemoryError) as exception:
+
         return _misc_err_msg(exception)
 
 
