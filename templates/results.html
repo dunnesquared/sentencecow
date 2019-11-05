@@ -102,18 +102,18 @@
             loop, not the index of the sentence in the list. As such,
             the first value of loop.index is 1, not 0.
         -->
-        <td class='cell'>{{loop.index}}</td>
+        <td class="cell">{{loop.index}}</td>
 
         <!-- Actual words in sentence -->
-        <td class='cell-content'><span>{{s['content']}}</span></td>
+        <td class="cell-content"><span>{{s['content']}}</span></td>
 
-        <td class='cell'>{{s['wordcount']}}</td>
+        <td class="cell">{{s['wordcount']}}</td>
 
         <!-- Highlight the rows where sentences exceed word max -->
         {% if s['wordcount'] > max %}
-          <td class='cell'>Y</td>
+          <td class="cell">Y</td>
         {% else %}
-          <td class='cell'>N</td>
+          <td class="cell">N</td>
         {% endif %}
 
       </tr>
@@ -126,7 +126,7 @@
     -->
     {% if wordcounts['original'] != wordcounts['parsed'] %}
       <p>
-        <b class='warning'>Warning:</b>
+        <b class="warning">Warning:</b>
         <br>
         The word counts of your original and parsed texts are different
         ({{wordcounts['original']}} vs. {{wordcounts['parsed']}} words,
@@ -173,10 +173,10 @@
       -->
 
       <!-- Word max -->
-      <input type='hidden' name="max" value="{{max}}"/>
+      <input type="hidden" name="max" value="{{max}}"/>
 
       <!-- Original text -->
-      <input type='hidden' name="input_text" value="{{input_text}}"/>
+      <input type="hidden" name="input_text" value="{{input_text}}"/>
 
       <!-- Need to resend the sentence list in case sentences have been
            previously split or merged: parsing the original text will omit
@@ -184,7 +184,7 @@
       -->
       {% for i in range(sentences|length) %}
         <input
-            type='hidden'
+            type="hidden"
             name="sent_list[]"
             value="{{sentences[i]['content']}}"/>
       {% endfor %}
@@ -198,9 +198,10 @@
         {% for i in range(sentences|length) %}
 
           <!-- Display sentence content and word count in each option item -->
-          <option value="{{ i }}">
-            {{loop.index}}) {{sentences[i]['content']}}
-            (# words: {{sentences[i]['wordcount']}})
+          <option
+              title="{{sentences[i]['content']|trim}} (# words: {{sentences[i]['wordcount']}})"
+              value="{{ i }}">
+              {{loop.index}}) {{sentences[i]['content']}}
           </option>
 
         {% endfor %}
@@ -247,10 +248,10 @@
        -->
 
        <!-- Word max -->
-       <input type='hidden' name="max" value="{{max}}"/>
+       <input type="hidden" name="max" value="{{max}}"/>
 
        <!-- Original text -->
-       <input type='hidden' name="input_text" value="{{input_text}}"/>
+       <input type="hidden" name="input_text" value="{{input_text}}"/>
 
        <!-- Need to resend the sentence list in case sentences have been
             previously split or merged: parsing the original text will omit
@@ -258,7 +259,7 @@
        -->
        {% for i in range(sentences|length) %}
          <input
-             type='hidden'
+             type="hidden"
              name="sent_list[]"
              value="{{sentences[i]['content']}}"/>
        {% endfor %}
@@ -277,9 +278,11 @@
          <!-- Display sentence content and word count in each option item -->
          {% for i in range(sentences|length) %}
 
-           <option value="{{sentences[i]['content']}}">
-             {{loop.index}}) {{sentences[i]['content']}}
-             (# words: {{sentences[i]['wordcount']}})
+           <option
+               title="{{sentences[i]['content']|trim}} (# words: {{sentences[i]['wordcount']}})"
+               value="{{sentences[i]['content']}}">
+
+               {{loop.index}}) {{sentences[i]['content']}}
            </option>
 
          {% endfor %}
@@ -291,8 +294,8 @@
        <!-- Display the selected sentence in the textarea--->
        <div>
          <textarea
-             id='sentencetextarea'
-             name='split_textarea'
+             id="sentencetextarea"
+             name="split_textarea"
              placeholder="Selected sentence will go here..."
              readonly></textarea>
        </div>
@@ -302,7 +305,7 @@
        <!-- Show how the sentence will be split -->
        <p>The selected text will be split as follows:
          <br>
-         <pre id='output_area'></pre>
+         <pre id="output_area"></pre>
        </p>
 
       <!-- Data to send back for split to happen on server-side-->
@@ -323,7 +326,7 @@
       <input
           name="submit_button"
           type="Submit"
-          id='split'
+          id="split"
           value="Split" disabled/>
 
      <!--- For JS debugging purposes only-->
