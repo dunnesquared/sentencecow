@@ -197,6 +197,11 @@
 
         {% for i in range(sentences|length) %}
 
+          <!-- TODO: Add default dummy option as in Split list;
+               will need to write some JS to disable the button
+               initially.
+          -->
+
           <!-- Display sentence content and word count in each option item -->
           <option
               title="{{sentences[i]['content']|trim}} (# words: {{sentences[i]['wordcount']}})"
