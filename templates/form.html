@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+<!-- Page where user can enter text to be parsed -->
+
 {% block content %}
 
   <h1>Welcome to Le Guin Sentence Word Counter!</h1>
@@ -19,80 +21,85 @@
      If any of this happens, just use the tools on the Results page to split or
      merge the text accordingly.</p>
 
-   <p>In the boxes below, write or paste a short text
+  <p>In the boxes below, write or paste a short text
      and set the maximum number of words that should appear in each sentence.
      Click 'Count' to see how your sentences measure up!</p>
 
 
-    <form id="lgcform" action="/leguincounter" method="POST">
+  <form id="lgcform" action="/leguincounter" method="POST">
 
-      <div>
-
-        <!-- Display message if input text over word count; user should
-          see text if it's over. This is not expected to happen, but will
-          if Javascript breaks or is turned off.-->
-        {% if is_over == True %}
-          <textarea
+    <div>
+      <!-- Display message if input text over word count; user should
+       see text if it's over. This is not expected to happen, but will
+       if Javascript breaks or is turned off. -->
+      {% if is_over == True %}
+        <textarea
             name="input_text"
             placeholder="Write your text here..."
             wrap="soft"
             data-charmax="{{char_max}}">{{ input_text }}</textarea>
-
-        <!-- Error -->
+        <!-- Error! -->
         <p class="over"> {{ msg }} </p>
 
       {% else %}
+        <!-- Everything normal: proceed to display input box and buttons -->
         <textarea
-         name="input_text"
-         placeholder="Write your text here..."
-         wrap="soft"
-         data-charmax="{{char_max}}"></textarea>
+            name="input_text"
+            placeholder="Write your text here..."
+            wrap="soft"
+            data-charmax="{{char_max}}"></textarea>
       {% endif %}
 
-      <!--Word and chatacter count table-->
-      <table id='count_table'>
+      <!-- Display running word and character count -->
+      <table id="count_table">
         <tr>
             <td>Word Count:</td>
-            <td id='word-count'>0</td>
-            <td id='wordcount-over'></td>
+            <td id="word-count">0</td>
+            <td id="wordcount-over"></td>
         </tr>
 
         <tr>
           <td>Character Count:</td>
-          <td id='char-count'>0</td>
-          <td id='charcount-over'></td>
+          <td id="char-count">0</td>
+          <td id="charcount-over"></td>
         </tr>
-
       </table>
-
-      <!--<p id="wcTitle">Word Count (Max. {{max}}):  <span id='word-count'>0</span> </p>-->
-      </div>
-
-    <div id='maxboxtitle'>Max Number of Words per Sentence:</div>
-      <input name="max"
-       type="number"
-       min=1
-       max="{{max}}"
-       value="7"/>
-
-     <div id="button-container">
-      <input id='count' name='submit_button' type="Submit" value="Count" disabled/>
-      <button id='reset_button' type="button" value="Reset">Reset</button>
     </div>
 
+    <!-- Display input box to enter word max and its button -->
+    <div id="maxboxtitle">
+      Max Number of Words per Sentence:
+    </div>
+
+    <input name="max"
+           type="number"
+           min=1
+           max="{{max}}"
+           value="7"/>
+
+    <div id="button-container">
+
+      <input id="count" name="submit_button" type="Submit" value="Count"
+          disabled/>
+
+      <button id="reset_button" type="button" value="Reset">Reset</button>
+    </div>
+
+    <!-- Message stating that JavaScript won't work on older browsers -->
     <p id="note">
       <i>
         N.B. This site may not work on browsers that have not been updated
         since June 2017. See W3C's table "Browser Support for ES6" for more
-        <a href='https://www.w3schools.com/js/js_versions.asp'>details</a>.
+        <a href="https://www.w3schools.com/js/js_versions.asp">details</a>.
       </i>
     </p>
 
   </form>
 
-  <!--To display exceptions-->
-  <pre class='error'></pre>
+  <!-- Display JavaScript exceptions -->
+  <pre class="error"></pre>
 
+  <!-- Used to count words and characters as they're typed -->
   <script src="{{ url_for('static', filename='count.js') }}"></script>
 
 {% endblock %}

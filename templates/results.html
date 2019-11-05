@@ -1,248 +1,357 @@
 {% extends "layout.html" %}
 
+<!-- Page where to display parsing results of user text -->
 
 {% block content %}
 
   <h1>Results</h1>
-  <h2>Original Text</h2>
-  <p><pre>{{input_text}}</pre></p>
-  <p class="result-count">Word Count: {{wordcounts['original']}}</p>
 
-  <!--Only worth displaying if there's actually sentences to be parsed.-->
+  <!-- Display text user entered in form.html, along with word count -->
+  <h2>Original Text</h2>
+
+  <p>
+    <pre>{{input_text}}</pre>
+  </p>
+
+  <p class="result-count">
+    Word Count: {{wordcounts['original']}}
+  </p>
+
+  <!-- Display report so long as text had at least one valid sentence. -->
   {% if (sentences|length) != 0 %}
 
-        <!--Build highlighted text with pre-tags -->
-        <h2>Parsed Text (Long sentences highlighted; ❖  = sentence break)</h2>
-        <p>
-            {% for item in highlight_data %}
-              {% set start = item[0] %}
-              {% set end = item[1] %}
-              {% set highlight = item[2] %}
-              {% set whitespace = item[3] %}
+    <!-- Display scanned text -->
+    <h2>Parsed Text (Long sentences highlighted; ❖  = sentence break)</h2>
 
-              <!-- Print any white space characters preceding sentence
-                   to preserve formatting of original text.-->
-              <pre>{{whitespace}}</pre>
+    <!-- Highlight sentences that over the word count -->
+    <p>
+        {% for item in highlight_data %}
 
-              {% if highlight == true %}
-                  <pre class="highlight bold">{{input_text[start:end]}}</pre>
-              {% else %}
-                <pre>{{input_text[start:end]}}</pre>
-              {% endif %}
+          {% set start = item[0] %}
+          {% set end = item[1] %}
+          {% set highlight = item[2] %}
+          {% set whitespace = item[3] %}
 
-                <!-- Place a separator between detected sentences. This will
-                be helpful to detect where a sentence was split in the middle
-                of a word, creating different word counts between original
-                and parsed texts.
-                -->
-                <pre> ❖</pre>
+          <!-- Print any white space characters preceding sentence
+               to preserve formatting of original text.
+          -->
+          <pre>{{whitespace}}</pre>
 
-            {% endfor %}
-        </p>
+          {% if highlight == true %}
 
-        <p class="result-count">Word Count: {{wordcounts['parsed']}}</p>
+            <pre class="highlight bold">{{input_text[start:end]}}</pre>
 
-        <h2>Details</h2>
+          {% else %}
 
-        <table id="sent-table">
+            <pre>{{input_text[start:end]}}</pre>
+
+          {% endif %}
+
+          <!-- Place a separator between sentences. This will be helpful for
+               users to see more cleary where a sentence was split in the
+               middle of a word, creating different word counts between
+               original and parsed texts.
+          -->
+          <pre> ❖</pre>
+
+        {% endfor %}
+    </p>
+
+    <!-- Display word count of parsed text; may not be same as original -->
+    <p class="result-count">
+      Word Count: {{wordcounts['parsed']}}
+    </p>
+
+    <!-- Display table where each row displays the content and word count of
+         of a sentence, as well as whether it is over or under the word count.
+         Sentences that are over are highlighted
+    -->
+    <h2>Details</h2>
+
+    <table id="sent-table">
+
+      <!-- Column headers -->
+      <tr>
+        <th>#</th>
+
+        <th>Sentence</th>
+
+        <th># words</th>
+
+        <!-- Plural vs singular -->
+        {% if max > 1 %}
+          <th>More than {{max}} words?</th>
+        {% else %}
+          <th>More than {{max}} word?</th>
+        {% endif %}
+      </tr>
+
+      <!-- Fill table -->
+      {% for s in sentences %}
+
+        <!-- Highlight the rows where sentences exceed word max -->
+        {% if s['wordcount'] > max %}
+          <tr class="highlight">
+        {% else %}
           <tr>
-            <th>#</th>
-            <th>Sentence</th>
-            <th># words</th>
-            {% if max > 1 %}
-              <th>More than {{max}} words?</th>
-            {% else %}
-              <th>More than {{max}} word?</th>
-            {% endif %}
-          </tr>
-
-          <!-- Highlight the rows where sentences exceed word max -->
-          {% for s in sentences %}
-            {% if s['wordcount'] > max %}
-              <!--<tr style="background-color: yellow">-->
-              <tr class="highlight">
-            {% else %}
-              <tr>
-            {% endif %}
-
-              <td class='cell'> {{loop.index}}</td>
-              <td class='cell-content'><span>{{s['content']}}</span></td>
-              <td class='cell'>{{s['wordcount']}}</td>
-
-              <!-- Highlight the rows where sentences exceed word max -->
-              {% if s['wordcount'] > max %}
-                <td class='cell'>Y</td>
-              {% else %}
-                <td class='cell'>N</td>
-              {% endif %}
-
-            </tr>
-          {% endfor %}
-
-        </table>
-
-
-        {% if wordcounts['original'] != wordcounts['parsed'] %}
-          <p><b class='warning'>Warning:</b><br> The word counts of your original and parsed
-          texts are different ({{wordcounts['original']}} vs.
-          {{wordcounts['parsed']}} words, respectively).
-          It's likely that the last part of the original
-          text wasn't included in the parsing because no terminating
-          punctuation
-          mark was used at the end of the text (i.e. the last bit didn't form
-          a 'valid' sentence). You can fix this by hitting your browser's
-          back button and adding a terminating punctuation mark at the end of
-          your text.
-         </p>
-         <p>Alternatively, if you used the Split feature below in the middle
-           of a word, the parsed text's wordcount will be one higher
-           than the original text's wordcount.
-         </p>
         {% endif %}
 
-        <!--To use later!!-->
-        <!--<p>Total: {{ sentences|sum(attribute='wordcount')}}</p>-->
+        <!-- Number indicating order of sentence relative to others
+            e.g First sentence is '1'; second sentence is '2', etc.
+            Note that 'loop.index' records the current iteraion of the
+            loop, not the index of the sentence in the list. As such,
+            the first value of loop.index is 1, not 0.
+        -->
+        <td class='cell'>{{loop.index}}</td>
 
-        <h1>Not quite right?</h1>
+        <!-- Actual words in sentence -->
+        <td class='cell-content'><span>{{s['content']}}</span></td>
 
-        <div><h2>Divided sentence</h2></div>
-          <p>
-          The program sometimes detects the end of a sentence before it
-          should, resulting in two fragments. Often this happens when the
-          program encounters an abbreviation it's unfamiliar with or a
-          dialogue attribution it doesn't know how to handle.
-         </p>
-          <p>
-          To join the two fragments to form a full sentence, pick the first
-          one in the pair and click 'Merge'.
-         </p>
+        <td class='cell'>{{s['wordcount']}}</td>
 
+        <!-- Highlight the rows where sentences exceed word max -->
+        {% if s['wordcount'] > max %}
+          <td class='cell'>Y</td>
+        {% else %}
+          <td class='cell'>N</td>
+        {% endif %}
 
-        <form action="leguincounter" method="POST">
+      </tr>
+      {% endfor %}
 
-          <!--HTTP is a stateless protocol; need to send this info back, so we
-         can redisplay it once the CGI web script is done processing-->
-          <input type='hidden' name="max" value="{{max}}"/>
-          <input type='hidden' name="input_text" value="{{input_text}}"/>
+    </table>
 
-          <!-- Need to resend the sentence list in case sentences have been
-           previously merged: parsing the original text will bring us back give
-          us sentences before they were merged.-->
-          {% for i in range(sentences|length) %}
-            <input type='hidden' name="sent_list[]" value="{{sentences[i]['content']}}"/>
-          {% endfor %}
+    <!-- Display message alerting user that word counts between the original
+         and parsed texts are different.
+    -->
+    {% if wordcounts['original'] != wordcounts['parsed'] %}
+      <p>
+        <b class='warning'>Warning:</b>
+        <br>
+        The word counts of your original and parsed texts are different
+        ({{wordcounts['original']}} vs. {{wordcounts['parsed']}} words,
+        respectively). It's likely that the last part of the original
+        text wasn't included in the parsing because no terminating
+        punctuation mark was used at the end of the text (i.e. the last bit
+        didn't form a 'valid' sentence). You can fix this by hitting your
+        browser's back button and adding a terminating punctuation mark at
+        the end of your text.
+     </p>
 
-
-
-          <!-- Index of sentence chosen to merge with next-->
-          <select name="index">
-            {% for i in range(sentences|length) %}
-              <option value="{{ i }}">
-                {{loop.index}}) {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
-              </option>
-            {% endfor %}
-          </select>
-
-          <div>
-              <br>
-            <input name="submit_button" type="Submit" value="Merge"/>
-          </div>
-
-        </form>
-        <!------------------------------------------------------->
-
-        <p></p>
-        <p></p>
-          <div><h2>Multiple sentences in one</h2></div>
-          <p>
-          Occasionally, the program will combine sentences when
-            it shouldn't. This can happen when there is no space at
-            the end of a sentence such as in cited text. E.g. <i>The
-            moon is made of green cheese and always will be.[1]</i>
-          </p>
-
-          <p>Follow the steps below to separate such sentences.
-          Note that you can only divide a sentence into at most two parts.
-          If you need to do more splits, just repeat.
-        </p>
-
-          <p>1. Choose the offending text.</p>
-
-         <!-- Select sentence
-
-         <select id='sel_split'>
-           <option>This is one sentence.</option>
-           <option>This is another sentence. I am yet another.</option>
-           <option>PIZZA! It's the best.</option>
-           <option>This is a sentence with a footnote.[1]</option>
-         </select>
-          -->
-
-
-         <!-- Index of sentence chosen to merge with next-->
-         <form action="leguincounter" method="POST">
-
-           <!--HTTP is a stateless protocol; need to send this info back, so we
-          can redisplay it once the CGI web script is done processing-->
-           <input type='hidden' name="max" value="{{max}}"/>
-           <input type='hidden' name="input_text" value="{{input_text}}"/>
-
-           <!-- Need to resend the sentence list in case sentences have been
-            previously merged: parsing the original text will bring us back give
-           us sentences before they were merged.-->
-           {% for i in range(sentences|length) %}
-             <input type='hidden' name="sent_list[]" value="{{sentences[i]['content']}}"/>
-           {% endfor %}
-
-           <select id ="sel_split" name="index">
-             <option disabled selected value> --Pick a sentence to split---</option>
-             {% for i in range(sentences|length) %}
-               <option value="{{sentences[i]['content']}}">
-                 {{loop.index}}) {{sentences[i]['content']}} (# words: {{sentences[i]['wordcount']}})
-               </option>
-             {% endfor %}
-           </select>
-
-           <p>2. Click or tap where the text should be split.</p>
-           <!-- Print sentence in textarea--->
-           <div>
-           <textarea
-            id='sentencetextarea'
-            name='split_textarea'
-            placeholder="Selected sentence will go here..."
-            readonly></textarea>
-           </div>
-
-           <p>3. Confirm and split! </p>
-
-           <p>The selected text will be split as follows:<br>
-                <pre id='output_area'></pre>
-          </p>
-
-          <!--Data to send back-->
-          <input id="sent_index" type="hidden" name="sentindex" value=""/>
-          <input id="split_pos" type="hidden" name="splitposition" value=""/>
-          <input id="first_part" type="hidden" name="firstpart" value=""/>
-          <input id="second_part" type="hidden" name="secondpart" value=""/>
-
-         <input name="submit_button" type="Submit" id='split' value="Split" disabled/>
-
-         <!---DEBUGGING-->
-         <p><pre id="saved"></pre></p>
-      </form>
-
-    {% else %}
-      <h1>Nothing to process!</h1>
-      <p>There are no sentences to process. Either you entered nothing, entered
-      only whitespace characters, or wrote a phrase without a sentence-ending
-      punctuation mark.</p>
-
+     <p>
+       Alternatively, if you used the Split feature below in the middle
+       of a word, the parsed text's wordcount will be one higher
+       than the original text's wordcount.
+     </p>
     {% endif %}
 
+    <!-- Display features that help user fix problems in parsed text -->
+    <h1>Not quite right?</h1>
 
-<br>
-<a href="http://localhost:5000/leguincounter">Return to main page</a>
+    <!-- Tool to merge sentences -->
+    <div>
+      <h2>Divided sentence</h2>
+    </div>
 
-<script src="{{ url_for('static', filename='split.js') }}"></script>
+    <p>
+      The program sometimes detects the end of a sentence before it
+      should, resulting in two fragments. Often this happens when the
+      program encounters an abbreviation it's unfamiliar with or a
+      dialogue attribution it doesn't know how to handle.
+    </p>
+
+    <p>
+      To join the two fragments to form a full sentence, pick the first
+      one in the pair and click 'Merge'.
+    </p>
+
+    <form action="leguincounter" method="POST">
+
+      <!-- HTTP is a stateless protocol; need to send data originally entered
+           in form.html so it can be redisplayed after user clicks the Merge
+           button.
+      -->
+
+      <!-- Word max -->
+      <input type='hidden' name="max" value="{{max}}"/>
+
+      <!-- Original text -->
+      <input type='hidden' name="input_text" value="{{input_text}}"/>
+
+      <!-- Need to resend the sentence list in case sentences have been
+           previously split or merged: parsing the original text will omit
+           the effect of previous splits or merges.
+      -->
+      {% for i in range(sentences|length) %}
+        <input
+            type='hidden'
+            name="sent_list[]"
+            value="{{sentences[i]['content']}}"/>
+      {% endfor %}
+
+      <!-- Display drop-down list of sentences in text -->
+      <!-- The index of the selected sentence in the sentence list will be
+           POSTED with the other data after submission.
+      -->
+      <select name="index">
+
+        {% for i in range(sentences|length) %}
+
+          <!-- Display sentence content and word count in each option item -->
+          <option value="{{ i }}">
+            {{loop.index}}) {{sentences[i]['content']}}
+            (# words: {{sentences[i]['wordcount']}})
+          </option>
+
+        {% endfor %}
+      </select>
+
+      <!-- Display Merge button -->
+      <div>
+        <br>
+        <input name="submit_button" type="Submit" value="Merge"/>
+      </div>
+
+    </form>
+
+    <p></p>
+    <p></p>
+
+    <!-- Tool to split sentences -->
+    <div>
+      <h2>Multiple sentences in one</h2>
+    </div>
+
+    <p>
+      Occasionally, the program will combine sentences when
+      it shouldn't. This can happen when there is no space at
+      the end of a sentence such as in cited text. E.g. <i>The
+      moon is made of green cheese and always will be.[1]</i>
+    </p>
+
+    <p>
+      Follow the steps below to separate such sentences.
+      Note that you can only divide a sentence into at most two parts.
+      If you need to do more splits, just repeat.
+    </p>
+
+    <p>1. Choose the offending text.</p>
+
+
+     <!-- Index of sentence chosen to merge with next-->
+     <form action="leguincounter" method="POST">
+
+       <!-- HTTP is a stateless protocol; need to send data originally entered
+            in form.html so it can be redisplayed after user clicks the Merge
+            button.
+       -->
+
+       <!-- Word max -->
+       <input type='hidden' name="max" value="{{max}}"/>
+
+       <!-- Original text -->
+       <input type='hidden' name="input_text" value="{{input_text}}"/>
+
+       <!-- Need to resend the sentence list in case sentences have been
+            previously split or merged: parsing the original text will omit
+            the effect of previous splits or merges.
+       -->
+       {% for i in range(sentences|length) %}
+         <input
+             type='hidden'
+             name="sent_list[]"
+             value="{{sentences[i]['content']}}"/>
+       {% endfor %}
+
+       <!-- Display drop-down list of sentences in text -->
+       <!-- The index of the selected sentence in the sentence list will be
+            POSTED with the other data after submission.
+       -->
+       <select id ="sel_split" name="index">
+
+         <!-- Default first option item -->
+         <option disabled selected value>
+           --Pick a sentence to split---
+         </option>
+
+         <!-- Display sentence content and word count in each option item -->
+         {% for i in range(sentences|length) %}
+
+           <option value="{{sentences[i]['content']}}">
+             {{loop.index}}) {{sentences[i]['content']}}
+             (# words: {{sentences[i]['wordcount']}})
+           </option>
+
+         {% endfor %}
+
+       </select>
+
+       <p>2. Click or tap where the text should be split.</p>
+
+       <!-- Display the selected sentence in the textarea--->
+       <div>
+         <textarea
+             id='sentencetextarea'
+             name='split_textarea'
+             placeholder="Selected sentence will go here..."
+             readonly></textarea>
+       </div>
+
+       <p>3. Confirm and split! </p>
+
+       <!-- Show how the sentence will be split -->
+       <p>The selected text will be split as follows:
+         <br>
+         <pre id='output_area'></pre>
+       </p>
+
+      <!-- Data to send back for split to happen on server-side-->
+
+      <!-- Index of selected sentence in sentence list -->
+      <input id="sent_index" type="hidden" name="sentindex" value=""/>
+
+      <!-- Position in sentence where split should occur -->
+      <input id="split_pos" type="hidden" name="splitposition" value=""/>
+
+      <!-- First partition of split sentence -->
+      <input id="first_part" type="hidden" name="firstpart" value=""/>
+
+      <!-- Second partition of split sentence -->
+      <input id="second_part" type="hidden" name="secondpart" value=""/>
+
+      <!-- Split button -->
+      <input
+          name="submit_button"
+          type="Submit"
+          id='split'
+          value="Split" disabled/>
+
+     <!--- For JS debugging purposes only-->
+     <p>
+       <pre id="saved"></pre>
+     </p>
+
+  </form>
+
+  {% else %}
+
+    <!-- Display message if no valid sentences in original text -->
+    <h1>Nothing to process!</h1>
+
+    <p>
+      There are no sentences to process. Either you entered nothing, entered
+      only whitespace characters, or wrote a phrase without a sentence-ending
+      punctuation mark.
+    </p>
+
+  {% endif %}
+
+  <br>
+
+  <!-- Go back to form.html and start again -->
+  <a href="http://localhost:5000/leguincounter">Return to main page</a>
+
+  <!-- Only the Split feature requires some JavaScript UI magic -->
+  <script src="{{ url_for('static', filename='split.js') }}"></script>
 
 {% endblock %}
