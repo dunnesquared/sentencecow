@@ -40,26 +40,29 @@
     // selected
     resetValues();
 
-    let sel = document.getElementById('sel_split');
+    let selectElement = document.getElementById('sel_split');
 
-    let i = sel.selectedIndex;
+    let indexOfSentenceToSplit = selectElement.selectedIndex;
 
     // DEBUG
-    console.log("Selected Index = ", i);
+    console.log("Selected Index = ", indexOfSentenceToSplit);
 
-    const options = sel.options;
-    let myTextArea = document.getElementById('sentencetextarea');
+    const options = selectElement.options;
+    let splitTextArea = document.getElementById('sentencetextarea');
 
     // Display sentence in textarea
     // Leading/trailing spaces are't necessary and just make the text weird to
     // look at
-    myTextArea.innerHTML = options[i].value.trim();
+    splitTextArea.innerHTML = options[indexOfSentenceToSplit].value.trim();
 
     // DEBUG
-    let isSame = myTextArea.innerHTML === options[i].value;
+    let isSame =
+        splitTextArea.innerHTML === options[indexOfSentenceToSplit].value;
     console.log("isSame = ", isSame);
-    console.log("myTextArea.innerHTML", JSON.stringify(myTextArea.innerHTML));
-    console.log("options[i].value", JSON.stringify(options[i].value));
+    console.log("splitTextArea.innerHTML",
+                JSON.stringify(splitTextArea.innerHTML));
+    console.log("options[indexOfSentenceToSplit].value",
+                JSON.stringify(options[indexOfSentenceToSplit].value));
 
     // save index, and full sentence
     const inputIndexElem = document.getElementById('sent_index');
@@ -68,41 +71,12 @@
     // Careful here: the value saved is the index that will be used
     // to access the sentence from sentences list in the web script
     // Because the way the option list is presented in results.html
-    // with a 'placeholder' first option, i needs to be decremented by 1.
-    inputIndexElem.value = i - 1;
-    // inputFullSentElem.value = options[i].value;
+    // with a 'placeholder' first option, indexOfSentenceToSplit needs to be
+    // decremented by 1.
+    inputIndexElem.value = indexOfSentenceToSplit - 1;
+    // inputFullSentElem.value = options[indexOfSentenceToSplit].value;
   }
 
-  /*
-  function selectText(){
-        //Get the active Element
-    const activeTextArea = document.activeElement;
-
-    let selection = ""
-
-     //Check that the element is the textarea, if not do nothing
-    if (activeTextArea.id === 'sentencetextarea'){
-        //Get the substring representing the highlighted text
-       let start = activeTextArea.selectionStart;
-       let end = activeTextArea.selectionEnd;
-       selection = activeTextArea.value.substring(start, end);
-
-       //DEBUG
-       console.log("start: ",  start);
-       console.log("end: ",  end);
-
-      //output substring
-      let outputArea = document.getElementById('output_area');
-      outputArea.innerHTML = selection;
-
-      // Save to input element
-      const inputSubSent = document.getElementById('sub_sent');
-      inputSubSent.value = selection;
-
-    }
-
-  }
-  */
   function splitText() {
     // Get the active Element
     const activeTextArea = document.activeElement;
@@ -155,8 +129,8 @@
         }
 
         // Save caret position, i.e. where text will be split
-        const inputSplitPos = document.getElementById('split_pos');
-        inputSplitPos.value = start;
+        const inputSplitPosition = document.getElementById('split_pos');
+        inputSplitPosition.value = start;
 
         // Save first and last parts of split sentence
         const inputFirstPart = document.getElementById('first_part');
@@ -191,7 +165,7 @@
    */
   function enableSplit() {
     /*
-    Algoithm
+    Algorithm
     1. Access contents of textarea; handle to splitButoon
     2. If empty, do not enable Split, exit. If not, go to 3
     3. Get contents of first and second split
