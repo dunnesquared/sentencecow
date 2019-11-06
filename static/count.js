@@ -28,27 +28,27 @@
   // In case the bizzare happens...
   try {
 
-    let s = '';
+    let errorMessage = '';
 
     if (WORD_MAX < 1) {
-      s = `
+      errorMessage = `
       Error in count.js:
       WORD_MAX = ${WORD_MAX}
       Value outside acceptable range.
       WORD_MAX must be an
       integer > 0.
       `;
-      throw new RangeError(s);
+      throw new RangeError(errorMessage);
     }
 
     if (!Number.isInteger(WORD_MAX)) {
-      s = `
+      errorMessage = `
      Error in count.js:
      WORD_MAX = ${WORD_MAX}
      Bad type.
      WORD_MAX must be an integer.
      `;
-      throw new TypeError(s);
+      throw new TypeError(errorMessage);
     }
 
   } catch (err) {
@@ -110,7 +110,7 @@
     let text = "";
     let numWords = 0;
     let numChars = 0;
-    let msg = "";
+    let countMessage = "";
 
     try {
 
@@ -130,9 +130,9 @@
         // Disable submit
         count_button.disabled = true;
 
-        msg = "← Too many words!";
+        countMessage = "← Too many words!";
 
-        wordCountOver.innerHTML = msg;
+        wordCountOver.innerHTML = countMessage;
 
       } else {
         wordCountOver.innerHTML = "";
@@ -142,9 +142,9 @@
         // Disable submit
         count_button.disabled = true;
 
-        msg = "← Too many characters!";
+        countMessage = "← Too many characters!";
 
-        charCountOver.innerHTML = msg;
+        charCountOver.innerHTML = countMessage;
 
       } else {
         charCountOver.innerHTML = "";
@@ -190,15 +190,15 @@
 
     // It's possible, though hopefully unlikely, that the Jinja template
     // rendered an "you're over the word count max" error message. If this JS
-    // script is is doing its job, that shouldn't happen That said, if it does,
+    // script is is doing its job, that shouldn't happen. That said, if it does,
     // you'll want to erase the error message when the user presses the reset
     // button.
-    let appMsg = document.getElementsByClassName("over")[0];
+    let serverMessage = document.getElementsByClassName("over")[0];
 
-    // Check to see whether the appMSg was rendered in the first place. If so,
-    // clear it!
-    if (typeof appMsg !== 'undefined') {
-      appMsg.innerHTML = "";
+    // Check to see whether the serverMessage was rendered in the first place.
+    // If so, clear it!
+    if (typeof serverMessage !== 'undefined') {
+      serverMessage.innerHTML = "";
     }
 
     // Handle whatever reset didn't
