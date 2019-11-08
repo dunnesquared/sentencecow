@@ -22,7 +22,7 @@ from flask import Flask, make_response
 from flask import render_template
 from flask import request
 from leguincounter import LeGuinCounter
-from textanalysis import textanalysis as ta
+import textanalysis as ta
 
 app = Flask(__name__)
 

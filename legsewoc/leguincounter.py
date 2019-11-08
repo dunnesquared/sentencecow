@@ -27,8 +27,7 @@ Suggested improvements to be made:
 - Refactor generate_LGSentenceList to use attributes, not method arguments
 """
 
-
-from textanalysis import textanalysis as ta
+import textanalysis as ta
 
 
 class LeGuinSentence:
