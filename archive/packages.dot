@@ -1,0 +1,8 @@
+digraph "packages" {
+charset="utf-8"
+rankdir=BT
+"0" [label="textanalysis", shape="box"];
+"1" [label="textanalysis.driver", shape="box"];
+"2" [label="textanalysis.textanalysis", shape="box"];
+"1" -> "2" [arrowhead="open", arrowtail="none"];
+}
