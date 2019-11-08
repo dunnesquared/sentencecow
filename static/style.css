@@ -1,4 +1,4 @@
-/*****************************form.html************************************/
+/* ****************************all*********************************** */
 
 body{
   /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
@@ -14,32 +14,8 @@ pre{
      parsed text.
   */
   display: inline;
+  font-family: 'Helvetica Neue', 'Arial', 'sans-serif';
   white-space: pre-wrap;
-  font-family: "Helvetica Neue", "Arial", "sans-serif";
-}
-
-.highlight{
-  background-color: yellow;
-}
-
-.bold{
-  font-weight: 900;
-}
-
-textarea[name=input_text]{
-  resize: none;
-  height: 15em; /* Each em = 1 char-size; equiv to 15 rows*/
-  width: 90%; /* Take only 90% width of screen*/
-  outline: none;
-  /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
-  font-family: "Times New Roman", Times, serif;
-  font-size: 0.95em;
-}
-
-.error{
-  color: red;
-  font-weight: 900;
-  font-size: 1.5em;
 }
 
 select{
@@ -50,43 +26,40 @@ p{
   width:90%;
 }
 
-.over{
-  color: red;
-}
-
-#count_table{
-  font-size: 0.8em;
-}
-
 tr{
   height: 1.5em;
 }
 
+/* ****************************form.html*********************************** */
+#count_table{
+  font-size: 0.8em;
+}
+
 #char-count{
-  text-align: right;
   padding-left: 0.5em;
+  text-align: right;
 }
 
 #word-count{
-  text-align: right;
   padding-left: 0.5em;
+  text-align: right;
 }
 
 #charcount-over{
-  text-align: left;
   color: crimson;
   font-weight: 900;
+  text-align: left;
 }
 
 #wordcount-over{
-  text-align: left;
   color: crimson;
   font-weight: 900;
+  text-align: left;
 }
 
 #maxboxtitle{
-  margin-top: 0.85em;
   font-weight: 900;
+  margin-top: 0.85em;
 }
 
 #button-container{
@@ -97,12 +70,31 @@ tr{
   margin-top: 2em;
 }
 
-/*****************************Results.html************************************/
+textarea[name=input_text]{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.95em;
+  height: 15em; /* Each em = 1 char-size; equiv to 15 rows */
+  outline: none;
+  resize: none;
+  width: 90%; /* Take only 90% width of screen */
+}
+
+.error{
+  color: red;
+  font-weight: 900;
+  font-size: 1.5em;
+}
+
+.over{
+  color: red;
+}
+
+/* ****************************Results.html********************************** */
 
 #sent-table{
  border: 1px solid black;
- width: 90%;
  border-collapse: collapse;
+ width: 90%;
 }
 
 #sent-table th{
@@ -114,9 +106,31 @@ tr{
   border: 1px solid black;
 }
 
+#output_area{
+  font-family: 'Courier New', Courier, monospace;
+}
+
+textarea[name=split_textarea]{
+  cursor: pointer; /* Better metaphor than caret to pick where to split text. */
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.95em;
+  height: 5em; /* Each em = 1 char-size; equiv to 15 rows */
+  outline: none;
+  width: 90%; /* Take only 90% width of screen */
+  resize: none;
+}
+
+.bold{
+  font-weight: 900;
+}
+
+.highlight{
+  background-color: yellow;
+}
+
 .cell {
-  text-align: center;
   padding: 0.2em;
+  text-align: center;
 }
 
 .cell-content{
@@ -126,21 +140,6 @@ tr{
 
 .result-count{
   font-size: 0.8em;
-}
-
-textarea[name=split_textarea]{
-  resize: none;
-  height: 5em; /* Each em = 1 char-size; equiv to 15 rows*/
-  width: 90%; /* Take only 90% width of screen*/
-  outline: none;
-  /*font-family: "Helvetica Neue", "Arial", "sans-serif";*/
-  font-family: "Times New Roman", Times, serif;
-  font-size: 0.95em;
-  cursor: pointer;
-}
-
-#output_area{
-  font-family: "Courier New", Courier, monospace;
 }
 
 .warning{
