@@ -1,6 +1,14 @@
-from nose.tools import *
-from leguincounter import LeGuinCounter
 from random import randint
+from nose.tools import *
+# from legsewoc import *
+# from legsewoc.leguincounter import LeGuinCounter
+
+# from .context import legsewoc
+# from legsewoc.leguincounter import LeGuinCounter
+
+from .context import leguincounter
+from leguincounter import LeGuinCounter
+
 
 def test_init():
     '''Test Cases:

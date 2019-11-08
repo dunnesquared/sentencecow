@@ -1,7 +1,11 @@
 from nose.tools import *
-from app import *
 from flask import request
+
+from .context import leguincounter
 from leguincounter import LeGuinCounter
+
+from .context import app
+from app import *
 
 app.config['TESTING'] = True
 web = app.test_client()
