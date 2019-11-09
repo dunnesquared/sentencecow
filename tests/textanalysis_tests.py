@@ -2,7 +2,9 @@ import sys
 import string # punctuation
 from textwrap import dedent
 from nose.tools import *
-from legsewoc.textanalysis import *
+
+from .context import textanalysis
+from textanalysis import *
 
 '''
 To do:
@@ -509,7 +511,7 @@ def test_general_punctuation():
 def test_too_big():
 
     # Necessary to import private module function
-    from legsewoc.textanalysis import _too_big
+    from textanalysis import _too_big
 
     #Set up
     text = "My dog is always right."
