@@ -107,7 +107,7 @@ https://github.com/dunnesquared/abbrevscrape.
 
 
 import os   # getcwd, path.join, path.dirname, path.realpath
-import sys # getsizeof
+import sys # getsizeof, exit, stderr
 import re   # sub
 import textwrap  # dedent
 import string # punctuation
@@ -216,21 +216,27 @@ def _load_abbreviations():
         abbreviations (list): strings found in 'abbreviations.txt'.
     """
 
-    # Get directory where input exists, i.e. same dir as this module
-    absdir = _get_dir()
+    try:
+        # Get directory where input exists, i.e. same dir as this module
+        absdir = _get_dir()
 
-    # Intelligently concatenate the directory and the input file name together
-    full_filename = os.path.join(absdir, _ABBREVIATION_DATA_FILEPATH)
+        # Intelligently concatenate the directory and the input file name together
+        full_filename = os.path.join(absdir, _ABBREVIATION_DATA_FILEPATH)
 
-    with open(full_filename, "r") as fin:
-        data = fin.read()
+        with open(full_filename, "r") as fin:
+            data = fin.read()
 
-    # Each abbreviation is written on a newline
-    abbreviations = data.split('\n')
+        # Each abbreviation is written on a newline
+        abbreviations = data.split('\n')
 
-    # Get rid of extra '' list-entry caused by text editor adding
-    # a line after the last abbreviation upon saving the file
-    abbreviations.pop()
+        # Get rid of extra '' list-entry caused by text editor adding
+        # a line after the last abbreviation upon saving the file
+        abbreviations.pop()
+
+    except OSError as err:
+        print("OSError: {}".format(err), file=sys.stderr)
+        print("Abbreviations not loaded. Exiting program.", file=sys.stderr)
+        sys.exit()
 
     return abbreviations
 
