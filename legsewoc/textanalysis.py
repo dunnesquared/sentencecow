@@ -112,10 +112,8 @@ import re   # sub
 import textwrap  # dedent
 import string # punctuation
 
-#==============================GLOBAL CONSTANTS================================
 
-# Path of abbreviations.txt file
-ABBREVIATION_DATA_FILEPATH = "./data/abbreviations.txt"
+#==============================SETTING MAX SIZE================================
 
 # Arbitrary text size set to avoid program from gobbling up too much memory
 # Set to what you will...
@@ -124,6 +122,8 @@ MAX_TEXTSIZE = 100 * 1024 * 1024 # 100 MB
 # Check global constant just in case the bizarre happens...
 if MAX_TEXTSIZE < 0:
     raise ValueError("MAX_TEXTSIZE set to value less than zero.")
+
+#==============================REGEX GLOBALS===================================
 
 # Unicode general punctuation encodes several punctuation marks that can
 # appear at the end of a sentence. Module should handle '⁇' no differently
@@ -180,15 +180,15 @@ REGEX_ALLSYMOBLS = (r'[' + string.punctuation + LEADERS + QEX + DQUOTES
 
 #===================INITIALIZING ABBREVIATIONS SET=============================
 
-def _get_dir():
-    """Returns absolute path of the directory where module exists
+# Path of abbreviations.txt file
+ABBREVIATION_DATA_FILEPATH = "./data/abbreviations.txt"
 
-    Args:
-        None
+def _get_dir():
+    """Returns absolute path of the directory where module exists.
 
     Returns:
         dir (str): the unique ('canonical') absolute path of the directory
-                   containing the module (i.e. no symbolic links in path)
+                   containing the module (i.e. no symbolic links in path).
     """
 
     # Get the current working directory in Terminal
@@ -207,16 +207,13 @@ def _get_dir():
 
 
 def _load_abbreviations():
-    """Gets list of abbreviations as per contents of 'abbreviations.txt'
-
-    Args:
-        None
+    """Gets list of abbreviations as per contents of 'abbreviations.txt'.
 
     Raises:
-        FileNotFoundError: abbreviations.txt not found
+        FileNotFoundError: abbreviations.txt not found.
 
     Returns:
-        abbreviations (list): strings found in 'abbreviations.txt'
+        abbreviations (list): strings found in 'abbreviations.txt'.
     """
 
     # Get directory where input exists, i.e. same dir as this module
