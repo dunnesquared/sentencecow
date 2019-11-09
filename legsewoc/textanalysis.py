@@ -232,7 +232,7 @@ def _load_abbreviations():
         abbreviations.pop()
 
     except OSError as err:
-        print("OSError: {}".format(err), file=sys.stderr)
+        print("OSError: {0}".format(err), file=sys.stderr)
         print("Abbreviations not loaded. Exiting program.", file=sys.stderr)
         sys.exit()
 
