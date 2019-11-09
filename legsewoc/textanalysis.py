@@ -181,7 +181,7 @@ REGEX_ALLSYMOBLS = (r'[' + string.punctuation + LEADERS + QEX + DQUOTES
 #===================INITIALIZING ABBREVIATIONS SET=============================
 
 # Path of abbreviations.txt file
-ABBREVIATION_DATA_FILEPATH = "./data/abbreviations.txt"
+_ABBREVIATION_DATA_FILEPATH = "./data/abbreviations.txt"
 
 def _get_dir():
     """Returns absolute path of the directory where module exists.
@@ -220,7 +220,7 @@ def _load_abbreviations():
     absdir = _get_dir()
 
     # Intelligently concatenate the directory and the input file name together
-    full_filename = os.path.join(absdir, ABBREVIATION_DATA_FILEPATH)
+    full_filename = os.path.join(absdir, _ABBREVIATION_DATA_FILEPATH)
 
     with open(full_filename, "r") as fin:
         data = fin.read()
