@@ -209,9 +209,6 @@ def _get_dir():
 def _load_abbreviations():
     """Gets list of abbreviations as per contents of 'abbreviations.txt'.
 
-    Raises:
-        FileNotFoundError: abbreviations.txt not found.
-
     Returns:
         abbreviations (list): strings found in 'abbreviations.txt'.
     """
@@ -220,7 +217,8 @@ def _load_abbreviations():
         # Get directory where input exists, i.e. same dir as this module
         absdir = _get_dir()
 
-        # Intelligently concatenate the directory and the input file name together
+        # Intelligently concatenate the directory and the input file name
+        # together
         full_filename = os.path.join(absdir, _ABBREVIATION_DATA_FILEPATH)
 
         with open(full_filename, "r") as fin:
