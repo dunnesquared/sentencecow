@@ -1,0 +1,4 @@
+include sentencecow/data/*.txt
+graft sentencecow/static
+graft sentencecow/templates
+global-exclude *.pyc
