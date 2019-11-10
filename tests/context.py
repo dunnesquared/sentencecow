@@ -11,7 +11,7 @@ import sys
 # up to the parent directory (../) and then open the legsewoc directory
 # (legsewoc/)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                '../legsewoc/')))
+                '../sentencecow/')))
 
 # Import everything you're going to need for the test modules to run properly.
 # Make sure to "from MODULE import .context" in each test file.
