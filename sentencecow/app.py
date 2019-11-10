@@ -177,7 +177,7 @@ def bad_request(error):
     return response
 
 
-@app.route("/leguincounter", methods=['POST', 'GET'])
+@app.route("/sentencecow", methods=['POST', 'GET'])
 def process_text():
     """Handles HTTP requests from client-side of app that allows users
     to enter a text and get information about it.

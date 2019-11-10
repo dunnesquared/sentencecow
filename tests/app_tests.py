@@ -11,7 +11,7 @@ app.config['TESTING'] = True
 web = app.test_client()
 
 # !!!Change this to correct web server name in your app!!!
-resource_name = '/leguincounter'
+resource_name = '/sentencecow'
 
 '''
 What to test for:

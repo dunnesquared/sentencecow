@@ -280,7 +280,7 @@
    */
   function resetAll() {
     // Clear the text area.
-    document.getElementById("lgcform").reset();
+    document.getElementById("countform").reset();
 
     // It's possible, though hopefully unlikely, that the Jinja template
     // rendered a "You're over the word count max" error message. If this JS

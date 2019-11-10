@@ -165,7 +165,7 @@
       one in the pair and click 'Merge'.
     </p>
 
-    <form action="leguincounter" method="POST">
+    <form action="sentencecow" method="POST">
 
       <!-- HTTP is a stateless protocol; need to send data originally entered
            in form.html so it can be redisplayed after user clicks the Merge
@@ -245,7 +245,7 @@
 
 
      <!-- Index of sentence chosen to merge with next-->
-     <form action="leguincounter" method="POST">
+     <form action="sentencecow" method="POST">
 
        <!-- HTTP is a stateless protocol; need to send data originally entered
             in form.html so it can be redisplayed after user clicks the Merge
@@ -357,7 +357,7 @@
   <br>
 
   <!-- Go back to form.html and start again -->
-  <a href="http://localhost:5000/leguincounter">Return to main page</a>
+  <a href="sentencecow">Return to main page</a>
 
   <!-- Only the Split feature requires some JavaScript UI magic -->
   <script src="{{ url_for('static', filename='split.js') }}"></script>
